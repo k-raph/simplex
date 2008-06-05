@@ -13,6 +13,22 @@ class QueryBuilder
 
     private $params = [];
 
+    private $join;
+
+    private $on;
+
+    /**
+     * PDO instance
+     *
+     * @var \PDO
+     */
+    private $pdo;
+
+    public function __construct(Connection $db)
+    {
+        $this->pdo = $db->getPdo();
+    }
+
     /**
      * Add fields to select
      *
@@ -75,7 +91,7 @@ class QueryBuilder
      *
      * @return string
      */
-    public function getSql()
+    public function getSql(): string
     {
         $parts = [];
         $parts[] = 'SELECT';
@@ -83,12 +99,22 @@ class QueryBuilder
 
         $parts[] = 'FROM';
         $parts[] = $this->buildFrom();
+    
+        if (!empty($this->join)) {
+            $parts[] = 'INNER JOIN';
+            $parts[] = $this->join;
+        }
 
+        if (!empty($this->on)) {
+            $parts[] = 'ON';
+            $parts[] = $this->on;
+        }
+    
         if (!empty($this->where)) {
             $parts[] = 'WHERE';
             $parts[] = implode(' AND ', $this->where);
         }
-
+           
         return implode(' ', $parts);
     }
 
@@ -108,5 +134,55 @@ class QueryBuilder
         }
 
         return implode(',', $parts);
+    }
+
+    /**
+     * Execute the request
+     *
+     * @return \PDOStatement
+     */
+    public function execute()
+    {
+        if (empty($this->where) && empty($this->params)) {
+            return $this->pdo->query($this->getSql());
+        }
+
+        $stmt = $this->pdo->prepare($this->getSql());
+        $stmt->execute($this->params);
+        return $stmt;
+    }
+
+    public function join(string $on, string $alias)
+    {
+        $alias = $alias ?: $on;
+        $this->join = "$on $alias";
+
+        return $this;
+    }
+
+    public function on(string $join)
+    {
+        $this->on = $join;
+        return $this;
+    }
+
+    /**
+     * Fetch all results
+     *
+     * @return array
+     */
+    public function getAll(): array
+    {
+        return $this->execute()->fetchAll();
+    }
+
+    /**
+     * Get single result
+     *
+     * @return mixed
+     */
+    public function get()
+    {
+        return $this->execute()->fetch();
     }
 }

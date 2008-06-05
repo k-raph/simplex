@@ -1,0 +1,6 @@
+{% for post in posts %}
+    <p>
+        <h1>{{ post.title }}</h1> <em>by {{ post.author }}
+        <div>{{ post.content }}</div>
+    </p>
+{% endfor %}

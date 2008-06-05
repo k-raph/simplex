@@ -1,5 +1,5 @@
-modules: []
-  # - App\Api\ApiModule
+modules: 
+  - App\Blog\BlogModule
 
 database:
   type: sqlite

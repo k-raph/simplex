@@ -32,6 +32,7 @@ class Connection
                 die($e->getMessage());        
             }
         }
+
     }
 
     /**

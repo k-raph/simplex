@@ -1,0 +1,9 @@
+blog_index:
+  path: /
+  controller: App\Blog\Action\ShowAction:all
+
+blog_show:
+  path: /{id}
+  controller: App\Blog\Action\ShowAction:single
+  requirements:
+    id: '\d+'

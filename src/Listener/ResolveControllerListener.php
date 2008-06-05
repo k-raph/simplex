@@ -27,7 +27,6 @@ class ResolveControllerListener extends AbstractListener
     public function handle(EventInterface $event)
     {
         $event->setController($this->getController($event));
-        // $event->setParams($this->getArguments($event));
 
         return $event;
     }
@@ -46,7 +45,6 @@ class ResolveControllerListener extends AbstractListener
             if (strpos($controller, '::') !== false) {
                 $controller = explode('::', $controller);
             } elseif (strpos($controller, ':') !== false) {
-                var_dump($controller);
                 $controller = explode(':', $controller);
             } elseif (method_exists($controller, '__invoke')) {
                 $controller = $this->container->get($controller);

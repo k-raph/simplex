@@ -1,0 +1,14 @@
+ <p>
+    <h1>{{ post.title }}</h1> <em>by {{ post.author }}
+    <div>{{ post.content }}</div>
+    <div>
+        <h3>Comments</h3>
+        {% for comment in post.comments %}
+            <p>
+                {{ comment.content }}
+            </p>
+        {% else %}
+            No comment yet
+        {% endfor %}
+    </div>
+</p>

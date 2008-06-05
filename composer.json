@@ -36,6 +36,7 @@
         }
     ],
     "scripts": {
-        "test": "php vendor/bin/phpunit"
+        "test": "php vendor/bin/phpunit",
+        "phinx": "php vendor/robmorgan/phinx/bin/phinx"
     }
 }
