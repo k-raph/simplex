@@ -15,6 +15,11 @@ use Simplex\Routing\SymfonyRouter;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use League\Event\Emitter;
+use Simplex\Event\RequestEvent;
+use Simplex\Listener\TrailingSlashListener;
+use Simplex\Event\ViewEvent;
+use Simplex\Listener\ViewEventListener;
 
 class Kernel
 {
@@ -27,6 +32,13 @@ class Kernel
     protected $container;
 
     /**
+     * Event emitter
+     *
+     * @var Emitter
+     */
+    protected $emitter;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -34,6 +46,10 @@ class Kernel
         $this->container = new Container();
         $this->container->delegate(new ReflectionContainer);
         $this->bootstrap();
+        $this->container->get(RouterInterface::class)->match('GET', '/event/{opt}', function(Emitter $emitter) {
+            return ['Hello World'];
+        })
+        ->assert('opt', '[0-9]');
     }
     
     /**
@@ -47,9 +63,23 @@ class Kernel
             return new YamlFileLoader(new FileLocator());
         });
         $this->container->share(RouterInterface::class, SymfonyRouter::class)
-            ->withArgument(LoaderInterface::class);
+        ->withArgument(LoaderInterface::class);
+        $this->container->share(Emitter::class);
+        $this->emitter = $this->container->get(Emitter::class);
+        $this->registerEvents();
     }
     
+    /**
+     * Register listeners against their events
+     *
+     * @return void
+     */
+    protected function registerEvents()
+    {
+        $this->emitter->addListener('kernel.request', new TrailingSlashListener);
+        $this->emitter->addListener('kernel.view', new ViewEventListener);
+    }
+
     /**
      * Handle the request
      *
@@ -59,23 +89,40 @@ class Kernel
     public function handle(Request $request)
     {
         try {
+            $event = new RequestEvent($request);
+            $this->emitter->emit($event);
+            if ($event->hasResponse())
+                return $event->getResponse();
+
             $route = $this->container->get(RouterInterface::class)->dispatch($request);
-            $result = $this->container->call($route->getCallback(), array_merge(compact('request'), $route->getParams()));
+            $response = $this->container->call($route->getCallback(), array_merge(compact('request'), $route->getParams()));
             
-            if (!($result instanceof Response)) {
-                if (is_string($result))
-                    return new Response($result);
-                elseif (is_array($result)) {
-                    return  new JsonResponse($result);
-                } else 
-                    throw new \LogicException(sprintf('Controller must return a string,an array or a Response object. "%s" given', gettype($result)));
+            if (!($response instanceof Response)) {
+                $event = new ViewEvent($response);
+                $this->emitter->emit($event);
+                $response = $event->getResponse();
             }
 
-            return $result;
-        } catch (ResourceNotFoundException $e) {
-            return new Response($e->getMessage(), 404);
-        } catch (MethodNotAllowedException $e) {
-            return new Response($e->getMessage(), 405, ['Allow' => 'GET']);
+            return $response;
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * Handle catched exception to return appropriate response
+     *
+     * @param \Exception $exception
+     * @return null|Response
+     */
+    private function handleException(\Exception $exception)
+    {
+        if ($exception instanceof ResourceNotFoundException) {
+            return new Response($exception->getMessage(), 404);
+        } elseif ($exception instanceof MethodNotAllowedException) {
+            return new Response($exception->getMessage(), 405, ['Allow' => implode(', ', $exception->getAllowedMethods())]);
+        } else {
+            throw $exception;
         }
     }
 

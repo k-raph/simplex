@@ -44,8 +44,11 @@ class SymfonyRouter implements RouterInterface
      */
     public function match($methods, $path, $controller, $name = null)
     {
-        $this->builder->add($path, $controller, $name)
-            ->setMethods(explode('|', $methods));
+        return Route::from(
+            $this->builder
+                ->add($path, $controller, $name)
+                ->setMethods(explode('|', $methods))
+            );
     }
 
     /**
@@ -67,15 +70,15 @@ class SymfonyRouter implements RouterInterface
     public function dispatch(Request $request)
     {
         try {
+            $collection = $this->getCollection();
             $context = new RequestContext();
-            $matcher = new UrlMatcher($this->getCollection(), $context->fromRequest($request));
+            $matcher = new UrlMatcher($collection, $context->fromRequest($request));
             $parameters = $matcher->matchRequest($request);
             $request->attributes->add($parameters);
             unset($parameters['_route'], $parameters['_controller']);
             $request->attributes->set('_route_params', $parameters);
-            return new Route(
-                $request->attributes->get('_route'),
-                $request->attributes->get('_controller'),
+            return Route::from(
+                $collection->get($request->attributes->get('_route')),
                 $request->attributes->get('_route_params')
             );
         } catch (ResourceNotFoundException $e) {
@@ -87,9 +90,9 @@ class SymfonyRouter implements RouterInterface
 
             throw new ResourceNotFoundException($message, 404);
         } catch (MethodNotAllowedException $e) {
-        $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathInfo(), /*implode(', ', $e->getAllowedMethods())*/ 'GET');
+            $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathInfo(), implode(', ', $e->getAllowedMethods()));
 
-            throw new MethodNotAllowedException(/*$e->getAllowedMethods()*/ ['GET'],$message);
+            throw new MethodNotAllowedException($e->getAllowedMethods(), $message);
         }
     }
 
