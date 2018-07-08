@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Simplex\Routing\RouterInterface;
 
 class SymfonyRouter implements RouterInterface
 {
@@ -36,7 +37,7 @@ class SymfonyRouter implements RouterInterface
      */
     public function import($from, $prefix = '/')
     {
-        $this->builder->import($from, $prefix);
+        $this->builder->import($from, $prefix, 'yaml');
     }
 
     /**
@@ -49,6 +50,11 @@ class SymfonyRouter implements RouterInterface
                 ->add($path, $controller, $name)
                 ->setMethods(explode('|', $methods))
             );
+    }
+
+    public function group($prefix, \Closure $factory)
+    {
+        
     }
 
     /**

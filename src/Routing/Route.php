@@ -38,7 +38,7 @@ class Route
      */
     public static function from(SymfonyRoute $baseRoute, array $with = [])
     {
-        $route = new static('path', 'callback', $with);
+        $route = new static('/', 'callback', $with);
         $route->setRoute($baseRoute);
         return $route;
     }
@@ -49,7 +49,7 @@ class Route
      * @param Route $route
      * @return void
      */
-    protected function setRoute(SymfonyRoute $route)
+    private function setRoute(SymfonyRoute $route)
     {
         $this->route = $route;
     }

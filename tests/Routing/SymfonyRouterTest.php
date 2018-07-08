@@ -24,7 +24,6 @@ class SymfonyRouterTest extends TestCase
         $request = Request::create('/test');
         $result = $this->router->dispatch($request);
         $this->assertInstanceOf(Route::class, $result);
-        $this->assertEquals('test', $result->getName());
         $this->assertEquals('controller', $result->getCallback());
         $this->assertEquals([], $result->getParams());
         
@@ -35,7 +34,6 @@ class SymfonyRouterTest extends TestCase
         $request = Request::create('/hello/world');
         $result = $this->router->dispatch($request);
         $this->assertInstanceOf(Route::class, $result);
-        $this->assertEquals('hello', $result->getName());
         $this->assertEquals('controller', $result->getCallback());
         $this->assertEquals(['name' => 'world'], $result->getParams());
     }

@@ -18,12 +18,12 @@ class ViewEvent extends KernelEvent
     /**
      * Constructor
      *
-     * @param mixed $response
+     * @param mixed $result
      */
-    public function __construct($response)
+    public function __construct($result)
     {
         $this->name = 'kernel.view';
-        $this->controllerResult = $response;
+        $this->controllerResult = $result;
     }
 
     /**

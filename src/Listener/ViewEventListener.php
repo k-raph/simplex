@@ -20,7 +20,7 @@ class ViewEventListener extends AbstractListener
             $response = new Response((string)$response);
         } elseif (
             is_array($response) ||
-            (is_object($response) && $object instanceof \ArrayAccess)
+            (is_object($response) && $response instanceof \ArrayAccess)
         ) {
             $response = new JsonResponse((array)$response);
         } else 

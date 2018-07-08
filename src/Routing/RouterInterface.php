@@ -22,9 +22,18 @@ interface RouterInterface
      * @param string $path
      * @param string $controller
      * @param string $name
-     * @return void
+     * @return Route
      */
     public function match($methods, $path, $controller, $name = null);
+
+    /**
+     * Mount a set of routes under a common prefix
+     *
+     * @param string $prefix
+     * @param \Closure $factory
+     * @return void
+     */
+    public function group($prefix, \Closure $factory);
 
     /**
      * Dispatches a request

@@ -1,0 +1,7 @@
+modules: []
+  # - App\Api\ApiModule
+
+database:
+  type: sqlite
+  name: database.db
+  
