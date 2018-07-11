@@ -5,9 +5,11 @@ namespace Simplex\Database;
 class QueryBuilder
 {
 
+    private $type;
+
     private $select;
 
-    private $from;
+    private $table;
 
     private $where = [];
 
@@ -16,6 +18,8 @@ class QueryBuilder
     private $join;
 
     private $on;
+
+    private $sql;
 
     /**
      * PDO instance
@@ -37,6 +41,7 @@ class QueryBuilder
      */
     public function select(...$fields)
     {
+        $this->type = 'read';
         $this->select = $fields ?: ['*'];
 
         return $this;
@@ -62,12 +67,12 @@ class QueryBuilder
      * @param string $alias
      * @return self
      */
-    public function from($table, $alias = null)
+    public function table($table, $alias = null)
     {
         if (is_null($alias)) {
-            $this->from[] = $table;
+            $this->table[] = $table;
         } else {
-            $this->from[$alias] = $table;
+            $this->table[$alias] = $table;
         }
 
         return $this;
@@ -93,12 +98,68 @@ class QueryBuilder
      */
     public function getSql(): string
     {
+        if (!$this->sql) {
+
+            $parts = [];
+            
+            switch($this->type) {
+                case 'read': {
+                    $parts = $this->buildSelect();
+                    break;
+                }
+                case 'update': {
+                    $parts = $this->buildUpdate();
+                    break;
+                }
+                case 'create': {
+                    $parts = $this->buildInsert();
+                    break;
+                }
+
+                case 'delete': {
+                    $parts = $this->buildDelete();
+                    break;
+                }
+                default: throw new \Exception('Bingo');
+            }
+        
+            if (!empty($this->where)) {
+                $parts[] = 'WHERE';
+                $parts[] = implode(' AND ', $this->where);
+            }
+
+            $this->sql = implode(' ', $parts);
+        }
+
+        return $this->sql;
+    }
+    
+    /**
+     * Build the from part of the query
+     *
+     * @return string
+     */
+    private function buildTable()
+    {
+        $parts = [];
+        foreach($this->table as $alias => $table) {
+            if(is_string($alias))
+                $parts[] = "$table AS $alias";
+            else
+                $parts[] = $table;
+        }
+
+        return implode(',', $parts);
+    }
+
+    protected function buildSelect()
+    {
         $parts = [];
         $parts[] = 'SELECT';
         $parts[] = implode(',', $this->select);
 
         $parts[] = 'FROM';
-        $parts[] = $this->buildFrom();
+        $parts[] = $this->buildTable();
     
         if (!empty($this->join)) {
             $parts[] = 'INNER JOIN';
@@ -109,39 +170,16 @@ class QueryBuilder
             $parts[] = 'ON';
             $parts[] = $this->on;
         }
-    
-        if (!empty($this->where)) {
-            $parts[] = 'WHERE';
-            $parts[] = implode(' AND ', $this->where);
-        }
-           
-        return implode(' ', $parts);
-    }
 
-    /**
-     * Build the from part of the query
-     *
-     * @return string
-     */
-    private function buildFrom()
-    {
-        $parts = [];
-        foreach($this->from as $alias => $table) {
-            if(is_string($alias))
-                $parts[] = "$table AS $alias";
-            else
-                $parts[] = $table;
-        }
-
-        return implode(',', $parts);
+        return $parts;
     }
 
     /**
      * Execute the request
-     *
+     * 
      * @return \PDOStatement
      */
-    public function execute()
+    public function execute(): \PDOStatement
     {
         if (empty($this->where) && empty($this->params)) {
             return $this->pdo->query($this->getSql());
@@ -149,6 +187,7 @@ class QueryBuilder
 
         $stmt = $this->pdo->prepare($this->getSql());
         $stmt->execute($this->params);
+        $this->init();
         return $stmt;
     }
 
@@ -164,6 +203,66 @@ class QueryBuilder
     {
         $this->on = $join;
         return $this;
+    }
+
+    public function update(array $data): self
+    {
+        $this->type = 'update';
+        $this->params = array_merge($data, $this->params);
+
+        return $this;
+    }
+
+    public function insert(array $data): self
+    {
+        $this->type = 'create';
+        $this->params = array_merge($data, $this->params);
+
+        return $this;
+    }
+
+    public function delete(): self
+    {
+        $this->type = 'delete';
+
+        return $this;
+    }
+
+    protected function buildDelete()
+    {
+        $parts = [];
+        $parts[] = 'DELETE FROM';
+        $parts[] = $this->buildTable();
+
+        return $parts;
+    }
+
+    protected function buildInsert()
+    {
+        $params = array_keys($this->params);
+        $parts = [];
+        $parts[] = 'INSERT INTO';
+        $parts[] = $this->buildTable();
+        $parts[] = '('.implode(', ', $params).')';
+        $parts[] = 'VALUES('. implode(', ', array_map(function($value) { return ":$value";}, $params)).')';
+
+        return $parts;
+    }
+
+    protected function buildUpdate()
+    {
+        $parts = [];
+        $parts[] =  'UPDATE';
+        $parts[] = $this->buildTable();
+        $parts[] = 'SET';
+
+        $vars = [];
+        foreach($this->params as $key => $value) {
+            $vars[] = "$key = :$key";
+        }
+
+        $parts[] = implode(", ", $vars);
+        return $parts;
     }
 
     /**
@@ -184,5 +283,11 @@ class QueryBuilder
     public function get()
     {
         return $this->execute()->fetch();
+    }
+
+    private function init()
+    {
+        $this->type = $this->table = $this->select = $this->join = $this->on = $this->sql = null;
+        $this->where = $this->params = [];
     }
 }

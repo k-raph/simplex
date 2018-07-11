@@ -21,7 +21,7 @@ class QueryBuilderTest extends TestCase
     {
         $query = $this->qb
             ->select('column', 'name')
-            ->from('table')
+            ->table('table')
             ->where('name = :name')
             ->getSql();
         
@@ -34,7 +34,7 @@ class QueryBuilderTest extends TestCase
     {
         $query = $this->qb
             ->select()
-            ->from('table')
+            ->table('table')
             ->getSql();
 
         $this->assertEquals('SELECT * FROM table', $query);
@@ -44,7 +44,7 @@ class QueryBuilderTest extends TestCase
     {
         $query = $this->qb
             ->select('column', 'name')
-            ->from('table', 't')
+            ->table('table', 't')
             ->where('name = :name', 'id = :id')
             ->getSql();
         
@@ -57,7 +57,7 @@ class QueryBuilderTest extends TestCase
     {
         $query = $this->qb
             ->select('column')
-            ->from('table')
+            ->table('table')
             ->where('name = :name')
             ->where('id = :id')
             ->getSql();
@@ -70,8 +70,8 @@ class QueryBuilderTest extends TestCase
     public function testJoin()
     {
         $query = $this->qb
+            ->table('posts', 'p')
             ->select('p.*', 'u.title')
-            ->from('posts', 'p')
             ->join('users', 'u')
             ->on('p.author_id = u.id')
             ->where('id = :id')
@@ -82,4 +82,81 @@ class QueryBuilderTest extends TestCase
             $query
         );
     }
+
+    public function testUpdate()
+    {
+        $query = $this->qb
+            ->table('table')
+            ->where('name = :name')
+            ->update([
+                'title' => 'Title',
+                'post' => 'POST'
+            ])
+            ->getSql();
+
+        $this->assertEquals(
+            'UPDATE table SET title = :title, post = :post WHERE name = :name',
+            $query
+        );
+    }
+
+    public function testUpdateWithoutParams()
+    {
+        $query = $this->qb
+            ->table('table')
+            ->update([
+                'title' => 'Title',
+                'post' => 'POST'
+            ])
+            ->getSql();
+
+        $this->assertEquals(
+            'UPDATE table SET title = :title, post = :post',
+            $query
+        );
+    }
+
+    public function testInsert()
+    {
+        $query = $this->qb
+            ->table('table')
+            ->insert([
+                'title' => 'Title',
+                'post' => 'POST'
+            ])
+            ->getSql();
+
+        $this->assertEquals(
+            'INSERT INTO table (title, post) VALUES(:title, :post)',
+            $query
+        );
+    }
+
+    public function testDelete()
+    {
+        $query = $this->qb
+            ->table('table')
+            ->delete()
+            ->getSql();
+        
+        $this->assertEquals(
+            'DELETE FROM table',
+            $query
+        );
+    }
+
+    public function testDeleteWithParams()
+    {
+        $query = $this->qb
+            ->table('table')
+            ->delete()
+            ->where('id = :id')
+            ->getSql();
+        
+        $this->assertEquals(
+            'DELETE FROM table WHERE id = :id',
+            $query
+        );
+    }
+
 }

@@ -1,5 +1,5 @@
 blog_index:
-  path: /
+  path: /index
   controller: App\Blog\Action\ShowAction:all
 
 blog_show:
@@ -7,3 +7,24 @@ blog_show:
   controller: App\Blog\Action\ShowAction:single
   requirements:
     id: '\d+'
+
+post_new:
+  path: /new
+  controller: App\Blog\Action\PostEditAction:add
+  methods: [GET, POST]
+
+post_edit:
+  path: /{id}/edit
+  controller: App\Blog\Action\PostEditAction:update
+  methods: [GET, POST]
+  requirements:
+    id: '\d+'
+
+post_delete:
+  path: /{id}/delete
+  controller: App\Blog\Action\PostEditAction:delete
+  methods: [DELETE]
+  requirements:
+    id: '\d+'
+
+
