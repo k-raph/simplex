@@ -5,37 +5,29 @@ namespace Simplex\Renderer;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use League\Container\ServiceProvider\BootableServiceProviderInterface;
+use Simplex\Renderer\TwigRenderer;
 
-class TwigServiceProvider extends AbstractServiceProvider implements BootableServiceProviderInterface
+class TwigServiceProvider extends AbstractServiceProvider
 {
 
     /**
      * {@inheritDoc}
      */
     protected $provides = [
-        'twig',
-        'renderer'
+        TwigRenderer::class
     ];
 
     /**
      * {@inheritDoc}
      */
-    public function boot()
+    public function register()
     {
-        $loader = new FilesystemLoader();
-        $twig = new Environment($loader);
+        $this->container->add(TwigRenderer::class, function() {    
+            $loader = new FilesystemLoader();
+            $twig = new Environment($loader);
 
-        $this->container->share(\Twig_LoaderInterface::class, $loader);
-        $this->container->share(Environment::class, $twig);
-        $this->container->share(TwigRenderer::class, function() {
-            return new TwigRenderer(
-                $this->container->get(Environment::class),
-                $this->container->get(\Twig_LoaderInterface::class)
-            );
+            return new TwigRenderer($twig, $loader);
         });
     }
-
-    public function register(){}
    
 }

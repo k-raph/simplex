@@ -25,7 +25,7 @@ class ControllerEvent extends KernelEvent
     public function __construct($controller, Request $request)
     {
         $this->controller = $controller;
-        $this->params = $request->attributes->get('_route_params');
+        $this->params = $request->attributes->get('_route_params', []);
         $this->name = 'kernel.controller';
     }
 
@@ -39,12 +39,12 @@ class ControllerEvent extends KernelEvent
         $this->controller = $controller;
     }
 
-    public function getParams()
+    public function getParams(): array
     {
         return $this->params;
     }
 
-    public function setParams($params)
+    public function setParams(array $params)
     {
         $this->params = $params;
     }

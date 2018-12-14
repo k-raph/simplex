@@ -4,6 +4,8 @@ namespace App\Blog\Action;
 
 use App\Blog\Table\PostTable;
 use Simplex\Renderer\TwigRenderer;
+use Symfony\Component\HttpFoundation\Request;
+use Simplex\Routing\RouterInterface;
 
 
 class ShowAction
@@ -29,10 +31,9 @@ class ShowAction
      * @param PostTable $posts
      * @param TwigRenderer $renderer
      */
-    public function __construct(PostTable $posts, TwigRenderer $renderer)
+    public function __construct(TwigRenderer $view)
     {
-        $this->posts = $posts;
-        $this->view = $renderer;
+        $this->view = $view;
     }
     
     /**
@@ -43,7 +44,7 @@ class ShowAction
      */
     public function single(int $id)
     {
-        return $this->view->render('@blog/show', ['post' => $this->posts->find($id)]);
+        return $this->view->render('@blog/show');
     }
 
     /**
@@ -55,7 +56,7 @@ class ShowAction
     {
         return $this->view
             ->render('@blog/index', [
-                'posts' => $this->posts->getAll()
+                'posts' => []
             ]);
     }
 

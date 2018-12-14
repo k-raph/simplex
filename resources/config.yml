@@ -1,6 +1,10 @@
 modules: 
   - App\Blog\BlogModule
 
+providers:
+  - Simplex\Routing\RoutingServiceProvider
+  - Simplex\Renderer\TwigServiceProvider
+
 database:
   type: sqlite
   name: database.db
