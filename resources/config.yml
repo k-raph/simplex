@@ -5,6 +5,11 @@ providers:
   - Simplex\Routing\RoutingServiceProvider
   - Simplex\Renderer\TwigServiceProvider
 
+middlewares:
+  - Simplex\Middleware\TrailingSlashMiddleware
+  - Simplex\Middleware\RoutingMiddleware
+  - Simplex\Middleware\DispatchMiddleware
+
 database:
   type: sqlite
   name: database.db

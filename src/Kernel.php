@@ -4,42 +4,29 @@ namespace Simplex;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Psr\Container\ContainerInterface;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Symfony\Component\Config\FileLocator;
-use Simplex\Routing\RouterInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use League\Event\Emitter;
-use Simplex\Event\RequestEvent;
-use Simplex\Listener\TrailingSlashListener;
-use Simplex\Event\ViewEvent;
-use Simplex\Listener\ViewEventListener;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
-use Simplex\Listener\ResolveControllerListener;
-use Simplex\Event\ControllerEvent;
 use League\Container\Exception\NotFoundException;
-use Simplex\Renderer\TwigServiceProvider;
-use Simplex\Routing\RoutingServiceProvider;
-use Simplex\Listener\ResolveArgumentListener;
+use Simplex\Http\Pipeline;
 
 class Kernel
 {
 
     /**
-     * Container
-     *
      * @var Container
      */
     protected $container;
 
     /**
-     * Event emitter
-     *
-     * @var Emitter
+     * @var Pipeline
      */
-    protected $emitter;
+    protected $pipeline;
 
     /**
      * Registered modules
@@ -63,9 +50,10 @@ class Kernel
         $container = new Container();
         $container->defaultToShared();
         $container->delegate((new ReflectionContainer)->cacheResolutions(true));
+        $container->add(ContainerInterface::class, $container);
         
         $this->container = $container;
-        $this->emitter = $this->container->get(Emitter::class);
+        $this->pipeline = new Pipeline();
         $this->bootstrap();
     }
 
@@ -100,8 +88,6 @@ class Kernel
         foreach ($providers as $provider) {
             $this->container->addServiceProvider($provider);
         }
-        
-        $this->registerEvents();
     }
     
     /**
@@ -114,26 +100,21 @@ class Kernel
         if ($this->booted)
             return;
         
-        $modules = $this->container->get('config')['modules'] ?? [];
-        
-        foreach($modules as $module) {
-            $this->modules[] = $this->container->get($module);
+        $config =  $this->container->get('config');
+
+        // Register middlewares
+        $pipes = $config['middlewares'] ?? [];
+        foreach ($pipes as $middleware) {
+            $this->pipeline->pipe($this->container->get($middleware));
         }
 
-        $this->booted = true;
-    }
+        // Load modules
+        $modules = $config['modules'] ?? [];
+        $this->modules = array_map(function ($module) {
+            return $this->container->get($module);
+        }, $modules);
 
-    /**
-     * Register listeners against their events
-     *
-     * @return void
-     */
-    protected function registerEvents()
-    {
-        $this->emitter->addListener('kernel.request', new TrailingSlashListener);
-        $this->emitter->addListener('kernel.view', new ViewEventListener);
-        $this->emitter->addListener('kernel.controller', new ResolveControllerListener($this->container));
-        $this->emitter->addListener('kernel.controller', new ResolveArgumentListener($this->container));
+        $this->booted = true;
     }
 
     /**
@@ -144,30 +125,9 @@ class Kernel
      */
     public function handle(Request $request)
     {
-        $this->container->add(Request::class, $request);
-
         try {
             $this->boot();
-
-            $event = new RequestEvent($request);
-            $this->emitter->emit($event);
-            if ($event->hasResponse())
-                return $event->getResponse();
-
-            $route = $this->container->get(RouterInterface::class)->dispatch($request);
-            
-            $event = new ControllerEvent($route->getCallback(), $request);
-            $this->emitter->emit($event);
-
-            $response = call_user_func_array($event->getController(), $event->getParams());
-
-            if (!($response instanceof Response)) {
-                $event = new ViewEvent($response);
-                $this->emitter->emit($event);
-                $response = $event->getResponse();
-            }
-
-            return $response;
+            return $this->pipeline->handle($request);
         } catch (\Exception $e) {
             return $this->handleException($e);
         }
@@ -185,8 +145,6 @@ class Kernel
             return new Response($exception->getMessage(), 404);
         } elseif ($exception instanceof MethodNotAllowedException) {
             return new Response($exception->getMessage(), 405, ['Allow' => implode(', ', $exception->getAllowedMethods())]);
-        // } elseif ($exception instanceof NotFoundException) {
-        //     return new Response($exception->getMessage(), 500);
         } else {
             throw $exception;
         }

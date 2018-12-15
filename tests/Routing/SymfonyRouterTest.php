@@ -24,8 +24,8 @@ class SymfonyRouterTest extends TestCase
         $request = Request::create('/test');
         $result = $this->router->dispatch($request);
         $this->assertInstanceOf(Route::class, $result);
-        $this->assertEquals('controller', $result->getCallback());
-        $this->assertEquals([], $result->getParams());
+        $this->assertEquals('controller', $result->getHandler());
+        $this->assertEquals([], $result->getParameters());
         
     }
     
@@ -34,8 +34,8 @@ class SymfonyRouterTest extends TestCase
         $request = Request::create('/hello/world');
         $result = $this->router->dispatch($request);
         $this->assertInstanceOf(Route::class, $result);
-        $this->assertEquals('controller', $result->getCallback());
-        $this->assertEquals(['name' => 'world'], $result->getParams());
+        $this->assertEquals('controller', $result->getHandler());
+        $this->assertEquals(['name' => 'world'], $result->getParameters());
     }
 
     public function testDispatchUndefinedRoute()
@@ -43,5 +43,12 @@ class SymfonyRouterTest extends TestCase
         $request = Request::create('/undefined');
         $this->expectException(ResourceNotFoundException::class);
         $this->router->dispatch($request);
+    }
+
+    public function testGenerateRoute()
+    {
+        $route = $this->router->generate('hello', ['name' => 'simplex']);
+
+        $this->assertEquals('/hello/simplex', $route);
     }
 }

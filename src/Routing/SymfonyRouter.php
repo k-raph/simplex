@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Simplex\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class SymfonyRouter implements RouterInterface
 {
@@ -21,6 +21,16 @@ class SymfonyRouter implements RouterInterface
      * @var RouteCollectionBuilder
      */
     private $builder;
+
+    /**
+     * @var RouteCollection
+     */
+    private $collection;
+
+    /**
+     * @var RequestContext
+     */
+    private $context;
 
     /**
      * Cnstructor
@@ -45,16 +55,22 @@ class SymfonyRouter implements RouterInterface
      */
     public function match($methods, $path, $controller, $name = null)
     {
-        return Route::from(
-            $this->builder
-                ->add($path, $controller, $name)
-                ->setMethods(explode('|', $methods))
-            );
+        $this->builder
+            ->add($path, $controller, $name)
+            ->setMethods(explode('|', $methods));
     }
 
     public function group($prefix, \Closure $factory)
     {
         
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function generate(string $name, array $parameters = []): string
+    {
+        return (new UrlGenerator($this->getCollection(), $this->context ?? new RequestContext()))->generate($name, $parameters);
     }
 
     /**
@@ -77,16 +93,17 @@ class SymfonyRouter implements RouterInterface
     {
         try {
             $collection = $this->getCollection();
-            $context = new RequestContext();
-            $matcher = new UrlMatcher($collection, $context->fromRequest($request));
+            $this->context = $context = (new RequestContext())->fromRequest($request);
+            $matcher = new UrlMatcher($collection, $context);
             $parameters = $matcher->matchRequest($request);
-            $request->attributes->add($parameters);
+            
+            $route = new Route($parameters['_route'], $parameters['_controller']);
+            
             unset($parameters['_route'], $parameters['_controller']);
             $request->attributes->set('_route_params', $parameters);
-            return Route::from(
-                $collection->get($request->attributes->get('_route')),
-                $request->attributes->get('_route_params')
-            );
+            $route->setParameters($parameters);
+
+            return $route;
         } catch (ResourceNotFoundException $e) {
             $message = sprintf('No route found for "%s %s"', $request->getMethod(), $request->getPathInfo());
 
@@ -109,6 +126,8 @@ class SymfonyRouter implements RouterInterface
      */
     protected function getCollection()
     {
-        return $this->builder->build();
+        return $this->collection
+            ? $this->collection
+            : $this->collection = $this->builder->build();
     }
 }

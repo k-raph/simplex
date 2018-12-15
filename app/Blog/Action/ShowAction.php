@@ -42,7 +42,7 @@ class ShowAction
      * @param integer $id
      * @return string
      */
-    public function single(int $id)
+    public function single(int $id, Request $request)
     {
         return $this->view->render('@blog/show');
     }

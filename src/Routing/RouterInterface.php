@@ -47,7 +47,8 @@ interface RouterInterface
      * Generate url for given route name
      *
      * @param string $name
+     * @param array $parameters
      * @return void
      */
-    // public function route($name);
+    public function generate(string $name, array $parameters = []): string;
 }

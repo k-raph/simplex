@@ -2,56 +2,36 @@
 
 namespace Simplex\Routing;
 
-use Symfony\Component\Routing\Route as SymfonyRoute;
-
-
 class Route
 {
     /**
-     * Encapsulated route
-     *
-     * @var SymfonyRoute
+     * @var string
      */
-    private $route;
-       
+    private $name;
+    
     /**
-     * Route parameters
-     *
-     * @var string[]
+     * @var callable
+     */
+    private $handler;
+
+    /**
+     * @var array
      **/
     private $parameters;
        
 
-    public function __construct($path, $callback, array $parameters = [])
+    /**
+     * Constructor
+     *
+     * @param string $name
+     * @param string|callable $handler
+     * @param array $parameters
+     */
+    public function __construct(string $name, $handler, array $parameters = [])
     {
-        $this->route = new SymfonyRoute($path);
-        $this->route->setDefault('_controller', $callback);
+        $this->name = $name;
+        $this->handler = $handler;
         $this->parameters = $parameters;
-    }
-
-    /**
-     * Build from Symfony Route
-     *
-     * @param SymfonyRoute $baseRoute
-     * @param array $with
-     * @return static
-     */
-    public static function from(SymfonyRoute $baseRoute, array $with = [])
-    {
-        $route = new static('/', 'callback', $with);
-        $route->setRoute($baseRoute);
-        return $route;
-    }
-
-    /**
-     * Set encapsulated route
-     *
-     * @param Route $route
-     * @return void
-     */
-    private function setRoute(SymfonyRoute $route)
-    {
-        $this->route = $route;
     }
      
     /**
@@ -59,32 +39,23 @@ class Route
      *
      * @return string|callable
      **/
-    public function getCallback()
+    public function getHandler()
     {
-        return $this->route->getDefault('_controller');
+        return $this->handler;
     }
        
     /**
      * Retrieve an URL parameters
      *
-     * @return string[]
+     * @return array
      **/
-    public function getParams()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    /**
-     * Set requirement on route dynamic parts
-     *
-     * @param string $param
-     * @param string $regex
-     * @return void
-     */
-    public function assert($param, $regex)
+    public function setParameters(array $parameters)
     {
-        $this->route->setRequirement($param, $regex);
-        return $this;
+        $this->parameters = $parameters;
     }
-
 }
