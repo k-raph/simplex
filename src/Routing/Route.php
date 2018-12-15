@@ -2,6 +2,8 @@
 
 namespace Simplex\Routing;
 
+use Simplex\Http\MiddlewareInterface;
+
 class Route
 {
     /**
@@ -18,7 +20,11 @@ class Route
      * @var array
      **/
     private $parameters;
-       
+    
+    /**
+     * @var MiddlewareInterface[]
+     */
+    private $middlewares = [];
 
     /**
      * Constructor
@@ -54,8 +60,34 @@ class Route
         return $this->parameters;
     }
 
+    /**
+     * Sets route parameters
+     *
+     * @param array $parameters
+     * @return void
+     */
     public function setParameters(array $parameters)
     {
         $this->parameters = $parameters;
+    }
+
+    /**
+     * Get route middleware
+     *
+     * @return MiddlewareInterface[]
+     */
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
+    }
+
+    /**
+     * Get route middleware
+     *
+     * @param MiddlewareInterface[]
+     */
+    public function setMiddlewares(array $middlewares)
+    {
+        $this->middlewares = $middlewares;
     }
 }

@@ -26,9 +26,6 @@ class PipelineTest extends TestCase
             ->pipe($this->decorate(function (Request $request, $handler) {
                 $request->attributes->set('app', 'simplex');
                 return $handler->handle($request);
-            }))
-            ->pipe($this->decorate(function (Request $request, $handler) {
-                return new Response($request->attributes->get('app'));
             }));
     }
 
@@ -66,6 +63,11 @@ class PipelineTest extends TestCase
 
     public function testHandle()
     {
+        $this->pipeline    
+            ->pipe($this->decorate(function (Request $request, $handler) {
+                return new Response($request->attributes->get('app'));
+            }));
+
         $request = Request::create('/test');
         $response = $this->pipeline->handle($request);
 
@@ -73,4 +75,25 @@ class PipelineTest extends TestCase
         $this->assertContains('simplex', $response->getContent());
     }
 
+    public function testPipelineAsMiddleware()
+    {
+        $pipeline = new Pipeline();
+        $pipeline->pipe($this->decorate(function (Request $request, $handler) {
+            $request->attributes->set('pipeline', 'sub-pipe');
+            return $handler->handle($request);
+        }));
+        
+        $this->pipeline->pipe($pipeline);
+        $this->pipeline    
+            ->pipe($this->decorate(function (Request $request, $handler) {
+                $content = sprintf('app: %s , pipeline: %s', $request->attributes->get('app'), $request->attributes->get('pipeline', 'primary'));
+                return new Response($content);
+            }));
+        
+        $request = Request::create('/test');
+        $response = $this->pipeline->handle($request);
+    
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertContains('app: simplex , pipeline: sub-pipe', $response->getContent());
+    }
 }

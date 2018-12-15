@@ -11,6 +11,7 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Simplex\Http\MiddlewareInterface;
 
 class SymfonyRouter implements RouterInterface
 {
@@ -31,6 +32,11 @@ class SymfonyRouter implements RouterInterface
      * @var RequestContext
      */
     private $context;
+
+    /**
+     * @var MiddlewareInterface[]
+     */
+    private $middlewares = [];
 
     /**
      * Cnstructor
@@ -60,11 +66,6 @@ class SymfonyRouter implements RouterInterface
             ->setMethods(explode('|', $methods));
     }
 
-    public function group($prefix, \Closure $factory)
-    {
-        
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -89,7 +90,7 @@ class SymfonyRouter implements RouterInterface
     /**
      * {@inheritDoc}
      */
-    public function dispatch(Request $request)
+    public function dispatch(Request $request): Route
     {
         try {
             $collection = $this->getCollection();
@@ -98,8 +99,12 @@ class SymfonyRouter implements RouterInterface
             $parameters = $matcher->matchRequest($request);
             
             $route = new Route($parameters['_route'], $parameters['_controller']);
+            $route->setMiddlewares($parameters['_middlewares'] ?? []);
             
-            unset($parameters['_route'], $parameters['_controller']);
+            $parameters = array_filter($parameters, function (string $key) {
+                return strpos($key, '_') !== 0;
+            }, ARRAY_FILTER_USE_KEY);
+            
             $request->attributes->set('_route_params', $parameters);
             $route->setParameters($parameters);
 
@@ -126,8 +131,19 @@ class SymfonyRouter implements RouterInterface
      */
     protected function getCollection()
     {
-        return $this->collection
-            ? $this->collection
-            : $this->collection = $this->builder->build();
+        if ($this->collection) {
+            return $this->collection;
+        }
+        
+        $this->builder->setDefault('_middlewares', $this->middlewares);
+        return $this->collection = $this->builder->build();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function middleware(MiddlewareInterface $middleware)
+    {
+        $this->middlewares[] = $middleware;
     }
 }

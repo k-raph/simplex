@@ -6,7 +6,6 @@ use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
 use App\Blog\Action\ShowAction;
 
-
 class BlogModule
 {
 

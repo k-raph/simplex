@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Simplex\Http\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Simplex\Routing\RouterInterface;
+use Simplex\Http\Pipeline;
 
 class RoutingMiddleware implements MiddlewareInterface
 {
@@ -31,10 +32,16 @@ class RoutingMiddleware implements MiddlewareInterface
      */
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
+        /* @var \Simplex\Routing\Route $route */
         $route = $this->router->dispatch($request);
         $request->attributes->set('_route', $route);
 
-        return $handler->handle($request);
+        $pipeline = new Pipeline();
+        foreach ($route->getMiddlewares() as $middleware) {
+            $pipeline->pipe($middleware);
+        }
+
+        return $pipeline->process($request, $handler);
     }
 
 }

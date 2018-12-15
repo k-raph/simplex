@@ -5,8 +5,9 @@ namespace Simplex\Http;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use SplQueue;
+use Simplex\Http\RequestHandlerInterface;
 
-class Pipeline implements RequestHandlerInterface
+class Pipeline implements RequestHandlerInterface, MiddlewareInterface
 {
 
     /**
@@ -15,11 +16,17 @@ class Pipeline implements RequestHandlerInterface
     private $stack;
 
     /**
+     * @var RequestHandlerInterface
+     */
+    private $finalHandler;
+
+    /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(?MiddlewareInterface $finalHandler = null)
     {
         $this->stack = new SplQueue();
+        $this->finalHandler = $finalHandler ?? null;
     }
 
     /**
@@ -28,11 +35,24 @@ class Pipeline implements RequestHandlerInterface
     public function handle(Request $request): Response
     {
         if ($this->stack->isEmpty()) {
+            if ($this->finalHandler) {
+                return $this->finalHandler->handle($request);
+            }
+
             throw new \RuntimeException('There is no middleware registered in the pipeline.');
         }
 
         $middleware = $this->stack->dequeue();       
         return $middleware->process($request, $this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function process(Request $request, RequestHandlerInterface $handler): Response
+    {
+        $this->finalHandler = $handler;
+        return $this->handle($request);
     }
 
     /**

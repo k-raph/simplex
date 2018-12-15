@@ -3,6 +3,7 @@
 namespace Simplex\Routing;
 
 use Symfony\Component\HttpFoundation\Request;
+use Simplex\Http\MiddlewareInterface;
 
 interface RouterInterface
 {
@@ -33,7 +34,7 @@ interface RouterInterface
      * @param \Closure $factory
      * @return void
      */
-    public function group($prefix, \Closure $factory);
+    // public function group($prefix, \Closure $factory);
 
     /**
      * Dispatches a request
@@ -41,7 +42,7 @@ interface RouterInterface
      * @param Request $request
      * @return Route
      */
-    public function dispatch(Request $request);
+    public function dispatch(Request $request): Route;
 
     /**
      * Generate url for given route name
@@ -51,4 +52,12 @@ interface RouterInterface
      * @return void
      */
     public function generate(string $name, array $parameters = []): string;
+
+    /**
+     * Add route specific middlewares to router
+     *
+     * @param MiddlewareInterface $middleware
+     * @return void
+     */
+    public function middleware(MiddlewareInterface $middleware);
 }
