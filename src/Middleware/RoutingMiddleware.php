@@ -6,25 +6,27 @@ use Simplex\Http\MiddlewareInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Simplex\Http\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Simplex\Routing\RouterInterface;
+use League\Container\ContainerAwareTrait;
+use League\Container\ContainerAwareInterface;
 use Simplex\Http\Pipeline;
+use Simplex\Routing\RouterInterface;
+use Simplex\Routing\Middleware\RouteMiddleware;
+use Simplex\Routing\Middleware\DispatchMiddleware;
+use Psr\Container\ContainerInterface;
 
-class RoutingMiddleware implements MiddlewareInterface
+class RoutingMiddleware implements MiddlewareInterface, ContainerAwareInterface
 {
 
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    use ContainerAwareTrait;
 
     /**
-     * Constructor
+     * COnstructor
      *
-     * @param RouterInterface $router
+     * @param ContainerInterface $container
      */
-    public function __construct(RouterInterface $router)
+    public function __construct(ContainerInterface $container)
     {
-        $this->router = $router;
+        $this->setContainer($container);
     }
 
     /**
@@ -32,14 +34,20 @@ class RoutingMiddleware implements MiddlewareInterface
      */
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
-        /* @var \Simplex\Routing\Route $route */
-        $route = $this->router->dispatch($request);
-        $request->attributes->set('_route', $route);
-
+        /** @var RouterInterface $router */
+        $router = $this->container->get(RouterInterface::class);
         $pipeline = new Pipeline();
-        foreach ($route->getMiddlewares() as $middleware) {
-            $pipeline->pipe($middleware);
-        }
+        
+        $pipes = [
+            RouteMiddleware::class, 
+            DispatchMiddleware::class
+        ];
+        
+        $pipeline->seed($pipes, function ($pipe) {
+            return $pipe instanceof MiddlewareInterface 
+                ? $pipe
+                : $this->container->get($pipe);
+        });
 
         return $pipeline->process($request, $handler);
     }

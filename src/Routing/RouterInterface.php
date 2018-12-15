@@ -59,5 +59,20 @@ interface RouterInterface
      * @param MiddlewareInterface $middleware
      * @return void
      */
-    public function middleware(MiddlewareInterface $middleware);
+    public function middleware(MiddlewareInterface $middleware, ?string $group = null);
+
+    /**
+     * Set middleware group
+     *
+     * @param string $strategy
+     * @return void
+     */
+    public function setStrategy(string $strategy);
+    
+    /**
+     * Get middleware stack associated to current middleware group
+     *
+     * @return MiddlewareInterface[]
+     */
+    // public function getStrategyMiddlewares(): array;
 }

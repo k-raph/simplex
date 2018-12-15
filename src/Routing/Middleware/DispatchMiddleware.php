@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplex\Middleware;
+namespace Simplex\Routing\Middleware;
 
 use Simplex\Http\MiddlewareInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,6 +45,12 @@ class DispatchMiddleware implements MiddlewareInterface, ContainerAwareInterface
         return $this->validateResponse($result);
     }
 
+    /**
+     * Resolve controller into callable
+     *
+     * @param string|array|callable $controller
+     * @return callable
+     */
     private function resolveController($controller): callable
     {
         if (is_string($controller)) {

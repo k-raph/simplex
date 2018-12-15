@@ -66,4 +66,24 @@ class Pipeline implements RequestHandlerInterface, MiddlewareInterface
         $this->stack->enqueue($middleware);
         return $this;
     }
+
+    /**
+     * Seed the middleware queue
+     *
+     * @param array $middlewares
+     * @param callable|null $resolver
+     * @return self
+     */
+    public function seed(array $middlewares, ?callable $resolver = null): self
+    {
+        $resolver = $resolver ?? function ($entry) {
+            return $entry;
+        };
+
+        foreach ($middlewares as $pipe) {
+            $this->pipe($resolver($pipe));
+        }
+
+        return $this;
+    }
 }

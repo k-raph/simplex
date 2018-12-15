@@ -16,6 +16,8 @@ use Simplex\Http\MiddlewareInterface;
 class SymfonyRouter implements RouterInterface
 {
 
+    use RouteBuilderTrait;
+
     /**
      * Route collection builder
      *
@@ -36,7 +38,15 @@ class SymfonyRouter implements RouterInterface
     /**
      * @var MiddlewareInterface[]
      */
-    private $middlewares = [];
+    private $middlewares = [
+        'groups' => [],
+        'routes' => []
+    ];
+
+    /**
+     * @var string
+     */
+    private $strategy;
 
     /**
      * Cnstructor
@@ -75,19 +85,6 @@ class SymfonyRouter implements RouterInterface
     }
 
     /**
-     * Matches a GET request
-     *
-     * @param string $path
-     * @param string $controller
-     * @param string $name
-     * @return void
-     */
-    public function get($path, $controller, $name = null)
-    {
-        return $this->match('GET', $path, $controller, $name);
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function dispatch(Request $request): Route
@@ -99,7 +96,12 @@ class SymfonyRouter implements RouterInterface
             $parameters = $matcher->matchRequest($request);
             
             $route = new Route($parameters['_route'], $parameters['_controller']);
-            $route->setMiddlewares($parameters['_middlewares'] ?? []);
+            $middlewares = array_merge(
+                [], 
+                $parameters['_middlewares'] ?? [],
+                $this->getStrategyMiddlewares($parameters['_strategy'] ?? 'web')
+            );
+            $route->setMiddlewares(/*$parameters['_middlewares'] ?? []*/$middlewares);
             
             $parameters = array_filter($parameters, function (string $key) {
                 return strpos($key, '_') !== 0;
@@ -135,15 +137,34 @@ class SymfonyRouter implements RouterInterface
             return $this->collection;
         }
         
-        $this->builder->setDefault('_middlewares', $this->middlewares);
+        $this->builder->setDefault('_middlewares', $this->middlewares['routes']);
         return $this->collection = $this->builder->build();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function middleware(MiddlewareInterface $middleware)
+    public function middleware(MiddlewareInterface $middleware, ?string $group = null)
     {
-        $this->middlewares[] = $middleware;
+        if ($group) {
+            $this->middlewares['groups'][$group][] = $middleware;
+        } else {
+            $this->middlewares['routes'] = $middleware;
+        }
+    }
+
+    private function getStrategyMiddlewares($strategy): array
+    {
+        return $this->middlewares['groups'][$strategy];
+        // return $this->middlewares['groups'][$this->strategy];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setStrategy(string $strategy)
+    {
+        $this->builder->setDefault('_strategy', $strategy);
+        // $this->strategy = $strategy;
     }
 }

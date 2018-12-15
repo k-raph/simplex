@@ -17,6 +17,7 @@ class ApiModule
     public function __construct(RouterInterface $router)
     {
         $router->import(__DIR__.'/routes.yml', 'api');
+        $router->setStrategy('api');
     }
 
 }

@@ -1,14 +1,18 @@
 modules: 
   - App\Blog\BlogModule
+  - App\Api\ApiModule
 
 providers:
   - Simplex\Routing\RoutingServiceProvider
   - Simplex\Renderer\TwigServiceProvider
 
 middlewares:
-  - Simplex\Middleware\TrailingSlashMiddleware
-  - Simplex\Middleware\RoutingMiddleware
-  - Simplex\Middleware\DispatchMiddleware
+  global: 
+    - Simplex\Middleware\TrailingSlashMiddleware
+    - Simplex\Middleware\RoutingMiddleware
+  groups:
+    web: []
+    api: []
 
 database:
   type: sqlite

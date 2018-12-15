@@ -104,7 +104,7 @@ class Kernel
 
         // Register middlewares
         $pipes = $config['middlewares'] ?? [];
-        foreach ($pipes as $middleware) {
+        foreach ($pipes['global'] as $middleware) {
             $this->pipeline->pipe($this->container->get($middleware));
         }
 
