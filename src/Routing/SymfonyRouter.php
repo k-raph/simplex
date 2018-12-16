@@ -44,11 +44,6 @@ class SymfonyRouter implements RouterInterface
     ];
 
     /**
-     * @var string
-     */
-    private $strategy;
-
-    /**
      * Cnstructor
      *
      * @param LoaderInterface $loader
@@ -61,15 +56,25 @@ class SymfonyRouter implements RouterInterface
     /**
      * {@inheritDoc}
      */
-    public function import($from, $prefix = '/')
+    public function import(string $from, array $options = [])
     {
-        $this->builder->import($from, $prefix, 'yaml');
+        $options = array_merge([
+            'prefix' => '/',
+            'format' => 'yaml'
+        ], $options);
+
+        $builder = $this->builder->import($from, $options['prefix'], $options['format']);
+        unset($options['prefix'], $options['format']);
+
+        foreach ($options as $key => $value) {
+            $builder->setDefault("$key", $value);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    public function match($methods, $path, $controller, $name = null)
+    public function match(string $methods, string $path, $controller, ?string $name = null)
     {
         $this->builder
             ->add($path, $controller, $name)
@@ -153,10 +158,15 @@ class SymfonyRouter implements RouterInterface
         }
     }
 
+    /**
+     * Get middleware stack associated to current middleware group
+     *
+     * @param string $strategy
+     * @return MiddlewareInterface[]
+     */
     private function getStrategyMiddlewares($strategy): array
     {
-        return $this->middlewares['groups'][$strategy];
-        // return $this->middlewares['groups'][$this->strategy];
+        return $this->middlewares['groups'][$strategy] ?? [];
     }
 
     /**
@@ -165,6 +175,5 @@ class SymfonyRouter implements RouterInterface
     public function setStrategy(string $strategy)
     {
         $this->builder->setDefault('_strategy', $strategy);
-        // $this->strategy = $strategy;
     }
 }

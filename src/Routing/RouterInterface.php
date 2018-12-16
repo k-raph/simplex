@@ -11,21 +11,22 @@ interface RouterInterface
     /**
      * Load routes from given file and return corresponding route
      *
-     * @param string $file
+     * @param string $from
+     * @param array $options
      * @return void
      */
-    public function import($from, $prefix = '/');
+    public function import(string $from, array $options = []);
 
     /**
      * Match only given HTTP methods
      *
      * @param string $methods
      * @param string $path
-     * @param string $controller
-     * @param string $name
-     * @return Route
+     * @param string|callable $controller
+     * @param string|null $name
+     * @return void
      */
-    public function match($methods, $path, $controller, $name = null);
+    public function match(string $methods, string $path, $controller, ?string $name = null);
 
     /**
      * Mount a set of routes under a common prefix
@@ -68,11 +69,4 @@ interface RouterInterface
      * @return void
      */
     public function setStrategy(string $strategy);
-    
-    /**
-     * Get middleware stack associated to current middleware group
-     *
-     * @return MiddlewareInterface[]
-     */
-    // public function getStrategyMiddlewares(): array;
 }

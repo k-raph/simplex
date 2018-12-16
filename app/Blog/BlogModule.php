@@ -17,7 +17,7 @@ class BlogModule
      */
     public function __construct(TwigRenderer $renderer, RouterInterface $router)
     {
-        $router->import(__DIR__.'/routes.yml', 'blog');
+        $router->import(__DIR__.'/routes.yml', ['prefix' => 'blog']);
         $renderer->addPath(__DIR__.'/views', 'blog');
     }
 
