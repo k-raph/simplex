@@ -147,7 +147,11 @@ class Kernel
         if ($exception instanceof ResourceNotFoundException) {
             return new Response($exception->getMessage(), 404);
         } elseif ($exception instanceof MethodNotAllowedException) {
-            return new Response($exception->getMessage(), 405, ['Allow' => implode(', ', $exception->getAllowedMethods())]);
+            return new Response(
+                $exception->getMessage(), 
+                405, 
+                ['Allow' => implode(', ', $exception->getAllowedMethods())]
+            );
         } else {
             throw $exception;
         }

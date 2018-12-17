@@ -7,7 +7,6 @@ use Simplex\Renderer\TwigRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Simplex\Routing\RouterInterface;
 
-
 class ShowAction
 {
 
@@ -42,7 +41,7 @@ class ShowAction
      * @param integer $id
      * @return string
      */
-    public function single(int $id, Request $request)
+    public function single(int $id)
     {
         return $this->view->render('@blog/show');
     }

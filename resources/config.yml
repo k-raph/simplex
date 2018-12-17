@@ -3,12 +3,14 @@ modules:
 
 providers:
   - Simplex\Routing\RoutingServiceProvider
+  - Simplex\Session\SessionServiceProvider
   - Simplex\Renderer\TwigServiceProvider
 
 middlewares:
     - Simplex\Middleware\TrailingSlashMiddleware
     - Simplex\Middleware\RoutingMiddleware
-    - web: []
+    - web: 
+      - Simplex\Session\SessionMiddleware
     - api: []
 
 database:
