@@ -1,4 +1,0 @@
-students_all:
-  path: /students
-  controller: App\Api\Action\ShowAction
-  methods: [GET]

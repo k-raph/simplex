@@ -24,8 +24,16 @@ class RoutingServiceProvider extends AbstractServiceProvider
     {
         $loader = new YamlFileLoader(new FileLocator());
         $router = new SymfonyRouter($loader);
-        $groups = $this->container->get('config')['middlewares']['groups'];
-        foreach ($groups as $group => $pipes) {
+        
+        // Register middlewares group on router
+        $pipes = $this->container->get('config')['middlewares'];
+        foreach ($pipes as $key => $pipe) {
+            if (!is_array($pipe)) {
+                continue;
+            }
+
+            $group = current(array_keys($pipe));
+            $pipes = array_values($pipe[$group]);
             $router->middleware((new Pipeline())->seed($pipes, [$this->container, 'get']), $group);
         }
         $router->setStrategy('web');
