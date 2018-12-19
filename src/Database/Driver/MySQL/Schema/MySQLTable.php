@@ -1,18 +1,18 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\MySQL\Schema;
+namespace Simplex\Database\Driver\MySQL\Schema;
 
-use Spiral\Database\Exception\SchemaException;
-use Spiral\Database\Schema\AbstractColumn;
-use Spiral\Database\Schema\AbstractForeignKey;
-use Spiral\Database\Schema\AbstractIndex;
-use Spiral\Database\Schema\AbstractTable;
-use Spiral\Database\Schema\State;
+use Simplex\Database\Exception\SchemaException;
+use Simplex\Database\Schema\AbstractColumn;
+use Simplex\Database\Schema\AbstractForeignKey;
+use Simplex\Database\Schema\AbstractIndex;
+use Simplex\Database\Schema\AbstractTable;
+use Simplex\Database\Schema\State;
 
 class MySQLTable extends AbstractTable
 {

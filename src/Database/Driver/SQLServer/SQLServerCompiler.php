@@ -1,14 +1,14 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\SQLServer;
+namespace Simplex\Database\Driver\SQLServer;
 
-use Spiral\Database\Driver\Compiler;
-use Spiral\Database\Injection\Fragment;
+use Simplex\Database\Driver\Compiler;
+use Simplex\Database\Injection\Fragment;
 
 /**
  * Microsoft SQL server specific syntax compiler.

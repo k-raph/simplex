@@ -1,15 +1,15 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\MySQL;
+namespace Simplex\Database\Driver\MySQL;
 
-use Spiral\Database\Driver\Compiler as AbstractCompiler;
-use Spiral\Database\Injection\ParameterInterface;
+use Simplex\Database\Driver\Compiler as AbstractCompiler;
+use Simplex\Database\Injection\ParameterInterface;
 
 /**
  * MySQL syntax specific compiler.

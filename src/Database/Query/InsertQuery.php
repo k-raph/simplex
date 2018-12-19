@@ -1,18 +1,18 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Query;
+namespace Simplex\Database\Query;
 
-use Spiral\Database\Driver\Compiler;
-use Spiral\Database\Driver\CompilerInterface;
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Exception\BuilderException;
-use Spiral\Database\Injection\Parameter;
+use Simplex\Database\Driver\Compiler;
+use Simplex\Database\Driver\CompilerInterface;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Exception\BuilderException;
+use Simplex\Database\Injection\Parameter;
 
 /**
  * Insert statement query builder, support singular and batch inserts.

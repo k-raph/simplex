@@ -1,18 +1,18 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Query;
+namespace Simplex\Database\Query;
 
-use Spiral\Database\Driver\Compiler;
-use Spiral\Database\Driver\CompilerInterface;
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Query\Traits\TokenTrait;
-use Spiral\Database\Query\Traits\WhereTrait;
+use Simplex\Database\Driver\Compiler;
+use Simplex\Database\Driver\CompilerInterface;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Query\Traits\TokenTrait;
+use Simplex\Database\Query\Traits\WhereTrait;
 
 
 /**

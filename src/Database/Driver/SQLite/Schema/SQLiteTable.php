@@ -1,16 +1,16 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\SQLite\Schema;
+namespace Simplex\Database\Driver\SQLite\Schema;
 
-use Spiral\Database\Schema\AbstractColumn;
-use Spiral\Database\Schema\AbstractForeignKey;
-use Spiral\Database\Schema\AbstractIndex;
-use Spiral\Database\Schema\AbstractTable;
+use Simplex\Database\Schema\AbstractColumn;
+use Simplex\Database\Schema\AbstractForeignKey;
+use Simplex\Database\Schema\AbstractIndex;
+use Simplex\Database\Schema\AbstractTable;
 
 class SQLiteTable extends AbstractTable
 {
@@ -29,8 +29,8 @@ class SQLiteTable extends AbstractTable
 
         /*
         * There is not really many ways to get extra information about column in SQLite, let's parse
-        * table schema. As mention, spiral SQLite schema reader will support fully only tables created
-        * by spiral as we expecting every column definition be on new line.
+        * table schema. As mention, Simplex SQLite schema reader will support fully only tables created
+        * by Simplex as we expecting every column definition be on new line.
         */
         $definition = explode("\n", $definition);
 

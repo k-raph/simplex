@@ -1,27 +1,24 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Query;
+namespace Simplex\Database\Query;
 
-use Spiral\Database\Driver\AbstractDriver;
-use Spiral\Database\Driver\Compiler;
-use Spiral\Database\Driver\CompilerInterface;
-use Spiral\Database\Exception\BuilderException;
-use Spiral\Database\Exception\StatementException;
-use Spiral\Database\Injection\FragmentInterface;
-use Spiral\Database\Query\Traits\HavingTrait;
-use Spiral\Database\Query\Traits\JoinTrait;
-use Spiral\Database\Query\Traits\TokenTrait;
-use Spiral\Database\Query\Traits\WhereTrait;
-use Spiral\Database\Statement;
-use Spiral\Pagination\PaginatorAwareInterface;
-use Spiral\Pagination\Traits\LimitsTrait;
-use Spiral\Pagination\Traits\PaginatorTrait;
+use Simplex\Database\Driver\AbstractDriver;
+use Simplex\Database\Driver\Compiler;
+use Simplex\Database\Driver\CompilerInterface;
+use Simplex\Database\Exception\BuilderException;
+use Simplex\Database\Exception\StatementException;
+use Simplex\Database\Injection\FragmentInterface;
+use Simplex\Database\Query\Traits\HavingTrait;
+use Simplex\Database\Query\Traits\JoinTrait;
+use Simplex\Database\Query\Traits\TokenTrait;
+use Simplex\Database\Query\Traits\WhereTrait;
+use Simplex\Database\Statement;
 
 /**
  * SelectQuery extends AbstractSelect with ability to specify selection tables and perform UNION
@@ -30,10 +27,9 @@ use Spiral\Pagination\Traits\PaginatorTrait;
 class SelectQuery extends AbstractQuery implements
     \JsonSerializable,
     \Countable,
-    \IteratorAggregate,
-    PaginatorAwareInterface
+    \IteratorAggregate
 {
-    use TokenTrait, WhereTrait, HavingTrait, JoinTrait, LimitsTrait, PaginatorTrait;
+    use TokenTrait, WhereTrait, HavingTrait, JoinTrait;
 
     const QUERY_TYPE = Compiler::SELECT_QUERY;
 
@@ -85,6 +81,16 @@ class SelectQuery extends AbstractQuery implements
      * @var array
      */
     protected $grouping = [];
+
+    /**
+     * @var int
+     */
+    private $limit = 0;
+
+    /**
+     * @var int
+     */
+    private $offset = 0;
 
     /**
      * {@inheritdoc}
@@ -274,33 +280,8 @@ class SelectQuery extends AbstractQuery implements
      * @param bool $paginate Apply pagination to result, can be disabled in honor of count method.
      * @return Statement
      */
-    public function run(bool $paginate = true)
+    public function run(bool $paginate = false)
     {
-        if ($paginate && $this->hasPaginator()) {
-            /**
-             * To prevent original select builder altering
-             *
-             * @var SelectQuery $select
-             */
-            $select = clone $this;
-
-            //Selection specific paginator
-            $paginator = $this->getPaginator(true);
-
-            if (!empty($this->getLimit()) && $this->getLimit() > $paginator->getLimit()) {
-                //We have to ensure that selection works inside given pagination window
-                $select = $select->limit($this->getLimit());
-            } else {
-                $select->limit($paginator->getLimit());
-            }
-
-            //Making sure that window is shifted
-            $select = $select->offset($this->getOffset() + $paginator->getOffset());
-
-            //No inner pagination
-            return $select->run(false);
-        }
-
         return $this->driver->query($this->sqlStatement(), $this->getParameters());
     }
 
@@ -456,4 +437,71 @@ class SelectQuery extends AbstractQuery implements
     {
         return $this->getIterator()->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Set selection limit. Attention, this limit value does not affect values set in paginator but
+     * only changes pagination window. Set to 0 to disable limiting.
+     *
+     * @param int $limit
+     *
+     * @return $this
+     */
+    public function limit(int $limit = 0)
+    {
+        $this->limit = $limit;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLimit(): int
+    {
+        return $this->limit;
+    }
+
+    /**
+     * Set selection offset. Attention, this value does not affect associated paginator but only
+     * changes pagination window.
+     *
+     * @param int $offset
+     *
+     * @return mixed
+     */
+    public function offset(int $offset = 0)
+    {
+        $this->offset = $offset;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOffset(): int
+    {
+        return $this->offset;
+    }
+
+    /**
+     * Get first result
+     *
+     * @return mixed
+     */
+    public function first()
+    {
+        return $this->run()->fetch();
+    }
+
+    /**
+     * Proxy method to fetchAll
+     *
+     * @return array
+     */
+    public function get(): array
+    {
+        return $this->fetchAll();
+    }
+
 }

@@ -1,15 +1,15 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\SQLite\Schema;
+namespace Simplex\Database\Driver\SQLite\Schema;
 
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Schema\AbstractIndex;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Schema\AbstractIndex;
 
 class SQLiteIndex extends AbstractIndex
 {

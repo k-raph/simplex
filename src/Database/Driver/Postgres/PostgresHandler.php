@@ -1,17 +1,17 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\Postgres;
+namespace Simplex\Database\Driver\Postgres;
 
-use Spiral\Database\Driver\AbstractHandler;
-use Spiral\Database\Driver\Postgres\Schema\PostgresColumn;
-use Spiral\Database\Exception\SchemaException;
-use Spiral\Database\Schema\AbstractColumn;
-use Spiral\Database\Schema\AbstractTable;
+use Simplex\Database\Driver\AbstractHandler;
+use Simplex\Database\Driver\Postgres\Schema\PostgresColumn;
+use Simplex\Database\Exception\SchemaException;
+use Simplex\Database\Schema\AbstractColumn;
+use Simplex\Database\Schema\AbstractTable;
 
 class PostgresHandler extends AbstractHandler
 {

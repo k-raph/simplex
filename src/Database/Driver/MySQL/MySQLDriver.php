@@ -1,19 +1,19 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\MySQL;
+namespace Simplex\Database\Driver\MySQL;
 
 use PDO;
-use Spiral\Database\DatabaseInterface;
-use Spiral\Database\Driver\AbstractDriver;
-use Spiral\Database\Driver\HandlerInterface;
-use Spiral\Database\Driver\MySQL\Schema\MySQLTable;
-use Spiral\Database\Exception\StatementException;
+use Simplex\Database\DatabaseInterface;
+use Simplex\Database\Driver\AbstractDriver;
+use Simplex\Database\Driver\HandlerInterface;
+use Simplex\Database\Driver\MySQL\Schema\MySQLTable;
+use Simplex\Database\Exception\StatementException;
 
 /**
  * Talks to mysql databases.

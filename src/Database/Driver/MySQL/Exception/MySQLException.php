@@ -1,14 +1,14 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\MySQL\Exception;
+namespace Simplex\Database\Driver\MySQL\Exception;
 
-use Spiral\Database\Exception\DriverException;
+use Simplex\Database\Exception\DriverException;
 
 class MySQLException extends DriverException
 {

@@ -1,15 +1,15 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\Postgres\Schema;
+namespace Simplex\Database\Driver\Postgres\Schema;
 
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Injection\Fragment;
-use Spiral\Database\Schema\AbstractColumn;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Injection\Fragment;
+use Simplex\Database\Schema\AbstractColumn;
 
 /**
  * @todo investigate potential issue with entity non handling enum correctly when multiple
@@ -390,7 +390,7 @@ class PostgresColumn extends AbstractColumn
             $column->type = $schema['typname'];
 
             /**
-             * Attention, this is not default spiral enum type emulated via CHECK. This is real
+             * Attention, this is not default Simplex enum type emulated via CHECK. This is real
              * Postgres enum type.
              */
             self::resolveEnum($driver, $column);

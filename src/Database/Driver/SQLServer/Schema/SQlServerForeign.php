@@ -1,13 +1,13 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\SQLServer\Schema;
+namespace Simplex\Database\Driver\SQLServer\Schema;
 
-use Spiral\Database\Schema\AbstractForeignKey;
+use Simplex\Database\Schema\AbstractForeignKey;
 
 class SQlServerForeign extends AbstractForeignKey
 {

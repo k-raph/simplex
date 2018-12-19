@@ -1,24 +1,19 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database;
+namespace Simplex\Database;
 
-use Psr\Container\ContainerExceptionInterface;
-use Spiral\Core\Container;
-use Spiral\Core\Container\InjectorInterface;
-use Spiral\Core\Container\SingletonInterface;
-use Spiral\Core\FactoryInterface;
-use Spiral\Database\Config\DatabasePartial;
-use Spiral\Database\Config\DatabaseConfig;
-use Spiral\Database\Driver\AbstractDriver;
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Exception\DatabaseException;
-use Spiral\Database\Exception\DBALException;
+use Simplex\Database\Config\DatabasePartial;
+use Simplex\Database\Config\DatabaseConfig;
+use Simplex\Database\Driver\AbstractDriver;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Exception\DatabaseException;
+use Simplex\Database\Exception\DBALException;
 
 /**
  * Automatic factory and configurator for Drivers and Databases.
@@ -73,7 +68,7 @@ use Spiral\Database\Exception\DBALException;
  *
  * echo $manager->database('runtime')->select()->from('users')->count();
  */
-class DatabaseManager implements SingletonInterface, InjectorInterface
+class DatabaseManager
 {
     /** @var DatabaseConfig */
     private $config = null;
@@ -84,26 +79,13 @@ class DatabaseManager implements SingletonInterface, InjectorInterface
     /** @var DriverInterface[] */
     private $drivers = [];
 
-    /**  @var FactoryInterface */
-    protected $factory = null;
-
     /**
      * @param DatabaseConfig   $config
      * @param FactoryInterface $factory
      */
-    public function __construct(DatabaseConfig $config, FactoryInterface $factory = null)
+    public function __construct(DatabaseConfig $config)
     {
         $this->config = $config;
-        $this->factory = $factory ?? new Container();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createInjection(\ReflectionClass $class, string $context = null)
-    {
-        //If context is empty default database will be returned
-        return $this->database($context);
     }
 
     /**
@@ -139,13 +121,14 @@ class DatabaseManager implements SingletonInterface, InjectorInterface
             $database = $this->config->getDefaultDatabase();
         }
 
-        //Spiral support ability to link multiple virtual databases together using aliases
+        //Simplex support ability to link multiple virtual databases together using aliases
         $database = $this->config->resolveAlias($database);
 
         if (isset($this->databases[$database])) {
             return $this->databases[$database];
         }
 
+        // var_dump($this->config->hasDatabase($database), $database); die;
         if (!$this->config->hasDatabase($database)) {
             throw new DBALException(
                 "Unable to create Database, no presets for '{$database}' found"
@@ -206,7 +189,7 @@ class DatabaseManager implements SingletonInterface, InjectorInterface
             return $this->drivers[$driver];
         }
         try {
-            return $this->drivers[$driver] = $this->config->getDriver($driver)->resolve($this->factory);
+            return $this->drivers[$driver] = $this->config->getDriver($driver); //->resolve($this->factory);
         } catch (ContainerExceptionInterface $e) {
             throw new DBALException($e->getMessage(), $e->getCode(), $e);
         }

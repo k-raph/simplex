@@ -1,19 +1,19 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Schema;
+namespace Simplex\Database\Schema;
 
-use Spiral\Database\ColumnInterface;
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Exception\DefaultValueException;
-use Spiral\Database\Exception\SchemaException;
-use Spiral\Database\Injection\Fragment;
-use Spiral\Database\Injection\FragmentInterface;
-use Spiral\Database\Schema\Traits\ElementTrait;
+use Simplex\Database\ColumnInterface;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Exception\DefaultValueException;
+use Simplex\Database\Exception\SchemaException;
+use Simplex\Database\Injection\Fragment;
+use Simplex\Database\Injection\FragmentInterface;
+use Simplex\Database\Schema\Traits\ElementTrait;
 
 /**
  * Abstract column schema with read (see ColumnInterface) and write abilities. Must be implemented

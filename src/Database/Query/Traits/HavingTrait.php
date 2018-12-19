@@ -1,19 +1,19 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Query\Traits;
+namespace Simplex\Database\Query\Traits;
 
-use Spiral\Database\Exception\BuilderException;
-use Spiral\Database\Injection\ExpressionInterface;
-use Spiral\Database\Injection\FragmentInterface;
-use Spiral\Database\Injection\Parameter;
-use Spiral\Database\Injection\ParameterInterface;
-use Spiral\Database\Query\BuilderInterface;
+use Simplex\Database\Exception\BuilderException;
+use Simplex\Database\Injection\ExpressionInterface;
+use Simplex\Database\Injection\FragmentInterface;
+use Simplex\Database\Injection\Parameter;
+use Simplex\Database\Injection\ParameterInterface;
+use Simplex\Database\Query\BuilderInterface;
 
 trait HavingTrait
 {

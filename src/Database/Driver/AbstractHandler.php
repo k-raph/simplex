@@ -1,23 +1,23 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver;
+namespace Simplex\Database\Driver;
 
-use Spiral\Core\Exception\InvalidArgumentException;
-use Spiral\Database\Exception\DBALException;
-use Spiral\Database\Exception\DriverException;
-use Spiral\Database\Exception\HandlerException;
-use Spiral\Database\Exception\StatementException;
-use Spiral\Database\Schema\AbstractColumn;
-use Spiral\Database\Schema\AbstractForeignKey;
-use Spiral\Database\Schema\AbstractIndex;
-use Spiral\Database\Schema\AbstractTable;
-use Spiral\Database\Schema\Comparator;
-use Spiral\Database\Schema\ElementInterface;
+use Simplex\Core\Exception\InvalidArgumentException;
+use Simplex\Database\Exception\DBALException;
+use Simplex\Database\Exception\DriverException;
+use Simplex\Database\Exception\HandlerException;
+use Simplex\Database\Exception\StatementException;
+use Simplex\Database\Schema\AbstractColumn;
+use Simplex\Database\Schema\AbstractForeignKey;
+use Simplex\Database\Schema\AbstractIndex;
+use Simplex\Database\Schema\AbstractTable;
+use Simplex\Database\Schema\Comparator;
+use Simplex\Database\Schema\ElementInterface;
 
 /**
  * Handler class implements set of DBMS specific operations for schema manipulations. Can be used

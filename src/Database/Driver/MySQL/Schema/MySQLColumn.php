@@ -1,17 +1,17 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\MySQL\Schema;
+namespace Simplex\Database\Driver\MySQL\Schema;
 
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Exception\DefaultValueException;
-use Spiral\Database\Injection\Fragment;
-use Spiral\Database\Injection\FragmentInterface;
-use Spiral\Database\Schema\AbstractColumn;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Exception\DefaultValueException;
+use Simplex\Database\Injection\Fragment;
+use Simplex\Database\Injection\FragmentInterface;
+use Simplex\Database\Schema\AbstractColumn;
 
 /**
  * Attention! You can use only one timestamp or datetime with DATETIME_NOW setting! Thought, it will

@@ -1,15 +1,15 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Schema;
+namespace Simplex\Database\Schema;
 
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Driver\HandlerInterface;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Driver\HandlerInterface;
 
 /**
  * Saves multiple linked tables at once but treating their cross dependency.

@@ -1,19 +1,19 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\SQLite;
+namespace Simplex\Database\Driver\SQLite;
 
-use Spiral\Database\DatabaseInterface;
-use Spiral\Database\Driver\AbstractDriver;
-use Spiral\Database\Driver\HandlerInterface;
-use Spiral\Database\Driver\SQLite\Schema\SQLiteTable;
-use Spiral\Database\Exception\DriverException;
-use Spiral\Database\Exception\StatementException;
+use Simplex\Database\DatabaseInterface;
+use Simplex\Database\Driver\AbstractDriver;
+use Simplex\Database\Driver\HandlerInterface;
+use Simplex\Database\Driver\SQLite\Schema\SQLiteTable;
+use Simplex\Database\Exception\DriverException;
+use Simplex\Database\Exception\StatementException;
 
 /**
  * Talks to sqlite databases.
@@ -75,11 +75,11 @@ class SQLiteDriver extends AbstractDriver
      */
     protected function isolationLevel(string $level)
     {
-        if ($this->isProfiling()) {
-            $this->getLogger()->alert(
-                "Transaction isolation level is not fully supported by SQLite ({$level})."
-            );
-        }
+        // if ($this->isProfiling()) {
+        //     $this->getLogger()->alert(
+        //         "Transaction isolation level is not fully supported by SQLite ({$level})."
+        //     );
+        // }
     }
 
     /**

@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver;
+namespace Simplex\Database\Driver;
 
 /**
  * Class responsible for "intelligent" table and column name quoting.

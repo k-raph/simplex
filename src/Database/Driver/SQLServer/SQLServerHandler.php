@@ -1,18 +1,18 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\SQLServer;
+namespace Simplex\Database\Driver\SQLServer;
 
-use Spiral\Database\Driver\AbstractHandler;
-use Spiral\Database\Driver\SQLServer\Schema\SQLServerColumn;
-use Spiral\Database\Exception\SchemaException;
-use Spiral\Database\Schema\AbstractColumn;
-use Spiral\Database\Schema\AbstractIndex;
-use Spiral\Database\Schema\AbstractTable;
+use Simplex\Database\Driver\AbstractHandler;
+use Simplex\Database\Driver\SQLServer\Schema\SQLServerColumn;
+use Simplex\Database\Exception\SchemaException;
+use Simplex\Database\Schema\AbstractColumn;
+use Simplex\Database\Schema\AbstractIndex;
+use Simplex\Database\Schema\AbstractTable;
 
 class SQLServerHandler extends AbstractHandler
 {

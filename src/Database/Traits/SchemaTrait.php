@@ -1,17 +1,17 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Traits;
+namespace Simplex\Database\Traits;
 
-use Spiral\Database\ColumnInterface;
-use Spiral\Database\ForeignKeyInterface;
-use Spiral\Database\IndexInterface;
-use Spiral\Database\Schema\AbstractTable;
+use Simplex\Database\ColumnInterface;
+use Simplex\Database\ForeignKeyInterface;
+use Simplex\Database\IndexInterface;
+use Simplex\Database\Schema\AbstractTable;
 
 trait SchemaTrait
 {

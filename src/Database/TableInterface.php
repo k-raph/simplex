@@ -1,12 +1,12 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database;
+namespace Simplex\Database;
 
 /**
  * Represent table schema with it's all columns, indexes and foreign keys.

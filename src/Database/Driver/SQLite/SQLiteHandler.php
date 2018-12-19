@@ -1,18 +1,18 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\SQLite;
+namespace Simplex\Database\Driver\SQLite;
 
-use Spiral\Database\Driver\AbstractHandler;
-use Spiral\Database\Exception\DBALException;
-use Spiral\Database\Exception\HandlerException;
-use Spiral\Database\Schema\AbstractColumn;
-use Spiral\Database\Schema\AbstractForeignKey;
-use Spiral\Database\Schema\AbstractTable;
+use Simplex\Database\Driver\AbstractHandler;
+use Simplex\Database\Exception\DBALException;
+use Simplex\Database\Exception\HandlerException;
+use Simplex\Database\Schema\AbstractColumn;
+use Simplex\Database\Schema\AbstractForeignKey;
+use Simplex\Database\Schema\AbstractTable;
 
 /**
  * Handler provides ability to exectute non supported changes using temporary
@@ -160,7 +160,7 @@ class SQLiteHandler extends AbstractHandler
     {
         //Temporary table is required to copy data over
         $temporary = clone $table;
-        $temporary->setName('spiral_temp_' . $table->getName() . '_' . uniqid());
+        $temporary->setName('Simplex_temp_' . $table->getName() . '_' . uniqid());
 
         //We don't need any indexes in temporary table
         foreach ($temporary->getIndexes() as $index) {

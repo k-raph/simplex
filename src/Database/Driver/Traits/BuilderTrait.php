@@ -1,19 +1,19 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\Traits;
+namespace Simplex\Database\Driver\Traits;
 
-use Spiral\Database\Driver\Compiler;
-use Spiral\Database\Driver\CompilerInterface;
-use Spiral\Database\Query\DeleteQuery;
-use Spiral\Database\Query\InsertQuery;
-use Spiral\Database\Query\SelectQuery;
-use Spiral\Database\Query\UpdateQuery;
+use Simplex\Database\Driver\Compiler;
+use Simplex\Database\Driver\CompilerInterface;
+use Simplex\Database\Query\DeleteQuery;
+use Simplex\Database\Query\InsertQuery;
+use Simplex\Database\Query\SelectQuery;
+use Simplex\Database\Query\UpdateQuery;
 
 /**
  * Provides ability to construct query builders for the driver.

@@ -1,19 +1,19 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\SQLServer;
+namespace Simplex\Database\Driver\SQLServer;
 
 use PDO;
-use Spiral\Database\DatabaseInterface;
-use Spiral\Database\Driver\AbstractDriver;
-use Spiral\Database\Driver\HandlerInterface;
-use Spiral\Database\Driver\SQLServer\Schema\SQLServerTable;
-use Spiral\Database\Exception\DriverException;
-use Spiral\Database\Exception\StatementException;
+use Simplex\Database\DatabaseInterface;
+use Simplex\Database\Driver\AbstractDriver;
+use Simplex\Database\Driver\HandlerInterface;
+use Simplex\Database\Driver\SQLServer\Schema\SQLServerTable;
+use Simplex\Database\Exception\DriverException;
+use Simplex\Database\Exception\StatementException;
 
 class SQLServerDriver extends AbstractDriver
 {

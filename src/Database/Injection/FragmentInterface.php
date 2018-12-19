@@ -1,12 +1,12 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Injection;
+namespace Simplex\Database\Injection;
 
 /**
  * Declares ability to be converted into sql statement.

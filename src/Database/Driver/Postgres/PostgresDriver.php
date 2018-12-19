@@ -1,21 +1,21 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\Postgres;
+namespace Simplex\Database\Driver\Postgres;
 
-use Spiral\Database\DatabaseInterface;
-use Spiral\Database\Driver\AbstractDriver;
-use Spiral\Database\Driver\HandlerInterface;
-use Spiral\Database\Driver\Postgres\Query\PostgresInsertQuery;
-use Spiral\Database\Driver\Postgres\Schema\PostgresTable;
-use Spiral\Database\Exception\DriverException;
-use Spiral\Database\Exception\StatementException;
-use Spiral\Database\Query\InsertQuery;
+use Simplex\Database\DatabaseInterface;
+use Simplex\Database\Driver\AbstractDriver;
+use Simplex\Database\Driver\HandlerInterface;
+use Simplex\Database\Driver\Postgres\Query\PostgresInsertQuery;
+use Simplex\Database\Driver\Postgres\Schema\PostgresTable;
+use Simplex\Database\Exception\DriverException;
+use Simplex\Database\Exception\StatementException;
+use Simplex\Database\Query\InsertQuery;
 
 /**
  * Talks to postgres databases.
@@ -124,7 +124,7 @@ class PostgresDriver extends AbstractDriver
      */
     protected function createPDO(): \PDO
     {
-        //Spiral is purely UTF-8
+        //Simplex is purely UTF-8
         $pdo = parent::createPDO();
         $pdo->exec("SET NAMES 'UTF-8'");
 

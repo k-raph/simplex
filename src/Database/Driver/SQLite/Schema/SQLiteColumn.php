@@ -1,14 +1,14 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\SQLite\Schema;
+namespace Simplex\Database\Driver\SQLite\Schema;
 
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Schema\AbstractColumn;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Schema\AbstractColumn;
 
 class SQLiteColumn extends AbstractColumn
 {

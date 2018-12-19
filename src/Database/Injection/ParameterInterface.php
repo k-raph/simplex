@@ -1,12 +1,12 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Injection;
+namespace Simplex\Database\Injection;
 
 /**
  * Parameter interface is very similar to sql fragments, however it may not only mock sql

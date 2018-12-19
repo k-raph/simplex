@@ -1,16 +1,16 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Query;
+namespace Simplex\Database\Query;
 
-use Spiral\Database\Exception\InterpolatorException;
-use Spiral\Database\Injection\Parameter;
-use Spiral\Database\Injection\ParameterInterface;
+use Simplex\Database\Exception\InterpolatorException;
+use Simplex\Database\Injection\Parameter;
+use Simplex\Database\Injection\ParameterInterface;
 
 /**
  * Simple helper class used to interpolate query with given values. To be used for profiling and

@@ -1,16 +1,16 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Query;
+namespace Simplex\Database\Query;
 
-use Spiral\Database\Exception\BuilderException;
-use Spiral\Database\Injection\ExpressionInterface;
-use Spiral\Database\Injection\ParameterInterface;
+use Simplex\Database\Exception\BuilderException;
+use Simplex\Database\Injection\ExpressionInterface;
+use Simplex\Database\Injection\ParameterInterface;
 
 interface BuilderInterface extends ExpressionInterface
 {

@@ -1,14 +1,14 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\Postgres;
+namespace Simplex\Database\Driver\Postgres;
 
-use Spiral\Database\Driver\Compiler as AbstractCompiler;
+use Simplex\Database\Driver\Compiler as AbstractCompiler;
 
 /**
  * Postgres syntax specific compiler.

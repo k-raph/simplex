@@ -1,14 +1,14 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Exception\StatementException;
+namespace Simplex\Database\Exception\StatementException;
 
-use Spiral\Database\Exception\StatementException;
+use Simplex\Database\Exception\StatementException;
 
 class ConstrainException extends StatementException
 {

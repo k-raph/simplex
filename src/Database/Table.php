@@ -1,20 +1,20 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database;
+namespace Simplex\Database;
 
-use Spiral\Database\Exception\BuilderException;
-use Spiral\Database\Query\DeleteQuery;
-use Spiral\Database\Query\InsertQuery;
-use Spiral\Database\Query\SelectQuery;
-use Spiral\Database\Query\UpdateQuery;
-use Spiral\Database\Schema\AbstractTable;
-use Spiral\Database\Traits\SchemaTrait;
+use Simplex\Database\Exception\BuilderException;
+use Simplex\Database\Query\DeleteQuery;
+use Simplex\Database\Query\InsertQuery;
+use Simplex\Database\Query\SelectQuery;
+use Simplex\Database\Query\UpdateQuery;
+use Simplex\Database\Schema\AbstractTable;
+use Simplex\Database\Traits\SchemaTrait;
 
 /**
  * Represent table level abstraction with simplified access to SelectQuery associated with such

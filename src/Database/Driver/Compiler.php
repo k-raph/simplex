@@ -1,18 +1,18 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver;
+namespace Simplex\Database\Driver;
 
-use Spiral\Database\Exception\CompilerException;
-use Spiral\Database\Injection\ExpressionInterface;
-use Spiral\Database\Injection\FragmentInterface;
-use Spiral\Database\Injection\ParameterInterface;
-use Spiral\Database\Query\BuilderInterface;
+use Simplex\Database\Exception\CompilerException;
+use Simplex\Database\Injection\ExpressionInterface;
+use Simplex\Database\Injection\FragmentInterface;
+use Simplex\Database\Injection\ParameterInterface;
+use Simplex\Database\Query\BuilderInterface;
 
 /**
  * Responsible for conversion of set of query parameters (where tokens, table names and etc) into

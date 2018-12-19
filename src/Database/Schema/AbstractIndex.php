@@ -1,15 +1,15 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Schema;
+namespace Simplex\Database\Schema;
 
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\IndexInterface;
-use Spiral\Database\Schema\Traits\ElementTrait;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\IndexInterface;
+use Simplex\Database\Schema\Traits\ElementTrait;
 
 /**
  * Abstract index schema with read (see IndexInterface) and write abilities. Must be implemented

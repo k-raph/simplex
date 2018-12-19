@@ -1,18 +1,18 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver;
+namespace Simplex\Database\Driver;
 
-use Spiral\Database\Exception\HandlerException;
-use Spiral\Database\Schema\AbstractColumn;
-use Spiral\Database\Schema\AbstractForeignKey;
-use Spiral\Database\Schema\AbstractIndex;
-use Spiral\Database\Schema\AbstractTable;
+use Simplex\Database\Exception\HandlerException;
+use Simplex\Database\Schema\AbstractColumn;
+use Simplex\Database\Schema\AbstractForeignKey;
+use Simplex\Database\Schema\AbstractIndex;
+use Simplex\Database\Schema\AbstractTable;
 
 /**
  * Perform low level operations on schemas.

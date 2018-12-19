@@ -1,19 +1,19 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database;
+namespace Simplex\Database;
 
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Exception\StatementException;
-use Spiral\Database\Query\DeleteQuery;
-use Spiral\Database\Query\InsertQuery;
-use Spiral\Database\Query\SelectQuery;
-use Spiral\Database\Query\UpdateQuery;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Exception\StatementException;
+use Simplex\Database\Query\DeleteQuery;
+use Simplex\Database\Query\InsertQuery;
+use Simplex\Database\Query\SelectQuery;
+use Simplex\Database\Query\UpdateQuery;
 
 /**
  * DatabaseInterface is high level abstraction used to represent single database. You must always
@@ -107,41 +107,6 @@ interface DatabaseInterface
      * @throws StatementException
      */
     public function query(string $query, array $parameters = []): Statement;
-
-    /**
-     * Get instance of InsertBuilder associated with current Database.
-     *
-     * @param string $table Table where values should be inserted to.
-     * @return InsertQuery
-     */
-    public function insert(string $table = ''): InsertQuery;
-
-    /**
-     * Get instance of UpdateBuilder associated with current Database.
-     *
-     * @param string $table  Table where rows should be updated in.
-     * @param array  $values Initial set of columns to update associated with their values.
-     * @param array  $where  Initial set of where rules specified as array.
-     * @return UpdateQuery
-     */
-    public function update(string $table = '', array $values = [], array $where = []): UpdateQuery;
-
-    /**
-     * Get instance of DeleteBuilder associated with current Database.
-     *
-     * @param string $table Table where rows should be deleted from.
-     * @param array  $where Initial set of where rules specified as array.
-     * @return DeleteQuery
-     */
-    public function delete(string $table = '', array $where = []): DeleteQuery;
-
-    /**
-     * Get instance of SelectBuilder associated with current Database.
-     *
-     * @param array|string $columns Columns to select.
-     * @return SelectQuery
-     */
-    public function select($columns = '*'): SelectQuery;
 
     /**
      * Execute multiple commands defined by Closure function inside one transaction. Closure or

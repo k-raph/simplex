@@ -1,12 +1,12 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Injection;
+namespace Simplex\Database\Injection;
 
 /**
  * Default implementation of SQLFragmentInterface, provides ability to inject custom SQL code into

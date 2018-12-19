@@ -1,18 +1,18 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\Postgres\Query;
+namespace Simplex\Database\Driver\Postgres\Query;
 
-use Spiral\Database\Driver\CompilerInterface;
-use Spiral\Database\Driver\Postgres\PostgresCompiler;
-use Spiral\Database\Driver\Postgres\PostgresDriver;
-use Spiral\Database\Exception\BuilderException;
-use Spiral\Database\Query\InsertQuery;
+use Simplex\Database\Driver\CompilerInterface;
+use Simplex\Database\Driver\Postgres\PostgresCompiler;
+use Simplex\Database\Driver\Postgres\PostgresDriver;
+use Simplex\Database\Exception\BuilderException;
+use Simplex\Database\Query\InsertQuery;
 
 /**
  * Postgres driver requires little bit different way to handle last insert id.

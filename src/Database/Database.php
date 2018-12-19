@@ -1,27 +1,26 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database;
+namespace Simplex\Database;
 
-use Spiral\Core\Container\InjectableInterface;
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Query\DeleteQuery;
-use Spiral\Database\Query\InsertQuery;
-use Spiral\Database\Query\SelectQuery;
-use Spiral\Database\Query\UpdateQuery;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Query\DeleteQuery;
+use Simplex\Database\Query\InsertQuery;
+use Simplex\Database\Query\SelectQuery;
+use Simplex\Database\Query\UpdateQuery;
+use Simplex\Database\Query\Builder;
 
 /**
  * Database class is high level abstraction at top of Driver. Databases usually linked to real
  * database or logical portion of database (filtered by prefix).
  */
-class Database implements DatabaseInterface, InjectableInterface
+class Database implements DatabaseInterface
 {
-    public const INJECTOR = DatabaseManager::class;
 
     // Isolation levels for transactions
     public const ISOLATION_SERIALIZABLE     = DriverInterface::ISOLATION_SERIALIZABLE;
@@ -151,17 +150,6 @@ class Database implements DatabaseInterface, InjectableInterface
     }
 
     /**
-     * Shortcut to get table abstraction.
-     *
-     * @param string $name Table name without prefix.
-     * @return Table
-     */
-    public function __get(string $name): Table
-    {
-        return $this->table($name);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function execute(string $query, array $parameters = []): int
@@ -175,44 +163,6 @@ class Database implements DatabaseInterface, InjectableInterface
     public function query(string $query, array $parameters = []): Statement
     {
         return $this->getDriver(self::READ)->query($query, $parameters);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function insert(string $table = null): InsertQuery
-    {
-        return $this->getDriver(self::WRITE)->insertQuery($this->prefix, $table);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function update(string $table = null, array $values = [], array $where = []): UpdateQuery
-    {
-        return $this->getDriver(self::WRITE)->updateQuery($this->prefix, $table, $where, $values);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function delete(string $table = null, array $where = []): DeleteQuery
-    {
-        return $this->getDriver(self::WRITE)->deleteQuery($this->prefix, $table, $where);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function select($columns = '*'): SelectQuery
-    {
-        $columns = func_get_args();
-        if (is_array($columns) && isset($columns[0]) && is_array($columns[0])) {
-            //Can be required in some cases while collecting data from Table->select(), stupid bug.
-            $columns = $columns[0];
-        }
-
-        return $this->getDriver(self::READ)->selectQuery($this->prefix, [], $columns);
     }
 
     /**
@@ -255,5 +205,15 @@ class Database implements DatabaseInterface, InjectableInterface
     public function rollback(): bool
     {
         return $this->getDriver(self::WRITE)->rollbackTransaction();
+    }
+
+    /**
+     * Get query builder instance
+     *
+     * @return Builder
+     */
+    public function getQueryBuilder(): Builder
+    {
+        return new Builder($this);
     }
 }

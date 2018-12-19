@@ -1,17 +1,17 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Schema;
+namespace Simplex\Database\Schema;
 
-use Spiral\Database\Driver\DriverInterface;
-use Spiral\Database\Driver\HandlerInterface;
-use Spiral\Database\Exception\HandlerException;
-use Spiral\Database\Exception\SchemaException;
-use Spiral\Database\TableInterface;
+use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Driver\HandlerInterface;
+use Simplex\Database\Exception\HandlerException;
+use Simplex\Database\Exception\SchemaException;
+use Simplex\Database\TableInterface;
 
 /**
  * AbstractTable class used to describe and manage state of specified table. It provides ability to

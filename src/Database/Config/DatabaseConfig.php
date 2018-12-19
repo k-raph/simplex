@@ -1,24 +1,17 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license MIT
  * @author  Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Config;
+namespace Simplex\Database\Config;
 
-use Spiral\Core\Container\Autowire;
-use Spiral\Core\InjectableConfig;
-use Spiral\Core\Traits\Config\AliasTrait;
-use Spiral\Database\Exception\ConfigException;
+use Simplex\Database\Exception\ConfigException;
 
-class DatabaseConfig extends InjectableConfig
+class DatabaseConfig
 {
-    const CONFIG = 'database';
-
-    use AliasTrait;
-
     /**
      * @invisible
      * @var array
@@ -29,6 +22,88 @@ class DatabaseConfig extends InjectableConfig
         'databases'   => [],
         'connections' => [],
     ];
+
+    /**
+     * At this moment on array based configs can be supported.
+     *
+     * @param array $config
+     */
+    public function __construct(array $config = [])
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(): array
+    {
+        return $this->config;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->config);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetGet($offset)
+    {
+        if (!$this->offsetExists($offset)) {
+            throw new ConfigException("Undefined configuration key '{$offset}'");
+        }
+
+        return $this->config[$offset];
+    }
+
+    /**
+     *{@inheritdoc}
+     *
+     * @throws ConfigException
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new ConfigException(
+            'Unable to change configuration data, configs are treated as immutable by default'
+        );
+    }
+
+    /**
+     *{@inheritdoc}
+     *
+     * @throws ConfigException
+     */
+    public function offsetUnset($offset)
+    {
+        throw new ConfigException(
+            'Unable to change configuration data, configs are treated as immutable by default'
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->config);
+    }
+
+    /**
+     * Restoring state.
+     *
+     * @param array $an_array
+     *
+     * @return static
+     */
+    public static function __set_state($an_array)
+    {
+        return new static($an_array['config']);
+    }
 
     /**
      * @return string
@@ -114,7 +189,7 @@ class DatabaseConfig extends InjectableConfig
      *
      * @throws ConfigException
      */
-    public function getDriver(string $driver): Autowire
+    public function getDriver(string $driver)
     {
         if (!$this->hasDriver($driver)) {
             throw new ConfigException("Undefined driver `{$driver}`.");
@@ -122,13 +197,17 @@ class DatabaseConfig extends InjectableConfig
 
         $config = $this->config['connections'][$driver] ?? $this->config['drivers'][$driver];
 
-        if ($config instanceof Autowire) {
-            return $config;
+        $driver = $config['driver'] ?? $config['class'];
+
+        return new $driver($config);
+    }
+
+    public function resolveAlias(string $alias): string
+    {
+        while (is_string($alias) && isset($this->config) && isset($this->config['aliases'][$alias])) {
+            $alias = $this->config['aliases'][$alias];
         }
 
-        return new Autowire(
-            $config['driver'] ?? $config['class'],
-            ['options' => $config['options'] ?? $config]
-        );
+        return $alias;
     }
 }

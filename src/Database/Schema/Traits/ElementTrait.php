@@ -1,14 +1,14 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Schema\Traits;
+namespace Simplex\Database\Schema\Traits;
 
-use Spiral\Database\Driver\AbstractDriver;
+use Simplex\Database\Driver\AbstractDriver;
 
 trait ElementTrait
 {

@@ -1,30 +1,29 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver;
+namespace Simplex\Database\Driver;
 
 use PDO;
 use Psr\Log\LoggerAwareInterface;
-use Spiral\Database\Driver\Traits\BuilderTrait;
-use Spiral\Database\Driver\Traits\PDOTrait;
-use Spiral\Database\Driver\Traits\ProfilingTrait;
-use Spiral\Database\Driver\Traits\TransactionTrait;
-use Spiral\Database\Exception\DriverException;
-use Spiral\Database\Schema\AbstractTable;
+use Simplex\Database\Driver\Traits\BuilderTrait;
+use Simplex\Database\Driver\Traits\PDOTrait;
+use Simplex\Database\Driver\Traits\TransactionTrait;
+use Simplex\Database\Exception\DriverException;
+use Simplex\Database\Schema\AbstractTable;
 
 /**
  * Driver abstraction is responsible for DBMS specific set of functions and used by Databases to
  * hide implementation specific functionality. Extends PDODriver and adds ability to create driver
  * specific query builders and schemas (basically operates like a factory).
  */
-abstract class AbstractDriver implements DriverInterface, LoggerAwareInterface
+abstract class AbstractDriver implements DriverInterface
 {
-    use ProfilingTrait, PDOTrait, BuilderTrait, TransactionTrait;
+    use /*ProfilingTrait,*/ PDOTrait, BuilderTrait, TransactionTrait;
 
     // One of DatabaseInterface types, must be set on implementation.
     protected const TYPE = null;

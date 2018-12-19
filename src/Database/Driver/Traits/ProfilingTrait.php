@@ -1,15 +1,15 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\Traits;
+namespace Simplex\Database\Driver\Traits;
 
 
-use Spiral\Logger\Traits\LoggerTrait;
+use Simplex\Logger\Traits\LoggerTrait;
 
 trait ProfilingTrait
 {

@@ -1,13 +1,13 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Driver\MySQL\Schema;
+namespace Simplex\Database\Driver\MySQL\Schema;
 
-use Spiral\Database\Schema\AbstractIndex;
+use Simplex\Database\Schema\AbstractIndex;
 
 class MySQLIndex extends AbstractIndex
 {

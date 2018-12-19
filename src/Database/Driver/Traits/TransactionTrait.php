@@ -1,16 +1,16 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\Traits;
+namespace Simplex\Database\Driver\Traits;
 
 use PDO;
 use Psr\Log\LoggerInterface;
-use Spiral\Database\Exception\ConnectionException;
+use Simplex\Database\Exception\ConnectionException;
 
 trait TransactionTrait
 {
@@ -194,7 +194,7 @@ trait TransactionTrait
      *
      * @return bool
      */
-    abstract public function isProfiling(): bool;
+    // abstract public function isProfiling(): bool;
 
     /**
      * Get associated PDO connection. Will automatically connect if such connection does not exists.
@@ -206,5 +206,5 @@ trait TransactionTrait
     /**
      * @return LoggerInterface
      */
-    abstract protected function getLogger(): LoggerInterface;
+    // abstract protected function getLogger(): LoggerInterface;
 }

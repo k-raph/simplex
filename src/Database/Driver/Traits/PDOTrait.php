@@ -1,22 +1,22 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\Traits;
+namespace Simplex\Database\Driver\Traits;
 
 use PDO;
 use Psr\Log\LoggerInterface;
-use Spiral\Database\Exception\DriverException;
-use Spiral\Database\Exception\StatementException;
-use Spiral\Database\Exception\StatementException\ConnectionException;
-use Spiral\Database\Injection\Parameter;
-use Spiral\Database\Injection\ParameterInterface;
-use Spiral\Database\Query\Interpolator;
-use Spiral\Database\Statement;
+use Simplex\Database\Exception\DriverException;
+use Simplex\Database\Exception\StatementException;
+use Simplex\Database\Exception\StatementException\ConnectionException;
+use Simplex\Database\Injection\Parameter;
+use Simplex\Database\Injection\ParameterInterface;
+use Simplex\Database\Query\Interpolator;
+use Simplex\Database\Statement;
 
 trait PDOTrait
 {
@@ -108,7 +108,7 @@ trait PDOTrait
         $pdo = $this->getPDO();
         $result = $sequence ? (int)$pdo->lastInsertId($sequence) : (int)$pdo->lastInsertId();
 
-        $this->isProfiling() && $this->getLogger()->debug("Given insert ID: {$result}");
+        // $this->isProfiling() && $this->getLogger()->debug("Given insert ID: {$result}");
 
         return $result;
     }
@@ -155,17 +155,17 @@ trait PDOTrait
 
             $statement->execute();
 
-            if ($this->isProfiling()) {
-                $this->getLogger()->info(
-                    Interpolator::interpolate($query, $parameters),
-                    compact('query', 'parameters')
-                );
-            }
+            // if ($this->isProfiling()) {
+            //     $this->getLogger()->info(
+            //         Interpolator::interpolate($query, $parameters),
+            //         compact('query', 'parameters')
+            //     );
+            // }
         } catch (\PDOException $e) {
             $queryString = Interpolator::interpolate($query, $parameters);
 
-            $this->getLogger()->error($queryString, compact('query', 'parameters'));
-            $this->getLogger()->alert($e->getMessage());
+            // $this->getLogger()->error($queryString, compact('query', 'parameters'));
+            // $this->getLogger()->alert($e->getMessage());
 
             //Converting exception into query or integrity exception
             throw $this->mapException($e, $queryString);
@@ -283,7 +283,7 @@ trait PDOTrait
      *
      * @return bool
      */
-    abstract public function isProfiling(): bool;
+    // abstract public function isProfiling(): bool;
 
     /**
      * Create PDO connection.
@@ -319,5 +319,5 @@ trait PDOTrait
     /**
      * @return LoggerInterface
      */
-    abstract protected function getLogger(): LoggerInterface;
+    // abstract protected function getLogger(): LoggerInterface;
 }

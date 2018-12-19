@@ -1,14 +1,14 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Driver\SQLite;
+namespace Simplex\Database\Driver\SQLite;
 
-use Spiral\Database\Driver\Compiler as AbstractCompiler;
+use Simplex\Database\Driver\Compiler as AbstractCompiler;
 
 /**
  * SQLite specific syntax compiler.

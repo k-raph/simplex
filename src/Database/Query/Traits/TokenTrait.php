@@ -1,16 +1,16 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Query\Traits;
+namespace Simplex\Database\Query\Traits;
 
-use Spiral\Database\Driver\Compiler;
-use Spiral\Database\Exception\BuilderException;
-use Spiral\Database\Query\BuilderInterface;
+use Simplex\Database\Driver\Compiler;
+use Simplex\Database\Exception\BuilderException;
+use Simplex\Database\Query\BuilderInterface;
 
 trait TokenTrait
 {

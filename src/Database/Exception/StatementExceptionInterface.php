@@ -1,11 +1,11 @@
 <?php
 /**
- * Spiral, Core Components
+ * Simplex, Core Components
  *
  * @author Wolfy-J
  */
 
-namespace Spiral\Database\Exception;
+namespace Simplex\Database\Exception;
 
 interface StatementExceptionInterface
 {

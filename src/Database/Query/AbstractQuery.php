@@ -1,15 +1,15 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Query;
+namespace Simplex\Database\Query;
 
-use Spiral\Database\Driver\CompilerInterface;
-use Spiral\Database\Driver\DriverInterface;
+use Simplex\Database\Driver\CompilerInterface;
+use Simplex\Database\Driver\DriverInterface;
 
 /**
  * QueryBuilder classes generate set of control tokens for query compilers, this is query level

@@ -5,9 +5,9 @@
  * @author    Wolfy-J
  */
 
-namespace Spiral\Database\Exception\StatementException;
+namespace Simplex\Database\Exception\StatementException;
 
-use Spiral\Database\Exception\StatementException;
+use Simplex\Database\Exception\StatementException;
 
 /**
  * Connection issue while the query.

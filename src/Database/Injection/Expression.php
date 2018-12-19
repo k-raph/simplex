@@ -1,14 +1,14 @@
 <?php
 /**
- * Spiral Framework.
+ * Simplex Framework.
  *
  * @license   MIT
  * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral\Database\Injection;
+namespace Simplex\Database\Injection;
 
-use Spiral\Database\Driver\CompilerInterface;
+use Simplex\Database\Driver\CompilerInterface;
 
 /**
  * SQLExpression provides ability to mock part of SQL code responsible for operations involving
