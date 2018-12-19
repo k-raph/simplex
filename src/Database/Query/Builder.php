@@ -110,7 +110,7 @@ class Builder
         return $query->run();
     }
 
-    public function select(...$args)
+    public function select(...$args): SelectQuery
     {
         $driver = $this->database->getDriver(DatabaseInterface::READ);
         $query = $driver->selectQuery(
@@ -155,7 +155,7 @@ class Builder
      */
     public function find($key, string $field = 'id')
     {
-        return $this->where($field, $key)->get();
+        return $this->where($field, $key)->first();
     }
 
     /**

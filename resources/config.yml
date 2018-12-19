@@ -5,6 +5,7 @@ providers:
   - Simplex\Routing\RoutingServiceProvider
   - Simplex\Session\SessionServiceProvider
   - Simplex\Renderer\TwigServiceProvider
+  - Simplex\Database\DatabaseServiceProvider
 
 middlewares:
     - Simplex\Middleware\TrailingSlashMiddleware
@@ -14,6 +15,12 @@ middlewares:
     - api: []
 
 database:
-  type: sqlite
-  name: database.db
+  default: sqlite
+  databases:
+    sqlite:
+      connection: sqlite
+  connections:
+    sqlite:
+      type: sqlite
+      path: './resources/database.db'
   
