@@ -5,6 +5,7 @@ namespace Simplex\Database\Query;
 use Simplex\Database\DatabaseInterface;
 use Simplex\Database\Query\Traits\WhereTrait;
 use Simplex\Database\Query\Traits\TokenTrait;
+use Simplex\Database\Exception\ResourceNotFoundException;
 
 class Builder
 {
@@ -125,13 +126,29 @@ class Builder
     /**
      * Get first result of a select query
      *
-     * @return void
+     * @return mixed
      */
     public function first()
     {
         $query = $this->select('*');
         $this->fill($query);
         return $query->run()->fetch();
+    }
+
+    /**
+     * Get first result of a select query or throw an exception
+     *
+     * @return mixed
+     */
+    public function firstOrFail()
+    {
+        $result =  $this->first($key, $field);
+
+        if (!$result) {
+            throw new ResourceNotFoundException('Resource Not Found');
+        }
+
+        return $result;
     }
 
     /**
@@ -156,6 +173,24 @@ class Builder
     public function find($key, string $field = 'id')
     {
         return $this->where($field, $key)->first();
+    }
+
+    /**
+     * Find a result by key or throw an exception
+     *
+     * @param string|integer $key
+     * @param string $field
+     * @return void
+     */
+    public function findOrFail($key, string $field = 'id')
+    {
+        $result =  $this->find($key, $field);
+
+        if (!$result) {
+            throw new ResourceNotFoundException('Resource Not Found');
+        }
+
+        return $result;
     }
 
     /**

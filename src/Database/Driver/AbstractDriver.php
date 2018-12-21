@@ -167,7 +167,6 @@ abstract class AbstractDriver implements DriverInterface
         return [
             'connection' => $this->options['connection'],
             'connected'  => $this->isConnected(),
-            'profiling'  => $this->isProfiling(),
             'source'     => $this->getSource(),
             'options'    => $this->pdoOptions,
         ];

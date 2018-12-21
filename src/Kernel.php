@@ -14,6 +14,7 @@ use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use League\Container\Exception\NotFoundException;
 use Simplex\Http\Pipeline;
+use Simplex\Database\Exception\ResourceNotFoundException as DatabaseResourceNotFoundException;
 
 class Kernel
 {
@@ -144,7 +145,7 @@ class Kernel
      */
     private function handleException(\Exception $exception)
     {
-        if ($exception instanceof ResourceNotFoundException) {
+        if ($exception instanceof ResourceNotFoundException || $exception instanceof DatabaseResourceNotFoundException) {
             return new Response($exception->getMessage(), 404);
         } elseif ($exception instanceof MethodNotAllowedException) {
             return new Response(

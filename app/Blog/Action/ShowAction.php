@@ -44,7 +44,7 @@ class ShowAction
      */
     public function single(int $id, Builder $query)
     {
-        return $this->view->render('@blog/show', ['post' => $query->table('posts')->find($id)]);
+        return $this->view->render('@blog/show', ['post' => $query->table('posts')->findOrFail($id)]);
     }
 
     /**
