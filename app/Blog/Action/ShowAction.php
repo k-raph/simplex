@@ -6,7 +6,6 @@ use App\Blog\Table\PostTable;
 use Simplex\Renderer\TwigRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Simplex\Routing\RouterInterface;
-use Simplex\Database\Query\Builder;
 
 class ShowAction
 {
@@ -42,9 +41,9 @@ class ShowAction
      * @param integer $id
      * @return string
      */
-    public function single(int $id, Builder $query)
+    public function single(int $id)
     {
-        return $this->view->render('@blog/show', ['post' => $query->table('posts')->findOrFail($id)]);
+        return $this->view->render('@blog/show');
     }
 
     /**
@@ -59,5 +58,4 @@ class ShowAction
                 'posts' => []
             ]);
     }
-
 }
