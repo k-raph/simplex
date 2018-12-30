@@ -6,6 +6,7 @@ use App\Blog\Table\PostTable;
 use Simplex\Renderer\TwigRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Simplex\Routing\RouterInterface;
+use Simplex\Database\DatabaseInterface;
 
 class ShowAction
 {
@@ -41,9 +42,10 @@ class ShowAction
      * @param integer $id
      * @return string
      */
-    public function single(int $id)
+    public function single(int $id, DatabaseInterface $db)
     {
-        return $this->view->render('@blog/show');
+        $post = $db->query('SELECT * FROM posts WHERE id = ?', [$id])->fetch();
+        return $this->view->render('@blog/show', compact('post'));
     }
 
     /**
@@ -51,11 +53,11 @@ class ShowAction
      *
      * @return string
      */
-    public function all()
+    public function all(DatabaseInterface $db)
     {
         return $this->view
             ->render('@blog/index', [
-                'posts' => []
+                'posts' => $db->query('SELECT * FROM posts')->fetchAll()
             ]);
     }
 }

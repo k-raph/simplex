@@ -3,6 +3,7 @@ modules:
 
 providers:
   - Simplex\Routing\RoutingServiceProvider
+  - Simplex\Database\DatabaseServiceProvider
   - Simplex\Session\SessionServiceProvider
   - Simplex\Renderer\TwigServiceProvider
 
@@ -15,11 +16,8 @@ middlewares:
 
 database:
   default: sqlite
-  databases:
-    sqlite:
-      connection: sqlite
   connections:
     sqlite:
       type: sqlite
-      path: './resources/database.db'
+      database: ./resources/database.db
   
