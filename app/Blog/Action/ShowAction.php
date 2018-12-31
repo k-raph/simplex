@@ -42,9 +42,9 @@ class ShowAction
      * @param integer $id
      * @return string
      */
-    public function single(int $id, DatabaseInterface $db)
+    public function single(int $id, PostTable $posts)
     {
-        $post = $db->query('SELECT * FROM posts WHERE id = ?', [$id])->fetch();
+        $post = $posts->find($id);
         return $this->view->render('@blog/show', compact('post'));
     }
 
@@ -53,11 +53,11 @@ class ShowAction
      *
      * @return string
      */
-    public function all(DatabaseInterface $db)
+    public function all(PostTable $posts)
     {
         return $this->view
             ->render('@blog/index', [
-                'posts' => $db->query('SELECT * FROM posts')->fetchAll()
+                'posts' => $posts->getAll()
             ]);
     }
 }

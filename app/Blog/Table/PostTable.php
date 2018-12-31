@@ -2,9 +2,7 @@
 
 namespace App\Blog\Table;
 
-use Simplex\Database\QueryBuilder;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-
+use Simplex\Database\Query\Builder;
 
 class PostTable
 {
@@ -24,16 +22,16 @@ class PostTable
     /**
      * Query builder
      *
-     * @var QueryBuilder
+     * @var Builder
      */
     private $query;
 
     /**
      * Constructor
      *
-     * @param QueryBuilder $query
+     * @param Builder $query
      */
-    public function __construct(QueryBuilder $query)
+    public function __construct(Builder $query)
     {
         $this->query = $query; //->from('posts');
     }
@@ -43,59 +41,51 @@ class PostTable
         return $this->query
             ->table('posts', 'p')
             ->select('p.title', 'p.content', 'u.username AS author')
-            ->join('users', 'u')
-            ->on('p.author_id = u.id')
-            ->getAll();
+            ->innerJoin('users u', 'p.author_id', '=', 'u.id')
+            ->get();
     }
 
     public function find(int $id)
     {
-        $result = $this->query
+        return $this->query
             ->table('posts', 'p')
             ->select('p.id', 'p.title', 'p.content', 'u.username AS author')
-            ->join('users', 'u')
-            ->on('p.author_id = u.id')
-            ->where('p.id = :id')
-            ->params(compact('id'))
-            ->get() ?: null;
-        
-        if(null === $result) throw new ResourceNotFoundException();
-        return $result;
+            ->innerJoin('users u', 'p.author_id', '=', 'u.id')
+            ->where('p.id', $id)
+            ->firstOrFail();
     }
 
     public function update(int $id, array $data)
     {
-        $data = array_filter($data, function($key){
+        $data = array_filter($data, function ($key) {
             return in_array($key, $this->fillable);
         }, ARRAY_FILTER_USE_KEY);
 
         return $this->query
             ->table('posts')
-            ->where('id = :id')
+            ->where('id', $id)
             ->update($data)
-            ->params(compact('id'))
-            ->execute();
+            ->run();
     }
 
     public function insert(array $data)
     {
-        $data = array_filter($data, function($key){
+        $data = array_filter($data, function ($key) {
             return in_array($key, $this->fillable);
         }, ARRAY_FILTER_USE_KEY);
 
         return $this->query
             ->table('posts')
             ->insert($data)
-            ->execute();
+            ->run();
     }
 
     public function delete(int $id)
     {
         return $this->query
             ->table('posts')
-            ->where('id = :id')
             ->delete()
-            ->params(compact('id'))
+            ->where('id', $id)
             ->execute();
     }
 }
