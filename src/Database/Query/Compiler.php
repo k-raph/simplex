@@ -103,12 +103,31 @@ class Compiler
      * @param array $values
      * @return string
      */
-    public function compileInsert(string $table, array $values): string
+    public function compileInsert(string $table, array &$values): string
     {
+        $batch = isset($values[0]);
+
+        $keys = $batch ? array_keys(current($values)) : array_keys($values);
+        $query = '(' . implode(', ', array_fill(0, count($keys), '?')) . ')';
+        
+        // Check if bulk insert
+        if ($batch) {
+            $rows = [];
+            foreach ($values as $row) {
+                foreach ($row as $value) {
+                    $rows[] = $value;
+                }
+            }
+
+            $query = implode(', ', array_fill(0, count($values), $query));
+            $values = $rows;
+        }
+
         $sql[] = 'INSERT INTO';
         $sql[] = $table;
-        $sql[] = '('. implode(array_keys($values), ', ') .')';
-        $sql[] = 'VALUES(' . implode(array_fill(0, count($values), '?'), ', ') . ')';
+        $sql[] = '('. implode($keys, ', ') .')';
+        $sql[] = 'VALUES';
+        $sql[] = $query;
 
         return implode($sql, ' ');
     }

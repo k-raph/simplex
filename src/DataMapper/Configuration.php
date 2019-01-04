@@ -5,6 +5,9 @@ namespace Simplex\DataMapper;
 use Simplex\DataMapper\Mapping\MetadataFactory;
 use Simplex\DataMapper\Mapping\EntityMetadata;
 use Simplex\DataMapper\Repository\Factory;
+use Simplex\DataMapper\Proxy\ProxyFactory;
+use Simplex\Database\DatabaseInterface;
+use Simplex\DataMapper\Persistence\DatabasePersister;
 
 class Configuration
 {
@@ -19,35 +22,48 @@ class Configuration
     protected $repoFactory;
 
     /**
-     * Setup the configuration class
+     * Mapping directory
      *
-     * @param string $mappingDir
-     * @return void
+     * @var string
      */
-    public static function setup(string $mappingDir): self
+    protected $mappingDir;
+
+    public function __construct(string $mappingDir)
     {
         if (!is_dir($mappingDir)) {
             throw new \InvalidArgumentException(sprintf('Provided path must be a valid directory (%s)', $mappingDir));
         }
 
+        $this->mappingDir = $mappingDir;
+    }
+
+    /**
+     * Setup the configuration class
+     *
+     * @param string $mappingDir
+     * @return void
+     */
+    public function setup(EntityManager $manager)
+    {
         $metafactory = new MetadataFactory();
         $repofactory = new Factory();
-        $files = glob("$mappingDir/*.php");
+        $proxyFactory = new ProxyFactory($metafactory);
+
+        $files = glob("$this->mappingDir/*.php");
         foreach ($files as $file) {
             $mapping = require $file;
             foreach ($mapping as $class => $meta) {
                 $metadata = new EntityMetadata($class, $meta);
                 $repository = $metadata->getRepositoryClass();
+                $persister = new DatabasePersister($manager->getConnection()->getQueryBuilder(), $metadata, $proxyFactory);
+
                 $metafactory->setClassMetadata($class, $metadata);
-                $repofactory->setClassRepository($class, new $repository);
+                $repofactory->setClassRepository($class, new $repository($metadata, $persister, $proxyFactory));
             }
         }
         
-        $config = new self;
-        $config->metaFactory = $metafactory;
-        $config->repoFactory = $repofactory;
-        
-        return $config;
+        $this->metaFactory = $metafactory;
+        $this->repoFactory = $repofactory;
     }
 
     /**

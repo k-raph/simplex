@@ -280,7 +280,7 @@ class Builder
      */
     protected function reset()
     {
-        $this->table = null;
+        // $this->table = null;
         $this->type = null;
         $this->sql = '';
         $this->fields = [];
@@ -416,5 +416,10 @@ class Builder
     public function findAll($value, string $key = 'id')
     {
         return $this->where($value, $key)->get();
+    }
+
+    public function transaction(\Closure $transaction)
+    {
+        return $this->db->transaction($transaction, $this);
     }
 }

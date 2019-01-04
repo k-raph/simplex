@@ -8,6 +8,9 @@ use Simplex\DataMapper\Configuration;
 use Simplex\DataMapper\Repository\Repository;
 use Simplex\Tests\DataMapper\Fixtures\Entity\User;
 use Simplex\DataMapper\Mapping\EntityMetadata;
+use Simplex\Database\DatabaseInterface;
+use Simplex\Database\Query\Builder;
+use Prophecy\Argument;
 
 class EntityManagerTest extends TestCase
 {
@@ -19,7 +22,12 @@ class EntityManagerTest extends TestCase
 
     public function setUp()
     {
-        $this->em = new EntityManager(Configuration::setup(__DIR__.'/Fixtures/Mapping'));
+        $db = $this->prophesize(DatabaseInterface::class);
+        $qb = $this->prophesize(Builder::class);
+        $qb->table(Argument::any())->willReturn($qb);
+        $db->getQueryBuilder()->willReturn($qb);
+
+        $this->em = new EntityManager(new Configuration(__DIR__.'/Fixtures/Mapping'), $db->reveal());
     }
 
     public function testGetMetadataForEntityClass()

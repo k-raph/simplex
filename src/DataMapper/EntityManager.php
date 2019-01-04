@@ -6,6 +6,7 @@ use Simplex\DataMapper\Repository\RepositoryInterface;
 use Simplex\DataMapper\Repository\Factory as RepositoryFactory;
 use Simplex\DataMapper\Mapping\EntityMetadata;
 use Simplex\DataMapper\Mapping\MetadataFactory;
+use Simplex\Database\DatabaseInterface;
 
 class EntityManager
 {
@@ -20,8 +21,13 @@ class EntityManager
      */
     protected $repositoryFactory;
 
-    public function __construct(Configuration $config)
+    protected $connection;
+
+    public function __construct(Configuration $config, DatabaseInterface $connection)
     {
+        $this->connection = $connection;
+
+        $config->setup($this);
         $this->metadataFactory = $config->getMetadataFactory();
         $this->repositoryFactory = $config->getRepositoryFactory();
     }
@@ -44,7 +50,7 @@ class EntityManager
      * @param mixed $key
      * @return object
      */
-    public function find(string $entityClass, $key): object
+    public function find(string $entityClass, $key)//: object
     {
         return $this->getRepository($entityClass)->findOneBy([
             $this->getMetadataFor($entityClass)->getIdentifier() => $key
@@ -62,11 +68,16 @@ class EntityManager
         return $this->repositoryFactory->getClassRepository($entityClass);
     }
 
-    public function persist(object $entity)
+    public function getConnection(): DatabaseInterface
+    {
+        return $this->connection;
+    }
+
+    public function persist(/*object*/ $entity)
     {
     }
 
-    public function remove(object $entity)
+    public function remove(/*object*/ $entity)
     {
     }
 

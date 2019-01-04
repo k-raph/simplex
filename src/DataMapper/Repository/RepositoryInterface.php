@@ -25,7 +25,7 @@ interface RepositoryInterface
      * @param array $criteria
      * @return object[]
      */
-    public function findBy(array $criteria): array;
+    public function findBy(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, ?int $offset): array;
 
     /**
      * Get a single entry matching a criteria
@@ -34,4 +34,11 @@ interface RepositoryInterface
      * @return object
      */
     public function findOneBy(array $criteria): object;
+
+    /**
+     * Get managed entity class name
+     *
+     * @return string
+     */
+    public function getClassName(): string;
 }

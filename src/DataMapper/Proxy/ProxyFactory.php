@@ -43,7 +43,6 @@ class ProxyFactory
     public function wrap(object $entity): Proxy
     {
         $proxy = new Proxy($entity, $this->getMappings(get_class($entity)));
-        $proxy->hydrate($this->extract($entity));
 
         return $proxy;
     }
@@ -56,12 +55,13 @@ class ProxyFactory
      */
     protected function extract(object $entity): array
     {
-        $properties = (new \ReflectionClass($entity))->getProperties();
-        array_walk($properties, function (\ReflectionProperty $property) {
+        $data = [];
+        foreach ((new \ReflectionClass($entity))->getProperties() as $property) {
             $property->setAccessible(true);
-        });
-
-        return get_object_vars($entity);
+            $data[$property->getName()] = $property->getValue($entity);
+        }
+        
+        return $data;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Simplex\Database;
 
 use PDOStatement;
+use Simplex\Database\Query\Builder;
 
 interface DatabaseInterface
 {
@@ -27,9 +28,10 @@ interface DatabaseInterface
      * Wraps database operations as a transaction
      *
      * @param \Closure $transaction
+     * @param object|null $bound Optional param to bind to closure
      * @return bool
      */
-    public function transaction(\Closure $transaction): bool;
+    public function transaction(\Closure $transaction, /*?object*/ $bound =  null): bool;
 
     /**
      * Fetch a single entry from a query
@@ -44,4 +46,11 @@ interface DatabaseInterface
      * @return array
      */
     public function fetchAll(): array;
+
+    /**
+     * Gets an instance of query builder
+     *
+     * @return Builder
+     */
+    public function getQueryBuilder(): Builder;
 }

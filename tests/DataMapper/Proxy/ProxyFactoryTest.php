@@ -28,4 +28,37 @@ class ProxyFactoryTest extends TestCase
         $this->assertInstanceOf(\stdClass::class, $proxy->reveal());
         $this->assertSame($mock, $proxy->reveal());
     }
+
+    public function testWrapClassWithPrivateProperties()
+    {
+        $factory = new ProxyFactory(new MetadataFactory);
+        $mock = new FooBar();
+        $mock->setBar('bobo');
+
+        $proxy = $factory->wrap($mock);
+
+        $this->assertInstanceOf(Proxy::class, $proxy);
+        $this->assertInstanceOf(FooBar::class, $proxy->reveal());
+        $this->assertSame($mock, $proxy->reveal());
+        $this->assertEquals('bobo', $proxy->reveal()->getBar());
+    }
+}
+
+class FooBar
+{
+
+    /**
+     * @var string
+     */
+    private $bar;
+
+    public function setBar(string $bar)
+    {
+        $this->bar = $bar;
+    }
+
+    public function getBar(): ?string
+    {
+        return $this->bar;
+    }
 }

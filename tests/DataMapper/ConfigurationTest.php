@@ -7,6 +7,10 @@ use Simplex\DataMapper\Configuration;
 use Simplex\DataMapper\Mapping\MetadataFactory;
 use Simplex\Tests\DataMapper\Fixtures\Entity\User;
 use Simplex\DataMapper\Mapping\EntityMetadata;
+use Simplex\Database\DatabaseInterface;
+use Simplex\Database\Query\Builder;
+use Simplex\DataMapper\EntityManager;
+use Prophecy\Argument;
 
 class ConfigurationTest extends TestCase
 {
@@ -18,7 +22,16 @@ class ConfigurationTest extends TestCase
 
     public function setUp()
     {
-        $this->config = Configuration::setup(__DIR__.'/Fixtures/Mapping');
+        $this->config = new Configuration(__DIR__.'/Fixtures/Mapping');
+        
+        $db = $this->prophesize(DatabaseInterface::class);
+        $qb = $this->prophesize(Builder::class);
+        $qb->table(Argument::any())->willReturn($qb);
+        $db->getQueryBuilder()->willReturn($qb);
+        $em = $this->prophesize(EntityManager::class);
+        $em->getConnection()->willReturn($db);
+
+        $this->config->setUp($em->reveal());
     }
 
     public function testGetMetadataFactory()

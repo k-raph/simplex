@@ -89,4 +89,17 @@ class Proxy
             $this->properties[$name]->setValue($this->instance, $value);
         }
     }
+
+    /**
+     * Retrieve a property value
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function getField(string $name)
+    {
+        return isset($this->properties[$name])
+            ? $this->properties[$name]->getValue($this->instance)
+            : null;
+    }
 }

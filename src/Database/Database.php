@@ -6,6 +6,7 @@ use PDO;
 use PDOStatement;
 use PDOException;
 use Simplex\Database\Driver\DriverInterface;
+use Simplex\Database\Query\Builder;
 
 class Database implements DatabaseInterface
 {
@@ -67,11 +68,11 @@ class Database implements DatabaseInterface
     /**
      * {@inheritdoc}
      */
-    public function transaction(\Closure $transaction): bool
+    public function transaction(\Closure $transaction, /*?object*/ $bound = null): bool
     {
         try {
             $this->pdo->beginTransaction();
-            $transaction($this);
+            $transaction($bound ?? $this);
             return $this->pdo->commit();
         } catch (PDOException $e) {
             $this->pdo->rollBack();
@@ -93,5 +94,13 @@ class Database implements DatabaseInterface
     public function fetchAll(): array
     {
         return $this->statement->fetchAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getQueryBuilder(): Builder
+    {
+        return new Builder($this);
     }
 }

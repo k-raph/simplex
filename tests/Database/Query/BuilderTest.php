@@ -229,7 +229,7 @@ class BuilderTest extends TestCase
             ->getSql();
 
         $this->assertEquals(
-            'INSERT INTO table (title, post) VALUES(?, ?)',
+            'INSERT INTO table (title, post) VALUES (?, ?)',
             $query
         );
         
@@ -357,6 +357,43 @@ class BuilderTest extends TestCase
         
         $this->assertEquals([
             0 => 'id'
+        ], $this->query->getParameters());
+    }
+
+    public function testBatchInsert()
+    {
+        $entries = [
+            [
+                'title' => 'Title1',
+                'post' => 'POST1'
+            ],
+            [
+                'title' => 'Title2',
+                'post' => 'POST2'
+            ],
+            [
+                'title' => 'Title3',
+                'post' => 'POST3'
+            ]
+        ];
+
+        $query = $this->query
+            ->table('table')
+            ->insert($entries)
+            ->getSql();
+
+        $this->assertEquals(
+            'INSERT INTO table (title, post) VALUES (?, ?), (?, ?), (?, ?)',
+            $query
+        );
+        
+        $this->assertEquals([
+            0 => 'Title1',
+            1 => 'POST1',
+            2 => 'Title2',
+            3 => 'POST2',
+            4 => 'Title3',
+            5 => 'POST3',
         ], $this->query->getParameters());
     }
 }
