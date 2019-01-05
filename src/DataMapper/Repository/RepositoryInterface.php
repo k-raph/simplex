@@ -7,10 +7,10 @@ interface RepositoryInterface
     /**
      * Gets an entry by its primary primary key
      *
-     * @param mixed $index
-     * @return object
+     * @param mixed $id
+     * @return object|null
      */
-    public function find($index): object;
+    public function find($id): ?object;
 
     /**
      * Retrieve all of the entries
@@ -31,9 +31,9 @@ interface RepositoryInterface
      * Get a single entry matching a criteria
      *
      * @param array $criteria
-     * @return object
+     * @return object|null
      */
-    public function findOneBy(array $criteria): object;
+    public function findOneBy(array $criteria): ?object;
 
     /**
      * Get managed entity class name

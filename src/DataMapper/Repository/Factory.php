@@ -2,9 +2,10 @@
 
 namespace Simplex\DataMapper\Repository;
 
+use Simplex\DataMapper\EntityManager;
+
 class Factory
 {
-
     /**
      * Registered repositories
      *
@@ -13,27 +14,15 @@ class Factory
     protected $repositories = [];
 
     /**
-     * Add a class metadata instance
-     *
-     * @param string $className
-     * @param RepositoryInterface $metadata
-     * @return void
-     */
-    public function setClassRepository(string $className, RepositoryInterface $repository)
-    {
-        $this->repositories[$className] = $repository;
-    }
-
-    /**
      * Get metadata instance associed to a classname
      *
      * @param string $className
      * @return EntityMetadata|null
      */
-    public function getClassRepository(string $className): ?RepositoryInterface
+    public function getRepository(EntityManager $manager, string $className): RepositoryInterface
     {
         if (!$this->hasRepositoryFor($className)) {
-            throw new \Exception(sprintf('Repository for entity class %s not found', $className));
+            $this->repositories[$className] = $this->createRepository($manager, $className);
         }
 
         return $this->repositories[$className];
@@ -48,5 +37,20 @@ class Factory
     public function hasRepositoryFor(string $className): bool
     {
         return isset($this->repositories[$className]);
+    }
+
+    /**
+     * Create an instance of repository
+     *
+     * @param EntityManager $manager
+     * @param string $className
+     * @return RepositoryInterface
+     */
+    protected function createRepository(EntityManager $manager, string $className): RepositoryInterface
+    {
+        $meta = $manager->getMetadataFor($className);
+        $repository = $meta->getRepositoryClass();
+
+        return new $repository($manager, $meta);
     }
 }

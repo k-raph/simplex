@@ -6,6 +6,7 @@ use Simplex\Database\Query\Builder;
 use Simplex\DataMapper\Mapping\EntityMetadata;
 use Simplex\DataMapper\Proxy\ProxyFactory;
 use Simplex\DataMapper\Proxy\Proxy;
+use Simplex\DataMapper\EntityManager;
 
 class DatabasePersister implements PersisterInterface
 {
@@ -21,9 +22,9 @@ class DatabasePersister implements PersisterInterface
     protected $metadata;
 
     /**
-     * @var ProxyFactory
+     * @var EntityManager
      */
-    protected $proxyFactory;
+    protected $em;
 
     /**
      * Proxies to entity to insert
@@ -32,11 +33,13 @@ class DatabasePersister implements PersisterInterface
      */
     protected $entityInserts = [];
 
-    public function __construct(Builder $builder, EntityMetadata $metadata, ProxyFactory $proxies)
+    public function __construct(EntityManager $manager, EntityMetadata $metadata)
     {
         $this->metadata = $metadata;
-        $this->builder = $builder->table($metadata->getTableName());
-        $this->proxyFactory = $proxies;
+        $this->em = $manager;
+        $this->builder = $manager->getConnection()
+            ->getQueryBuilder()
+            ->table($metadata->getTableName());
     }
 
     /**
@@ -77,10 +80,7 @@ class DatabasePersister implements PersisterInterface
     public function performInsert()
     {
         $this->builder->transaction(function () {
-            $input = array_map(function (Proxy $proxy) {
-                return $proxy->toArray();
-            }, $this->entityInserts);
-            
+            $input = array_values($this->entityInserts);
             $this->builder->insert($input);
         });
     }
@@ -92,7 +92,8 @@ class DatabasePersister implements PersisterInterface
     {
         $class = $this->metadata->getEntityClass();
         if ($entity instanceof $class) {
-            $this->entityInserts[] = $this->proxyFactory->wrap($entity);
+            $uow = $this->em->getUnitOfWork();
+            $this->entityInserts[] = $uow->extract($entity);
         }
     }
 
@@ -124,10 +125,11 @@ class DatabasePersister implements PersisterInterface
      */
     protected function getWhere(object $entity): array
     {
-        $proxy = $this->proxyFactory->wrap($entity);
         $id = $this->metadata->getIdentifier();
-        $where = [$id => $proxy->getField($id)];
-
+        $field = $this->metadata->getSQLName($id);
+        $value = $this->em->getUnitOfWork()->proxify($entity)->getValue($id);
+        $where = [$field => $value];
+        
         return $where;
     }
 }

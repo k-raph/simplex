@@ -5,41 +5,39 @@ namespace Simplex\DataMapper\Repository;
 use Simplex\DataMapper\Persistence\PersisterInterface;
 use Simplex\DataMapper\Mapping\EntityMetadata;
 use Simplex\DataMapper\Proxy\ProxyFactory;
+use Simplex\DataMapper\EntityManager;
 
 class Repository implements RepositoryInterface
 {
 
     /**
-     * @var PersisterInterface
+     * @var EntityManager
      */
-    protected $persister;
+    protected $em;
 
     /**
      * @var EntityMetadata
      */
-
     protected $metadata;
 
     /**
-     * @var ProxyFactory
+     * @var string
      */
-    protected $proxyFactory;
+    protected $className;
 
-    public function __construct(EntityMetadata $metadata, PersisterInterface $persister, ProxyFactory $factory)
+    public function __construct(EntityManager $manager, EntityMetadata $metadata)
     {
         $this->metadata = $metadata;
-        $this->persister = $persister;
-        $this->proxyFactory = $factory;
+        $this->className = $metadata->getEntityClass();
+        $this->em = $manager;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function find($index): object
+    public function find($id): ?object
     {
-        $result = $this->findOneBy([$this->metadata->getIdentifier() => $index]);
-
-        return $this->_createEntity($result);
+        return $this->em->find($this->className, $id);
     }
 
     /**
@@ -55,38 +53,25 @@ class Repository implements RepositoryInterface
      */
     public function findBy(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, ?int $offset): array
     {
-        $result = $this->persister->loadAll($criteria, $orderBy, $limit, $offset);
-        return array_map([$this, '_createEntity'], $result);
+        $persister = $this->em->getUnitOfWork()->getPersister($this->className);
+        return $persister->loadAll($criteria, $orderBy, $limit, $offset);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function findOneBy(array $criteria): object
+    public function findOneBy(array $criteria): ?object
     {
-        $result = $this->findBy($criteria, null, 1, null);
-
-        return $this->_createEntity($result);
+        return $this->findBy($criteria, null, 1, null);
     }
 
     /**
-     * Creates entities from an array
+     * Get managed entity class name
      *
-     * @param array|null $data
-     * @return object|null
+     * @return string
      */
-    protected function _createEntity(?array $data = null): ?object
-    {
-        if (!$data) {
-            return null;
-        }
-
-        $proxy = $this->proxyFactory->create($this->metadata->getEntityClass(), $data);
-        return $proxy->reveal();
-    }
-
     public function getClassName(): string
     {
-        return $this->metadata->getEntityClass();
+        return $this->className;
     }
 }

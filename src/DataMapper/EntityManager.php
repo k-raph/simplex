@@ -7,6 +7,7 @@ use Simplex\DataMapper\Repository\Factory as RepositoryFactory;
 use Simplex\DataMapper\Mapping\EntityMetadata;
 use Simplex\DataMapper\Mapping\MetadataFactory;
 use Simplex\Database\DatabaseInterface;
+use Simplex\DataMapper\Proxy\ProxyFactory;
 
 class EntityManager
 {
@@ -21,15 +22,33 @@ class EntityManager
      */
     protected $repositoryFactory;
 
+    /**
+     * @var ProxyFactory
+     */
+    protected $proxyFactory;
+
+    /**
+     * @var DatabaseInterface
+     */
     protected $connection;
+
+    /**
+     * Unit of work instance
+     *
+     * @var UnitOfWork
+     */
+    protected $uow;
 
     public function __construct(Configuration $config, DatabaseInterface $connection)
     {
         $this->connection = $connection;
-
+        $this->repositoryFactory = new RepositoryFactory();
+        
         $config->setup($this);
         $this->metadataFactory = $config->getMetadataFactory();
-        $this->repositoryFactory = $config->getRepositoryFactory();
+
+        $this->proxyFactory = new ProxyFactory($this->metadataFactory);
+        $this->uow = new UnitOfWork($this, $this->proxyFactory);
     }
 
     /**
@@ -52,9 +71,6 @@ class EntityManager
      */
     public function find(string $entityClass, $key)//: object
     {
-        return $this->getRepository($entityClass)->findOneBy([
-            $this->getMetadataFor($entityClass)->getIdentifier() => $key
-        ]);
     }
 
     /**
@@ -65,12 +81,27 @@ class EntityManager
      */
     public function getRepository(string $entityClass): RepositoryInterface
     {
-        return $this->repositoryFactory->getClassRepository($entityClass);
+        return $this->repositoryFactory->getRepository($this, $entityClass);
     }
 
+    /**
+     * Gets database connection
+     *
+     * @return DatabaseInterface
+     */
     public function getConnection(): DatabaseInterface
     {
         return $this->connection;
+    }
+
+    /**
+     * Gets the unit of work instance
+     *
+     * @return UnitOfWork
+     */
+    public function getUnitOfWork(): UnitOfWork
+    {
+        return $this->uow;
     }
 
     public function persist(/*object*/ $entity)
