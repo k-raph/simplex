@@ -7,6 +7,8 @@ use Simplex\Renderer\TwigRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Simplex\Routing\RouterInterface;
 use Simplex\Database\DatabaseInterface;
+use Simplex\DataMapper\EntityManager;
+use App\Blog\Entity\Post;
 
 class ShowAction
 {
@@ -42,9 +44,9 @@ class ShowAction
      * @param integer $id
      * @return string
      */
-    public function single(int $id, PostTable $posts)
+    public function single(int $id, EntityManager $em)
     {
-        $post = $posts->find($id);
+        $post = $em->find(Post::class, $id);
         return $this->view->render('@blog/show', compact('post'));
     }
 
@@ -53,11 +55,11 @@ class ShowAction
      *
      * @return string
      */
-    public function all(PostTable $posts)
+    public function all(EntityManager $em)
     {
         return $this->view
             ->render('@blog/index', [
-                'posts' => $posts->getAll()
+                'posts' => $em->getRepository(Post::class)->findAll()
             ]);
     }
 }

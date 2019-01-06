@@ -28,10 +28,19 @@ class EntityManagerTest extends TestCase
         $db->getQueryBuilder()->willReturn($qb);
 
         $this->em = new EntityManager(new Configuration(__DIR__.'/Fixtures/Mapping'), $db->reveal());
+
+        $user = new User();
+        $user->setId(1);
+        $user->setName('kraph');
+        $user->setEmail('kraph@email.fr');
+
+        $this->em->persist($user);
+        $this->em->flush();
     }
 
     public function testGetMetadataForEntityClass()
     {
+        $this->expectException(\UnexpectedValueException::class);
         $meta = $this->em->getMetadataFor(\stdClass::class);
         $this->assertNull($meta);
 
@@ -47,10 +56,43 @@ class EntityManagerTest extends TestCase
 
     public function testFindWhenExistsReturnObject()
     {
-        // $user = $this->em->find(User::class, 1);
+        $user = new User();
+        $this->em->persist($user);
 
-        // $this->assertEquals('object', gettype($user));
-        // $this->assertInstanceOf(User::class, $user);
-        // $this->assertEquals(1, $user->getId());
+        /**
+         * Try getting without persist returns null
+         */
+        $user = $this->em->find(User::class, 2);
+        $this->assertNull($user);
+        
+        $this->em->flush();
+        
+        $user = $this->em->find(User::class, 2);
+        $this->assertEquals('object', gettype($user));
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals(2, $user->getId());
+        
+        $this->assertNull($this->em->find(User::class, 3));
+    }
+
+    public function testFlushAfterEntityUpdate()
+    {
+        $user = $this->em->find(User::class, 1);
+        $this->assertEquals('kraph', $user->getName());
+
+        $user->setName('bukimi');
+        $this->em->flush();
+
+        $user = $this->em->find(User::class, 1);
+        $this->assertEquals('bukimi', $user->getName());
+    }
+
+    public function testRemove()
+    {
+        $user = $this->em->find(User::class, 1);
+        $this->em->remove($user);
+        $this->em->flush();
+        
+        $this->assertNull($this->em->find(User::class, 1));
     }
 }

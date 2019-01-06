@@ -10,7 +10,7 @@ interface PersisterInterface
      * @param array $criteria
      * @return mixed
      */
-    public function load(array $criteria);
+    public function load(array $criteria): array;
 
     /**
      * Loads all entries matching given filters
@@ -21,7 +21,7 @@ interface PersisterInterface
      * @param integer|null $offset
      * @return array
      */
-    public function loadAll(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, ?int $offset): array;
+    public function loadAll(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, ?int $offset = 0): array;
     
     /**
      * Adds an object to insert to store

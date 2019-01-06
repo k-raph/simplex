@@ -60,7 +60,7 @@ class Proxy
      *
      * @return array
      */
-    public function toArray(): array
+    public function toPersistableArray(): array
     {
         $array = [];
         foreach ($this->properties as $name => $property) {
@@ -69,6 +69,13 @@ class Proxy
         }
 
         return $array;
+    }
+
+    public function toArray()
+    {
+        return array_map(function (ReflectionProperty $property) {
+            return $property->getValue($this->instance);
+        }, $this->properties);
     }
 
     /**

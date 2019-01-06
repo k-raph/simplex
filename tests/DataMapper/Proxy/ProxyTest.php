@@ -34,11 +34,11 @@ class ProxyTest extends TestCase
         $object = new Foo();
         $proxy = new Proxy($object, ['bar' => 'foo_bar']);
 
-        $this->assertSame(['foo_bar' => null], $proxy->toArray());
+        $this->assertSame(['foo_bar' => null], $proxy->toPersistableArray());
         
         $object->setBar('bar');
         $object->name = 'foo';
-        $this->assertSame(['foo_bar' => 'bar'], $proxy->toArray());
+        $this->assertSame(['foo_bar' => 'bar'], $proxy->toPersistableArray());
     }
 
     public function testHydrate()
@@ -48,7 +48,7 @@ class ProxyTest extends TestCase
         $proxy->hydrate(['bar' => 'foo_bar', 'name' => 'foo']);
         
         $this->assertEquals('foo_bar', $object->getBar());
-        $this->assertSame(['bar' => 'foo_bar'], $proxy->toArray());
+        $this->assertSame(['bar' => 'foo_bar'], $proxy->toPersistableArray());
     }
 }
 

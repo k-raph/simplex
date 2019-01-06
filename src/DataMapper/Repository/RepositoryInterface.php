@@ -23,9 +23,12 @@ interface RepositoryInterface
      * Get an array of results after a filter
      *
      * @param array $criteria
+     * @param string|null $orderBy
+     * @param integer|null $limit
+     * @param integer $offset
      * @return object[]
      */
-    public function findBy(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, ?int $offset): array;
+    public function findBy(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, int $offset = 0): array;
 
     /**
      * Get a single entry matching a criteria

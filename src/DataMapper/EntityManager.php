@@ -8,6 +8,7 @@ use Simplex\DataMapper\Mapping\EntityMetadata;
 use Simplex\DataMapper\Mapping\MetadataFactory;
 use Simplex\Database\DatabaseInterface;
 use Simplex\DataMapper\Proxy\ProxyFactory;
+use UnexpectedValueException;
 
 class EntityManager
 {
@@ -59,7 +60,13 @@ class EntityManager
      */
     public function getMetadataFor(string $className): ?EntityMetadata
     {
-        return $this->metadataFactory->getClassMetadata($className);
+        $meta = $this->metadataFactory->getClassMetadata($className);
+        
+        if (!$meta) {
+            throw new UnexpectedValueException(sprintf('Metadata for class %s not found', $className));
+        }
+
+        return $meta;
     }
 
     /**
@@ -71,6 +78,7 @@ class EntityManager
      */
     public function find(string $entityClass, $key)//: object
     {
+        return $this->uow->get($entityClass, $key);
     }
 
     /**
@@ -104,15 +112,29 @@ class EntityManager
         return $this->uow;
     }
 
+    /**
+     * Store an entity as persistent
+     */
     public function persist(/*object*/ $entity)
     {
+        $this->uow->persist($entity);
     }
 
+    /**
+     * Removes an entity from the manager
+     */
     public function remove(/*object*/ $entity)
     {
+        return $this->uow->remove($entity);
     }
 
+    /**
+     * Flushes the entity manager to commit the changes
+     *
+     * @return void
+     */
     public function flush()
     {
+        return $this->uow->commit();
     }
 }

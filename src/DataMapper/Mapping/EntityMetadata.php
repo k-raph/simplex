@@ -151,6 +151,16 @@ class EntityMetadata
     {
     }
     
+
+    /**
+     * Gets custom persister class name
+     *
+     * @return string|null
+     */
+    public function customPersister(): ?string
+    {
+        return $this->datas['persisterClass'] ?? null;
+    }
     /**
      * @return mixed
      */

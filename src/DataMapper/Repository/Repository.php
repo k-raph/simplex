@@ -51,7 +51,7 @@ class Repository implements RepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function findBy(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, ?int $offset): array
+    public function findBy(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, int $offset = 0): array
     {
         $persister = $this->em->getUnitOfWork()->getPersister($this->className);
         return $persister->loadAll($criteria, $orderBy, $limit, $offset);

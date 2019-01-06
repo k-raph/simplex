@@ -45,7 +45,7 @@ class DatabasePersister implements PersisterInterface
     /**
      * {@inheritDoc}
      */
-    public function load(array $criteria)
+    public function load(array $criteria): array
     {
         return $this->builder->where($criteria)->first();
     }
@@ -53,12 +53,12 @@ class DatabasePersister implements PersisterInterface
     /**
      * {@inheritDoc}
      */
-    public function loadAll(array $criteria, $orderBy = null, ?int $limit = null, ?int $offset): array
+    public function loadAll(array $criteria, $orderBy = null, ?int $limit = null, ?int $offset = 0): array
     {
         /** @var Builder $query */
         $query = $this->builder->where($criteria);
 
-        if ($orderBy) {
+        if ($orderBy && !in_array(strtoupper($orderBy), ['ASC', 'DESC'])) {
             $orderBy = is_array($orderBy) ? $orderBy : [$orderBy, 'DESC'];
             $query = $query->orderBy($orderBy[0], $orderBy[1]);
         }

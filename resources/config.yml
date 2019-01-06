@@ -6,6 +6,7 @@ providers:
   - Simplex\Database\DatabaseServiceProvider
   - Simplex\Session\SessionServiceProvider
   - Simplex\Renderer\TwigServiceProvider
+  - Simplex\DataMapper\DataMapperServiceProvider
 
 middlewares:
     - Simplex\Middleware\TrailingSlashMiddleware
