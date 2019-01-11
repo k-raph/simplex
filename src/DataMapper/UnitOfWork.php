@@ -7,6 +7,8 @@ use Simplex\DataMapper\Proxy\Proxy;
 use Simplex\DataMapper\Proxy\ProxyFactory;
 use Simplex\DataMapper\Persistence\DatabasePersister;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Simplex\DataMapper\Mapping\EntityMetadata;
+use Simplex\DataMapper\Relations\Loader;
 
 class UnitOfWork
 {
@@ -47,10 +49,16 @@ class UnitOfWork
      */
     protected $originalEntities = [];
 
+    /**
+     * @var Loader
+     */
+    protected $relationLoader;
+
     public function __construct(EntityManager $manager, ProxyFactory $proxies)
     {
         $this->em = $manager;
         $this->proxyFactory = $proxies;
+        $this->relationLoader = new Loader($manager);
     }
 
     /**
@@ -62,13 +70,14 @@ class UnitOfWork
      */
     public function get(string $entityClass, $id): ?object
     {
-        if (isset($this->entityStates[self::STATE_MANAGED][$entityClass.$id])) {
-            return $this->entityStates[self::STATE_MANAGED][$entityClass.$id];
-        }
+        // if (isset($this->entityStates[self::STATE_MANAGED][$entityClass.$id])) {
+        //     return $this->entityStates[self::STATE_MANAGED][$entityClass.$id];
+        // }
 
         $meta = $this->em->getMetadataFor($entityClass);
         $persister = $this->getPersister($entityClass);
-        
+
+        // Loads parent result first
         $result = $persister->load([
             $meta->getIdentifier() => $id
         ]);
@@ -77,7 +86,7 @@ class UnitOfWork
             return null;
         }
 
-        $entity = $this->createEntity($entityClass, $result);
+        $entity = $this->createEntity($meta, $result);
         $uid = spl_object_hash($entity);
 
         $this->entityStates[self::STATE_MANAGED][$uid] = $entity;
@@ -229,9 +238,28 @@ class UnitOfWork
      * @param array $data
      * @return object|null
      */
-    public function createEntity(string $className, array $data = []): ?object
+    public function createEntity(EntityMetadata $meta, array $data = []): ?object
     {
+        $className = $meta->getEntityClass();
+
+        // Checks and loads relations;
+        if ($meta->hasRelations()) {
+            $this->loadRelations($meta, $data);
+        }
+        
         $proxy = $this->proxyFactory->create($className, $data);
         return $proxy->reveal();
+    }
+
+    protected function loadRelations(EntityMetadata $meta, array &$result)
+    {
+        foreach ($meta->getRelationsNames() as $name) {
+            $relations[$name] = $meta->getRelation($name);
+        }
+        
+        foreach ($relations as $field => $data) {
+            $relation = $this->relationLoader->loadRelation($meta->getEntityClass(), $data, $result);
+            $result[$field] = $relation;
+        }
     }
 }

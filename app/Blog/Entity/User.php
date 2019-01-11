@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplex\Tests\DataMapper\Fixtures\Entity;
+namespace App\Blog\Entity;
 
 class User
 {
@@ -25,7 +25,7 @@ class User
      */
     private $password;
 
-    private $comments;
+    private $posts;
 
     public function setId(int $id)
     {
@@ -65,5 +65,10 @@ class User
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    public function getPosts()
+    {
+        return $this->posts;
     }
 }

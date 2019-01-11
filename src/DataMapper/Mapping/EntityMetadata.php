@@ -26,7 +26,21 @@ class EntityMetadata
             'repositoryClass' => Repository::class,
             'id' => 'id',
             'fields' => [],
+            'relations' => []
         ], $mapping);
+
+        if (!empty($this->datas['relations'])) {
+            $assoc = [];
+            foreach ($this->datas['relations'] as $type => $relations) {
+                foreach ($relations as $field => $config) {
+                    $this->datas['fields'][$field] = [];
+                    $config['type'] = $type;
+                    $assoc[$field] = $config;
+                }
+            }
+
+            $this->datas['relations'] = $assoc;
+        }
     }
 
     /**
@@ -109,19 +123,33 @@ class EntityMetadata
     /**
      * @return boolean
      */
-    // public function hasRelations(): bool;
+    public function hasRelations(): bool
+    {
+        return !empty($this->datas['relations']);
+    }
     
     /**
      * @return array
      */
-    // public function getRelations(): array;
+    public function getRelations(): array
+    {
+        return $this->datas['relations'];
+    }
     
+    public function getRelationsNames(): array
+    {
+        return array_keys($this->datas['relations']);
+    }
+
     /**
      * @param $name
      *
      * @return null|array
      */
-    // public function getRelation($name);
+    public function getRelation($name): ?array
+    {
+        return $this->datas['relations'][$name] ?? null;
+    }
     
     /**
      * Get provided column name's type

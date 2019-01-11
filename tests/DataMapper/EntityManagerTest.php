@@ -25,6 +25,8 @@ class EntityManagerTest extends TestCase
         $db = $this->prophesize(DatabaseInterface::class);
         $qb = $this->prophesize(Builder::class);
         $qb->table(Argument::any())->willReturn($qb);
+        $qb->where(Argument::any())->willReturn($qb);
+        $qb->get()->willReturn([]);
         $db->getQueryBuilder()->willReturn($qb);
 
         $this->em = new EntityManager(new Configuration(__DIR__.'/Fixtures/Mapping'), $db->reveal());

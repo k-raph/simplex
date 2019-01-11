@@ -62,6 +62,7 @@ class Database implements DatabaseInterface
             $this->statement = $this->pdo->prepare($statement);
             return $this->statement->execute($bindings);
         } catch (PDOException $e) {
+            throw $e;
         }
     }
 

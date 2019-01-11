@@ -1,14 +1,10 @@
 <?php
 
-namespace Simplex\Tests\DataMapper\Fixtures\Mapping;
-
-use Simplex\Tests\DataMapper\Fixtures\Entity\User;
-use Simplex\DataMapper\Persistence\ArrayPersister;
-use Simplex\Tests\DataMapper\Fixtures\Entity\Comment;
+use App\Blog\Entity\User;
+use App\Blog\Entity\Post;
 
 return [
     User::class => [
-        'persisterClass' => ArrayPersister::class,
         'table' => 'users',
         'id' => 'id',
         'fields' => [
@@ -28,9 +24,9 @@ return [
         ],
         'relations' => [
             'oneToMany' => [
-                'comments' => [
+                'posts' => [
                     'field' => 'id',
-                    'target' => Comment::class,
+                    'target' => Post::class,
                     'targetField' => 'author_id'
                 ]
             ]

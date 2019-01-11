@@ -89,7 +89,7 @@ class Proxy
         $mappings = array_flip($this->fieldMaps);
         foreach ($data as $key => $value) {
             $name = $mappings[$key] ?? null;
-            if (!$name) {
+            if (!$name || !isset($this->properties[$name])) {
                 continue;
             }
 

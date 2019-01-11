@@ -53,8 +53,12 @@ class Repository implements RepositoryInterface
      */
     public function findBy(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, int $offset = 0): array
     {
-        $persister = $this->em->getUnitOfWork()->getPersister($this->className);
-        return $persister->loadAll($criteria, $orderBy, $limit, $offset);
+        $uow = $this->em->getUnitOfWork();
+        $persister = $uow->getPersister($this->className);
+        $result = $persister->loadAll($criteria, $orderBy, $limit, $offset);
+        return array_map(function (array $entry) use ($uow) {
+            return $uow->createEntity($this->metadata, $entry);
+        }, $result);
     }
 
     /**
