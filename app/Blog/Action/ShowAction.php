@@ -7,7 +7,7 @@ use Simplex\Renderer\TwigRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Simplex\Routing\RouterInterface;
 use Simplex\Database\DatabaseInterface;
-use Simplex\DataMapper\EntityManager;
+use LiteMapper\EntityManager;
 use App\Blog\Entity\Post;
 use App\Blog\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,7 +59,7 @@ class ShowAction
      */
     public function all(EntityManager $em)
     {
-        var_dump($em->find(User::class, 1));
+        var_dump($em->getRepository(User::class)->with('posts')->find(1));
         return new Response();
         // return $this->view
         //     ->render('@blog/index', [
