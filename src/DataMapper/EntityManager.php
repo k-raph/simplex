@@ -9,6 +9,8 @@ use Simplex\DataMapper\Mapping\MetadataFactory;
 use Simplex\Database\DatabaseInterface;
 use Simplex\DataMapper\Proxy\ProxyFactory;
 use UnexpectedValueException;
+use Simplex\Tests\DataMapper\EntityManagerTest;
+use Simplex\DataMapper\Mapping\EntityMapper;
 
 class EntityManager
 {
@@ -40,6 +42,11 @@ class EntityManager
      */
     protected $uow;
 
+    /**
+     * @var EntityMapper[]
+     */
+    protected $mappers = [];
+
     public function __construct(Configuration $config, DatabaseInterface $connection)
     {
         $this->connection = $connection;
@@ -56,17 +63,16 @@ class EntityManager
      * Get metadata for provided class
      *
      * @param string $className
-     * @return EntityMetadata|null
+     * @return EntityMapper
      */
-    public function getMetadataFor(string $className): ?EntityMetadata
+    public function getMapperFor(string $className): EntityMapper
     {
-        $meta = $this->metadataFactory->getClassMetadata($className);
-        
-        if (!$meta) {
-            throw new UnexpectedValueException(sprintf('Metadata for class %s not found', $className));
+        if (!isset($this->mappers[$className])) {
+            $meta = $this->metadataFactory->getClassMetadata($className);
+            $this->mappers[$className] = new EntityMapper($meta, $this) ;
         }
 
-        return $meta;
+        return $this->mappers[$className];
     }
 
     /**
@@ -100,6 +106,16 @@ class EntityManager
     public function getConnection(): DatabaseInterface
     {
         return $this->connection;
+    }
+
+    /**
+     * Gets proxy factory
+     *
+     * @return ProxyFactory
+     */
+    public function getProxyFactory(): ProxyFactory
+    {
+        return $this->proxyFactory;
     }
 
     /**

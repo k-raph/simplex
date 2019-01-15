@@ -48,9 +48,9 @@ class Factory
      */
     protected function createRepository(EntityManager $manager, string $className): RepositoryInterface
     {
-        $meta = $manager->getMetadataFor($className);
-        $repository = $meta->getRepositoryClass();
+        $mapper = $manager->getMapperFor($className);
+        $repository = $mapper->getMetadata()->getRepositoryClass();
 
-        return new $repository($manager, $meta);
+        return new $repository($manager, $mapper);
     }
 }

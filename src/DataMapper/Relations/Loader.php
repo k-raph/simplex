@@ -20,7 +20,8 @@ class Loader
     {
         $rel = $this->build($className, $config);
 
-        $meta = $this->em->getMetadataFor($rel->getTarget());
+        $mapper = $this->em->getMapperFor($rel->getTarget());
+        $meta = $mapper->getMetadata();
         $uow = $this->em->getUnitOfWork();
         
         $query = $this->em->getConnection()->getQueryBuilder();
@@ -30,8 +31,8 @@ class Loader
                 $rel->getTargetField() => $data[$rel->getOwnerField()] ?? null
             ])
             ->get();
-        $result = array_map(function ($data) use ($uow, $meta) {
-            return $uow->createEntity($meta, $data);
+        $result = array_map(function ($data) use ($mapper) {
+            return $mapper->createEntity($data);
         }, $result);
 
         return $result;

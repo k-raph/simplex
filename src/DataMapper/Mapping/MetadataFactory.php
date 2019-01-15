@@ -28,11 +28,17 @@ class MetadataFactory
      * Get metadata instance associed to a classname
      *
      * @param string $className
-     * @return EntityMetadata|null
+     * @return EntityMetadata
      */
-    public function getClassMetadata(string $className): ?EntityMetadata
+    public function getClassMetadata(string $className): EntityMetadata
     {
-        return $this->metadatas[$className] ?? null;
+        $meta = $this->metadatas[$className] ?? null;
+        
+        if (!$meta) {
+            throw new \UnexpectedValueException(sprintf('Metadata for class %s not found', $className));
+        }
+
+        return $meta;
     }
 
     /**

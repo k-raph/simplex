@@ -59,7 +59,8 @@ class ShowAction
      */
     public function all(EntityManager $em)
     {
-        var_dump($em->find(User::class, 1));
+        $repo = $em->getRepository(User::class);
+        var_dump($repo->with('posts')->findAll(['id' => 1]));
         return new Response();
         // return $this->view
         //     ->render('@blog/index', [

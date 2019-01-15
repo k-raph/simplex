@@ -29,7 +29,12 @@ class EntityManagerTest extends TestCase
         $qb->get()->willReturn([]);
         $db->getQueryBuilder()->willReturn($qb);
 
-        $this->em = new EntityManager(new Configuration(__DIR__.'/Fixtures/Mapping'), $db->reveal());
+        $this->em = new class(new Configuration(__DIR__.'/Fixtures/Mapping'), $db->reveal()) extends EntityManager {
+            public function getMetadataFor(string $className): EntityMetadata
+            {
+                return $this->getMapperFor($className)->getMetadata();
+            }
+        };
 
         $user = new User();
         $user->setId(1);

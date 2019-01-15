@@ -7,6 +7,7 @@ use Simplex\DataMapper\Mapping\EntityMetadata;
 use Simplex\DataMapper\Proxy\ProxyFactory;
 use Simplex\DataMapper\Proxy\Proxy;
 use Simplex\DataMapper\EntityManager;
+use Simplex\DataMapper\Mapping\EntityMapper;
 
 class DatabasePersister implements PersisterInterface
 {
@@ -33,13 +34,13 @@ class DatabasePersister implements PersisterInterface
      */
     protected $entityInserts = [];
 
-    public function __construct(EntityManager $manager, EntityMetadata $metadata)
+    public function __construct(EntityManager $manager, EntityMapper $mapper)
     {
-        $this->metadata = $metadata;
+        $this->metadata = $mapper->getMetadata();
         $this->em = $manager;
         $this->builder = $manager->getConnection()
             ->getQueryBuilder()
-            ->table($metadata->getTableName());
+            ->table($this->metadata->getTableName());
     }
 
     /**

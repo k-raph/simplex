@@ -8,7 +8,6 @@ use Simplex\DataMapper\Proxy\ProxyFactory;
 use Simplex\DataMapper\Persistence\DatabasePersister;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Simplex\DataMapper\Mapping\EntityMetadata;
-use Simplex\DataMapper\Relations\Loader;
 
 class UnitOfWork
 {
@@ -49,16 +48,10 @@ class UnitOfWork
      */
     protected $originalEntities = [];
 
-    /**
-     * @var Loader
-     */
-    protected $relationLoader;
-
     public function __construct(EntityManager $manager, ProxyFactory $proxies)
     {
         $this->em = $manager;
         $this->proxyFactory = $proxies;
-        $this->relationLoader = new Loader($manager);
     }
 
     /**
@@ -70,11 +63,8 @@ class UnitOfWork
      */
     public function get(string $entityClass, $id): ?object
     {
-        // if (isset($this->entityStates[self::STATE_MANAGED][$entityClass.$id])) {
-        //     return $this->entityStates[self::STATE_MANAGED][$entityClass.$id];
-        // }
-
-        $meta = $this->em->getMetadataFor($entityClass);
+        $mapper = $this->em->getMapperFor($entityClass);
+        $meta = $mapper->getMetadata();
         $persister = $this->getPersister($entityClass);
 
         // Loads parent result first
@@ -86,7 +76,7 @@ class UnitOfWork
             return null;
         }
 
-        $entity = $this->createEntity($meta, $result);
+        $entity = $mapper->createEntity($result);
         $uid = spl_object_hash($entity);
 
         $this->entityStates[self::STATE_MANAGED][$uid] = $entity;
@@ -178,37 +168,16 @@ class UnitOfWork
     public function getPersister(string $className): PersisterInterface
     {
         if (!isset($this->persisters[$className])) {
-            $meta = $this->em->getMetadataFor($className);
+            $mapper = $this->em->getMapperFor($className);
+            $meta = $mapper->getMetadata();
             $persister = $meta->customPersister() ?? DatabasePersister::class;
             $this->persisters[$className] = new $persister(
                 $this->em,
-                $meta
+                $mapper
             );
         }
 
         return $this->persisters[$className];
-    }
-
-    /**
-     * Extract values from given entity object
-     *
-     * @param object $entity
-     * @return array
-     */
-    public function extract(object $entity): array
-    {
-        return $this->proxify($entity)->toPersistableArray();
-    }
-
-    /**
-     * Retrieve a proxy wrapped around given object
-     *
-     * @param object $entity
-     * @return Proxy|null
-     */
-    public function proxify(object $entity): ?Proxy
-    {
-        return $this->proxyFactory->wrap($entity);
     }
 
     /**
@@ -219,8 +188,9 @@ class UnitOfWork
      */
     protected function getChangeSet(object $entity): array
     {
-        $data = $this->extract($entity);
-        $original = $this->extract($this->originalEntities[spl_object_hash($entity)]);
+        $mapper = $this->em->getMapperFor(\get_class($entity));
+        $data = $mapper->extract($entity);
+        $original = $mapper->extract($this->originalEntities[spl_object_hash($entity)]);
         $changes = [];
 
         foreach ($data as $key => $value) {
@@ -230,36 +200,5 @@ class UnitOfWork
         }
 
         return $changes;
-    }
-    
-    /**
-     * Creates entities from an array
-     *
-     * @param array $data
-     * @return object|null
-     */
-    public function createEntity(EntityMetadata $meta, array $data = []): ?object
-    {
-        $className = $meta->getEntityClass();
-
-        // Checks and loads relations;
-        if ($meta->hasRelations()) {
-            $this->loadRelations($meta, $data);
-        }
-        
-        $proxy = $this->proxyFactory->create($className, $data);
-        return $proxy->reveal();
-    }
-
-    protected function loadRelations(EntityMetadata $meta, array &$result)
-    {
-        foreach ($meta->getRelationsNames() as $name) {
-            $relations[$name] = $meta->getRelation($name);
-        }
-        
-        foreach ($relations as $field => $data) {
-            $relation = $this->relationLoader->loadRelation($meta->getEntityClass(), $data, $result);
-            $result[$field] = $relation;
-        }
     }
 }

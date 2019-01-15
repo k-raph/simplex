@@ -27,22 +27,14 @@ class Proxy
      * Proxy class to encapsulate an entity object
      *
      * @param object $instance
-     * @param array $mappings
      */
-    public function __construct(object $instance, array $mappings = [])
+    public function __construct(object $instance)
     {
         $this->instance = $instance;
         foreach ((new \ReflectionClass($instance))->getProperties() as $property) {
             $property->setAccessible(true);
             $this->properties[$property->getName()] = $property;
         };
-
-        $this->fieldMaps = !empty($mappings)
-            ? $mappings
-            : array_combine(
-                array_keys($this->properties),
-                array_keys($this->properties)
-            );
     }
 
     /**
@@ -56,26 +48,20 @@ class Proxy
     }
 
     /**
-     * Converts object properties to persistable array
+     * Extracts object properties to array
      *
      * @return array
      */
-    public function toPersistableArray(): array
+    public function toArray(): array
     {
-        $array = [];
-        foreach ($this->properties as $name => $property) {
-            $field = $this->fieldMaps[$name];
-            $array[$field] = $property->getValue($this->instance);
-        }
-
-        return $array;
-    }
-
-    public function toArray()
-    {
-        return array_map(function (ReflectionProperty $property) {
+        $values = array_map(function (ReflectionProperty $property) {
             return $property->getValue($this->instance);
         }, $this->properties);
+
+        return array_combine(
+            array_keys($this->properties),
+            $values
+        );
     }
 
     /**
@@ -86,10 +72,8 @@ class Proxy
      */
     public function hydrate(array $data)
     {
-        $mappings = array_flip($this->fieldMaps);
-        foreach ($data as $key => $value) {
-            $name = $mappings[$key] ?? null;
-            if (!$name || !isset($this->properties[$name])) {
+        foreach ($data as $name => $value) {
+            if (!is_string($name) || !isset($this->properties[$name])) {
                 continue;
             }
 
@@ -108,5 +92,10 @@ class Proxy
         return isset($this->properties[$name])
             ? $this->properties[$name]->getValue($this->instance)
             : null;
+    }
+
+    public function setTarget(object $target)
+    {
+        $this->instance = $target;
     }
 }

@@ -6,6 +6,7 @@ use Simplex\DataMapper\Persistence\PersisterInterface;
 use Simplex\DataMapper\Mapping\EntityMetadata;
 use Simplex\DataMapper\Proxy\ProxyFactory;
 use Simplex\DataMapper\EntityManager;
+use Simplex\DataMapper\Mapping\EntityMapper;
 
 class Repository implements RepositoryInterface
 {
@@ -16,19 +17,21 @@ class Repository implements RepositoryInterface
     protected $em;
 
     /**
-     * @var EntityMetadata
+     * @var EntityMapper
      */
-    protected $metadata;
+    protected $mapper;
 
     /**
      * @var string
      */
     protected $className;
 
-    public function __construct(EntityManager $manager, EntityMetadata $metadata)
+    protected $relations = [];
+
+    public function __construct(EntityManager $manager, EntityMapper $mapper)
     {
-        $this->metadata = $metadata;
-        $this->className = $metadata->getEntityClass();
+        $this->mapper = $mapper;
+        $this->className = $mapper->getMetadata()->getEntityClass();
         $this->em = $manager;
     }
 
@@ -37,7 +40,10 @@ class Repository implements RepositoryInterface
      */
     public function find($id): ?object
     {
-        return $this->em->find($this->className, $id);
+        $entity = $this->em->find($this->className, $id);
+        return $entity
+            ? $this->checkRelations($entity)
+            : null;
     }
 
     /**
@@ -56,9 +62,15 @@ class Repository implements RepositoryInterface
         $uow = $this->em->getUnitOfWork();
         $persister = $uow->getPersister($this->className);
         $result = $persister->loadAll($criteria, $orderBy, $limit, $offset);
-        return array_map(function (array $entry) use ($uow) {
-            return $uow->createEntity($this->metadata, $entry);
+        
+        $result = array_map(function (array $data) {
+            $entity = $this->mapper->createEntity($data);
+            return $this->checkRelations($entity);
+            return $entity;
         }, $result);
+
+        $this->relations = [];
+        return $result;
     }
 
     /**
@@ -77,5 +89,20 @@ class Repository implements RepositoryInterface
     public function getClassName(): string
     {
         return $this->className;
+    }
+
+    private function checkRelations(object $entity)
+    {
+        if (empty($this->relations)) {
+            return $entity;
+        }
+
+        return $this->mapper->loadRelations($entity, $this->relations);
+    }
+
+    public function with(string ...$relations): self
+    {
+        $this->relations = array_merge($this->relations, $relations);
+        return $this;
     }
 }

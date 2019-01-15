@@ -3,6 +3,7 @@
 namespace Simplex\DataMapper\Persistence;
 
 use Simplex\DataMapper\EntityManager;
+use Simplex\DataMapper\Mapping\EntityMapper;
 use Simplex\DataMapper\Mapping\EntityMetadata;
 
 class ArrayPersister implements PersisterInterface
@@ -13,6 +14,11 @@ class ArrayPersister implements PersisterInterface
      * @var object[]
      */
     protected $store = [];
+
+    /**
+     * @var EntityMapper
+     */
+    protected $mapper;
 
     /**
      * @var EntityMetadata
@@ -33,10 +39,11 @@ class ArrayPersister implements PersisterInterface
 
     protected $index = 1;
 
-    public function __construct(EntityManager $manager, EntityMetadata $metadata)
+    public function __construct(EntityManager $manager, EntityMapper $mapper)
     {
-        $this->metadata = $metadata;
         $this->em = $manager;
+        $this->mapper = $mapper;
+        $this->metadata = $mapper->getMetadata();
     }
 
     /**
@@ -71,7 +78,7 @@ class ArrayPersister implements PersisterInterface
                     return true;
                 }
                 
-                $data = $this->em->getUnitOfWork()->proxify($entity)->toArray();
+                $data = $this->mapper->extract($entity);
                 $id = $this->metadata->getIdentifier();
                 return $data[$id] == $criteria[$id];
             }
@@ -82,7 +89,7 @@ class ArrayPersister implements PersisterInterface
         }
 
         $filtered = array_map(function (object $entity) {
-            return $this->em->getUnitOfWork()->proxify($entity)->toPersistableArray();
+            return $this->mapper->extract($entity);
         }, $filtered);
 
         return array_values($filtered);
@@ -99,7 +106,7 @@ class ArrayPersister implements PersisterInterface
         $class = $this->metadata->getEntityClass();
 
         if ($entity instanceof $class) {
-            $this->em->getUnitOfWork()->proxify($entity)->hydrate([$this->metadata->getIdentifier() => $this->index]);
+            $this->mapper->hydrate($entity, [$this->metadata->getIdentifier() => $this->index]);
             $this->store[$this->index] = $entity;
             $this->index++;
         }
@@ -123,13 +130,12 @@ class ArrayPersister implements PersisterInterface
     public function update(object $entity, array $changes)
     {
         $class = $this->metadata->getEntityClass();
-        $proxy = $this->em->getUnitOfWork()->proxify($entity);
-        $id = $proxy->getField($this->metadata->getIdentifier());
+        $id = $this->mapper->getField($entity, $this->metadata->getIdentifier());
         $entity = $this->store[$id] ?? null;
 
         if ($entity && $entity instanceof $class) {
-            $proxy->hydrate($changes);
-            $this->store[$id] = $proxy->reveal();
+            $this->mapper->hydrate($entity, $changes);
+            $this->store[$id] = $entity;
         }
     }
 
@@ -142,8 +148,7 @@ class ArrayPersister implements PersisterInterface
     public function delete(object $entity)
     {
         $class = $this->metadata->getEntityClass();
-        $proxy = $this->em->getUnitOfWork()->proxify($entity);
-        $id = $proxy->getField($this->metadata->getIdentifier());
+        $id = $this->mapper->getField($entity, $this->metadata->getIdentifier());
 
         if (isset($this->store[$id])) {
             unset($this->store[$id]);
