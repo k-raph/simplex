@@ -16,34 +16,27 @@ class Loader
         $this->em = $manager;
     }
 
-    public function loadRelation(string $className, array $config, array $data = [])
-    {
-        $rel = $this->build($className, $config);
-
-        $mapper = $this->em->getMapperFor($rel->getTarget());
-        $meta = $mapper->getMetadata();
-        $uow = $this->em->getUnitOfWork();
-        
-        $query = $this->em->getConnection()->getQueryBuilder();
-        $result = $query
-            ->table($meta->getTableName())
-            ->where([
-                $rel->getTargetField() => $data[$rel->getOwnerField()] ?? null
-            ])
-            ->get();
-        $result = array_map(function ($data) use ($mapper) {
-            return $mapper->createEntity($data);
-        }, $result);
-
-        return $result;
-    }
-
-    protected function build(string $className, array $config)
+    /**
+     * Build a relation instance based on given configuration
+     *
+     * @param string $className
+     * @param array $config
+     * @return RelationInterface
+     * @throws \Exception
+     */
+    public function build(string $className, array $config): RelationInterface
     {
         $type = strtolower($config['type']);
         switch ($type) {
             case 'onetomany':
                 return new OneToMany($className, $config['target'], $config['targetField'], $config['field']);
+                break;
+            case 'manytoone':
+                $field = $this->em
+                    ->getMapperFor($className)
+                    ->getMetadata()
+                    ->getSQLName($config['name']);
+                return new ManyToOne($className, $config['target'], $config['targetField'], $field);
                 break;
             default:
                 throw new \Exception('This point should never be reached');

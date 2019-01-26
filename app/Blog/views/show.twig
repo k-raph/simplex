@@ -1,5 +1,5 @@
  <p>
-    <h1>{{ post.title }}</h1> <em>by {{ post.author }}
+ <h1>{{ post.title }}</h1> <em>by {{ post.author.name }}</em>
     <button data-id="{{ post.id }}">Delete</button>
     <div>{{ post.content }}</div>
     <div>
@@ -16,7 +16,7 @@
 
 <script>
     let del = document.querySelector('button');
-    del.addEventListener("click", event => {
+    del.addEventListener("click", () => {
         fetch(`${window.location.href}/delete`, {method: 'DELETE'})
             .then(response => {
                 if(response.ok) {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Blog\Entity\Post;
+use App\Blog\Entity\User;
 
 return [
     Post::class => [
@@ -20,8 +21,15 @@ return [
                 'type' => 'string'
             ],
             'author' => [
-                'type' => 'int',
                 'column' => 'author_id'
+            ]
+        ],
+        'relations' => [
+            'manyToOne' => [
+                'author' => [
+                    'target' => User::class,
+                    'targetField' => 'id'
+                ]
             ]
         ]
     ]

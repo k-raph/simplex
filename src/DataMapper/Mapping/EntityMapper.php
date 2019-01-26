@@ -2,9 +2,9 @@
 
 namespace Simplex\DataMapper\Mapping;
 
+use Simplex\DataMapper\EntityManager;
 use Simplex\DataMapper\Proxy\Proxy;
 use Simplex\DataMapper\Proxy\ProxyFactory;
-use Simplex\DataMapper\EntityManager;
 use Simplex\DataMapper\Relations\Loader;
 
 class EntityMapper
@@ -77,6 +77,7 @@ class EntityMapper
     {
         $proxy = $this->proxyFactory
             ->wrap($entity);
+
         $proxy->hydrate($this->mapToProps($data));
 
         return $proxy;
@@ -99,22 +100,24 @@ class EntityMapper
     /**
      * Loads relations and add them to entity
      *
-     * @param object $entity
+     * @param array $entities
      * @param array $relations
-     * @return void
+     * @return array
      */
-    public function loadRelations(object $entity, array $relations)
+    public function loadRelations(array $entities, array $relations): array
     {
         $loader = new Loader($this->em);
 
-        $rels = [];
         foreach ($relations as $name) {
-            $config = $this->metadata->getRelation($name);
-            $rels[$name] = $loader->loadRelation($this->metadata->getEntityClass(), $config, ['id' => $this->getField($entity, 'id')]);
+            $relation = $this->metadata->getRelation($name);
+            $relation['name'] = $name;
+
+            $relation = $loader->build($this->metadata->getEntityClass(), $relation);
+            $loaded = $relation->load($this->em, $entities);
+            $entities = $relation->assign($this->em, $name, $entities, $loaded);
         }
 
-        $this->hydrate($entity, $rels);
-        return $entity;
+        return $entities;
     }
 
     /**
@@ -161,6 +164,11 @@ class EntityMapper
         return $props;
     }
 
+    /**
+     * Creates a proxy instance
+     *
+     * @return Proxy
+     */
     protected function createProxy(): Proxy
     {
         return $this->proxyFactory->create($this->metadata->getEntityClass());

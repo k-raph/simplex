@@ -2,9 +2,6 @@
 
 namespace Simplex\DataMapper\Repository;
 
-use Simplex\DataMapper\Persistence\PersisterInterface;
-use Simplex\DataMapper\Mapping\EntityMetadata;
-use Simplex\DataMapper\Proxy\ProxyFactory;
 use Simplex\DataMapper\EntityManager;
 use Simplex\DataMapper\Mapping\EntityMapper;
 
@@ -42,7 +39,7 @@ class Repository implements RepositoryInterface
     {
         $entity = $this->em->find($this->className, $id);
         return $entity
-            ? $this->checkRelations($entity)
+            ? current($this->checkRelations([$entity]))
             : null;
     }
 
@@ -65,11 +62,11 @@ class Repository implements RepositoryInterface
         
         $result = array_map(function (array $data) {
             $entity = $this->mapper->createEntity($data);
-            return $this->checkRelations($entity);
             return $entity;
         }, $result);
 
-        $this->relations = [];
+        $result = $this->checkRelations($result);
+
         return $result;
     }
 
@@ -91,15 +88,29 @@ class Repository implements RepositoryInterface
         return $this->className;
     }
 
-    private function checkRelations(object $entity)
+    /**
+     * Check if relations need to be loaded
+     *
+     * @param array $entities
+     * @return array
+     */
+    private function checkRelations(array $entities): array
     {
         if (empty($this->relations)) {
-            return $entity;
+            return $entities;
         }
 
-        return $this->mapper->loadRelations($entity, $this->relations);
+        $result = $this->mapper->loadRelations($entities, $this->relations);
+        $this->relations = [];
+        return $result;
     }
 
+    /**
+     * Add relations to be loaded
+     *
+     * @param string ...$relations
+     * @return Repository
+     */
     public function with(string ...$relations): self
     {
         $this->relations = array_merge($this->relations, $relations);

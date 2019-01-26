@@ -33,7 +33,7 @@ class EntityMetadata
             $assoc = [];
             foreach ($this->datas['relations'] as $type => $relations) {
                 foreach ($relations as $field => $config) {
-                    $this->datas['fields'][$field] = [];
+                    $this->datas['fields'][$field] = $this->datas['fields'][$field] ?? [];
                     $config['type'] = $type;
                     $assoc[$field] = $config;
                 }
@@ -92,7 +92,25 @@ class EntityMetadata
     {
         return array_keys($this->datas['fields']);
     }
-    
+
+    /**
+     * Get field name from sql name
+     *
+     * @param string $sqlName
+     * @return string|null
+     */
+    public function getName(string $sqlName): ?string
+    {
+        foreach ($this->datas['fields'] as $field => $map) {
+            $column = $map['column'] ?? $field;
+            if ($sqlName === $column) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Get sql fields mapped names
      *
