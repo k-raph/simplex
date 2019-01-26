@@ -3,8 +3,8 @@
 namespace Simplex\Tests\Database\Query;
 
 use PHPUnit\Framework\TestCase;
-use Simplex\Database\Query\Builder;
 use Simplex\Database\DatabaseInterface;
+use Simplex\Database\Query\Builder;
 
 class BuilderTest extends TestCase
 {
@@ -28,7 +28,7 @@ class BuilderTest extends TestCase
             ->select('column', 'name')
             ->table('table')
             ->where('name', 'name')
-            ->getSql();
+            ->getSQL();
         
         $this->assertEquals(
             'SELECT column, name FROM table WHERE name = ?',
@@ -44,7 +44,7 @@ class BuilderTest extends TestCase
         $query = $this->query
             ->select()
             ->table('table')
-            ->getSql();
+            ->getSQL();
 
         $this->assertEquals('SELECT * FROM table', $query);
         $this->assertEquals([], $this->query->getParameters());
@@ -56,7 +56,7 @@ class BuilderTest extends TestCase
             ->select('column', 'name')
             ->table('table', 't')
             ->where(['name' => 'name', 'id' => 'id'])
-            ->getSql();
+            ->getSQL();
         
         $this->assertEquals(
             'SELECT column, name FROM table AS t WHERE name = ? AND id = ?',
@@ -75,7 +75,7 @@ class BuilderTest extends TestCase
             ->table('table')
             ->select('column')
             ->where('id', 30)
-            ->getSql();
+            ->getSQL();
 
         $this->assertEquals(
             'SELECT column FROM table WHERE id = ?',
@@ -93,7 +93,7 @@ class BuilderTest extends TestCase
             ->table('table')
             ->select('column')
             ->where('id', '>', 30)
-            ->getSql();
+            ->getSQL();
 
         $this->assertEquals(
             'SELECT column FROM table WHERE id > ?',
@@ -114,7 +114,7 @@ class BuilderTest extends TestCase
             ->where([
                 ['post_id', '>', 2]
             ])
-            ->getSql();
+            ->getSQL();
 
         $this->assertEquals(
             'SELECT column FROM table WHERE name = ? AND post_id > ?',
@@ -139,7 +139,7 @@ class BuilderTest extends TestCase
             ->where('email', 'john@mail.fr')
             ->where('age', '<', 14)
             ->where([['post_id', '>', 1]])
-            ->getSql();
+            ->getSQL();
 
         $this->assertEquals(
             'SELECT column FROM table WHERE name = ? AND id = ? AND email = ? AND age < ? AND post_id > ?',
@@ -162,7 +162,7 @@ class BuilderTest extends TestCase
             ->select('p.*', 'u.title')
             ->innerJoin('users u', 'p.author_id', '=', 'u.id')
             ->where('id', 'id')
-            ->getSql();
+            ->getSQL();
         
         $this->assertEquals(
             'SELECT p.*, u.title FROM posts AS p INNER JOIN users u ON p.author_id = u.id WHERE id = ?',
@@ -183,7 +183,7 @@ class BuilderTest extends TestCase
                 'title' => 'Title',
                 'post' => 'POST'
             ])
-            ->getSql();
+            ->getSQL();
 
         $this->assertEquals(
             'UPDATE table SET title = ?, post = ? WHERE name = ?',
@@ -205,7 +205,7 @@ class BuilderTest extends TestCase
                 'title' => 'Title',
                 'post' => 'POST'
             ])
-            ->getSql();
+            ->getSQL();
 
         $this->assertEquals(
             'UPDATE table SET title = ?, post = ?',
@@ -226,7 +226,7 @@ class BuilderTest extends TestCase
                 'title' => 'Title',
                 'post' => 'POST'
             ])
-            ->getSql();
+            ->getSQL();
 
         $this->assertEquals(
             'INSERT INTO table (title, post) VALUES (?, ?)',
@@ -244,7 +244,7 @@ class BuilderTest extends TestCase
         $query = $this->query
             ->table('table')
             ->delete()
-            ->getSql();
+            ->getSQL();
         
         $this->assertEquals(
             'DELETE FROM table',
@@ -260,7 +260,7 @@ class BuilderTest extends TestCase
             ->table('table')
             ->delete()
             ->where('id', 'id')
-            ->getSql();
+            ->getSQL();
         
         $this->assertEquals(
             'DELETE FROM table WHERE id = ?',
@@ -279,7 +279,7 @@ class BuilderTest extends TestCase
             ->table($this->query->subQuery($sub))
             ->select('name')
             ->where('id', 'id')
-            ->getSql();
+            ->getSQL();
         
         $this->assertEquals(
             'SELECT name FROM (SELECT * FROM table) WHERE id = ?',
@@ -298,7 +298,7 @@ class BuilderTest extends TestCase
                 $this->query->subQuery($sub2, 'row2')
             )
             ->where('id', 'id')
-            ->getSql();
+            ->getSQL();
         
         $this->assertEquals(
             'SELECT (SELECT COUNT(*) FROM table1) AS row1, (SELECT COUNT(*) FROM table2) AS row2 FROM table WHERE id = ?',
@@ -312,7 +312,7 @@ class BuilderTest extends TestCase
             ->table('table')
             ->limit(10)
             ->where('id', 'id')
-            ->getSql();
+            ->getSQL();
         
         $this->assertEquals(
             'SELECT * FROM table WHERE id = ? LIMIT 0, 10',
@@ -330,7 +330,7 @@ class BuilderTest extends TestCase
             ->table('table')
             ->where('id', 'id')
             ->orderBy('name')
-            ->getSql();
+            ->getSQL();
         
         $this->assertEquals(
             'SELECT * FROM table WHERE id = ? ORDER BY name DESC',
@@ -348,7 +348,7 @@ class BuilderTest extends TestCase
             ->table('table')
             ->where('id', 'id')
             ->orderBy('date_creation', 'ASC')
-            ->getSql();
+            ->getSQL();
         
         $this->assertEquals(
             'SELECT * FROM table WHERE id = ? ORDER BY date_creation ASC',
@@ -380,7 +380,7 @@ class BuilderTest extends TestCase
         $query = $this->query
             ->table('table')
             ->insert($entries)
-            ->getSql();
+            ->getSQL();
 
         $this->assertEquals(
             'INSERT INTO table (title, post) VALUES (?, ?), (?, ?), (?, ?)',

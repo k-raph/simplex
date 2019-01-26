@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplex\Database\Exception;
+namespace Simplex\Database\Exceptions;
 
 class ResourceNotFoundException extends \Exception
 {

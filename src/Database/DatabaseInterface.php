@@ -3,6 +3,7 @@
 namespace Simplex\Database;
 
 use PDOStatement;
+use Simplex\Database\Driver\DriverInterface;
 use Simplex\Database\Query\Builder;
 
 interface DatabaseInterface
@@ -11,6 +12,7 @@ interface DatabaseInterface
      * Makes a query against database
      *
      * @param string $statement
+     * @param array $bindings
      * @return PDOStatement
      */
     public function query(string $statement, array $bindings = []): PDOStatement;
@@ -48,9 +50,23 @@ interface DatabaseInterface
     public function fetchAll(): array;
 
     /**
+     * Get last inserted id
+     *
+     * @return int|string
+     */
+    public function lastInsertId();
+
+    /**
      * Gets an instance of query builder
      *
      * @return Builder
      */
     public function getQueryBuilder(): Builder;
+
+    /**
+     * Get used driver
+     *
+     * @return DriverInterface
+     */
+    public function getDriver(): DriverInterface;
 }

@@ -1,5 +1,5 @@
 blog_index:
-  path: /index
+  path: /
   controller: App\Blog\Action\ShowAction:all
 
 blog_show:

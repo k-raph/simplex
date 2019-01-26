@@ -2,6 +2,9 @@
 
 namespace Simplex\Database;
 
+use Finesse\QueryScribe\Grammars\CommonGrammar;
+use Finesse\QueryScribe\Grammars\MySQLGrammar;
+use Finesse\QueryScribe\Grammars\SQLiteGrammar;
 use Simplex\Database\Driver\DriverInterface;
 use Simplex\Database\Driver\SqliteDriver;
 
@@ -16,7 +19,7 @@ class Configuration
     /**
      * Default connection
      *
-     * @var string
+     * @var array
      */
     protected $default;
 
@@ -42,10 +45,21 @@ class Configuration
     {
         $driver = $this->drivers[$this->default['type']] ?? null;
         if (!$driver) {
-            throw new \UnexpectedValueException(sprintf('Provided databas type is incorrect or is not supported %s', (string)$driver));
+            throw new \UnexpectedValueException(sprintf('Provided database type is incorrect or is not supported %s', (string)$driver));
         }
 
-        return new $driver($this->default);
+        switch (strtolower($this->default['type'] ?? '')) {
+            case 'mysql':
+                $grammar = new MySQLGrammar();
+                break;
+            case 'sqlite':
+                $grammar = new SQLiteGrammar();
+                break;
+            default:
+                $grammar = new CommonGrammar();
+        }
+
+        return new $driver($this->default, $grammar);
     }
 
     /**

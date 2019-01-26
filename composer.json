@@ -5,13 +5,14 @@
     "license": "MIT",
     "require": {
         "php": ">=7.1",
-        "league/event": "^2",
+        "ext-pdo": "*",
         "league/container": "^3",
         "symfony/http-foundation": "^4.0",
         "symfony/routing": "^4.0",
         "symfony/config": "^4.0",
         "symfony/yaml": "^4.0",
-        "twig/twig": "^2"
+        "twig/twig": "^2",
+        "finesse/query-scribe": "*"
     },
     "require-dev": {
         "robmorgan/phinx": "^0.9",

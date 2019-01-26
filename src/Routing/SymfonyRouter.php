@@ -2,16 +2,16 @@
 
 namespace Simplex\Routing;
 
+use Simplex\Http\MiddlewareInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\RouteCollectionBuilder;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
-use Simplex\Http\MiddlewareInterface;
+use Symfony\Component\Routing\Matcher\RedirectableUrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\RouteCollectionBuilder;
 
 class SymfonyRouter implements RouterInterface
 {
@@ -97,21 +97,40 @@ class SymfonyRouter implements RouterInterface
         try {
             $collection = $this->getCollection();
             $this->context = $context = (new RequestContext())->fromRequest($request);
-            $matcher = new UrlMatcher($collection, $context);
+
+            $matcher = new class($collection, $context) extends RedirectableUrlMatcher
+            {
+                /**
+                 * {@inheritdoc}
+                 */
+                public function redirect($path, $route, $scheme = null)
+                {
+                    return [
+                        '_controller' => $this->match($path)['_controller'],
+                        'path' => $path,
+                        'permanent' => true,
+                        'scheme' => $scheme,
+                        'httpPort' => $this->context->getHttpPort(),
+                        'httpsPort' => $this->context->getHttpsPort(),
+                        '_route' => $route,
+                    ];
+                }
+            };
+
             $parameters = $matcher->matchRequest($request);
-            
+
             $route = new Route($parameters['_route'], $parameters['_controller']);
             $middlewares = array_merge(
-                [], 
+                [],
                 $parameters['_middlewares'] ?? [],
                 $this->getStrategyMiddlewares($parameters['_strategy'] ?? 'web')
             );
             $route->setMiddlewares(/*$parameters['_middlewares'] ?? []*/$middlewares);
-            
+
             $parameters = array_filter($parameters, function (string $key) {
                 return strpos($key, '_') !== 0;
             }, ARRAY_FILTER_USE_KEY);
-            
+
             $request->attributes->set('_route_params', $parameters);
             $route->setParameters($parameters);
 
@@ -141,7 +160,7 @@ class SymfonyRouter implements RouterInterface
         if ($this->collection) {
             return $this->collection;
         }
-        
+
         $this->builder->setDefault('_middlewares', $this->middlewares['routes']);
         return $this->collection = $this->builder->build();
     }

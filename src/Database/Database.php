@@ -3,8 +3,8 @@
 namespace Simplex\Database;
 
 use PDO;
-use PDOStatement;
 use PDOException;
+use PDOStatement;
 use Simplex\Database\Driver\DriverInterface;
 use Simplex\Database\Query\Builder;
 
@@ -98,10 +98,26 @@ class Database implements DatabaseInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function lastInsertId()
+    {
+        return $this->pdo->lastInsertId();
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getQueryBuilder(): Builder
     {
         return new Builder($this);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDriver(): DriverInterface
+    {
+        return $this->driver;
     }
 }

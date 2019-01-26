@@ -2,424 +2,152 @@
 
 namespace Simplex\Database\Query;
 
+use Finesse\QueryScribe\PostProcessors\ExplicitTables;
+use Finesse\QueryScribe\Query;
+use Finesse\QueryScribe\Query as BaseQuery;
+use Finesse\QueryScribe\StatementInterface;
 use Simplex\Database\DatabaseInterface;
-use Simplex\Database\Query\Traits\WhereTrait;
-use Simplex\Database\Query\Compiler\SelectCompiler;
-use Simplex\Database\Query\Traits\JoinTrait;
-use PDOStatement;
-use Simplex\Database\Exception\ResourceNotFoundException;
+use Simplex\Database\Exceptions\DatabaseException;
+use Simplex\Database\Exceptions\IncorrectQueryException;
+use Simplex\Database\Exceptions\InvalidArgumentException;
+use Simplex\Database\Exceptions\InvalidReturnValueException;
+use Simplex\Database\Helpers;
+use Simplex\Database\Query\Traits\InsertTrait;
+use Simplex\Database\Query\Traits\RawHelpersTrait;
+use Simplex\Database\Query\Traits\SelectTrait;
 
-class Builder
+/**
+ * Query builder. Builds SQL queries and performs them on a database.
+ *
+ * All the methods throw Simplex\Database\Exceptions\ExceptionInterface.
+ *
+ * {@inheritDoc}
+ *
+ * @author Surgie
+ */
+class Builder extends BaseQuery
 {
-    use WhereTrait, JoinTrait;
+    use SelectTrait, InsertTrait, RawHelpersTrait;
 
     /**
-     * @var string
+     * @var DatabaseInterface Database on which the query should be performed
      */
-    protected $table;
+    protected $connection;
 
     /**
-     * Type of query
-     *
-     * @var int
+     * @param DatabaseInterface $database Database on which the query should be performed
      */
-    protected $type;
-
-    /**
-     * Filtering data
-     *
-     * @var array
-     */
-    protected $orderBy = [];
-
-    /**
-     * Query limit value
-     *
-     * @var int
-     */
-    protected $limit;
-
-    /**
-     * Query offset value
-     *
-     * @var int
-     */
-    protected $offset = 0;
-
-    /**
-     * Fields to select
-     *
-     * @var array
-     */
-    protected $fields = [];
-
-    /**
-     * Sql string statement
-     *
-     * @var string
-     */
-    protected $sql = '';
-
-    /**
-     * Values to insert into database
-     *
-     * @var array
-     */
-    protected $values = [];
-
-    /**
-     * Bound parameters
-     *
-     * @var array
-     */
-    protected $parameters = [];
-
-    /**
-     * Database connection instance
-     *
-     * @var DatabaseInterface
-     */
-    protected $db;
-    
-    protected const TYPE_INSERT = 0;
-    protected const TYPE_SELECT = 1;
-    protected const TYPE_UPDATE = 2;
-    protected const TYPE_DELETE = 3;
-    
-    public function __construct(DatabaseInterface $db)
+    public function __construct(DatabaseInterface $database)
     {
-        $this->db = $db;
-    }
-
-    public function newQuery(): Builder
-    {
-        return new self($this->db);
+        $this->connection = $database;
     }
 
     /**
-     * Set table against which to make the query
+     * Updates the query target rows. Doesn't modify itself.
      *
-     * @param string $table
-     * @return self
+     * @param mixed[]|\Closure[]|self[]|StatementInterface[] $values Fields to update. The indexes are the columns
+     *     names, the values are the values.
+     * @return int The number of updated rows
+     * @throws DatabaseException
+     * @throws IncorrectQueryException
+     * @throws InvalidArgumentException
+     * @throws InvalidReturnValueException
+     * @throws \Throwable
      */
-    public function table(string $table, ?string $alias = null): self
+    public function update(array $values): int
     {
-        $this->table = is_null($alias) ? $table : "$table AS $alias";
-        $this->type = self::TYPE_SELECT;
-        return $this;
+        try {
+            $query = (clone $this)->addUpdate($values); //->apply($this->connection->getTablePrefixer());
+            $compiled = $this->connection->getDriver()->getGrammar()->compileUpdate($query);
+            return $this->connection->execute($compiled->getSQL(), $compiled->getBindings());
+        } catch (\Throwable $exception) {
+            return $this->handleException($exception);
+        }
     }
 
     /**
-     * Add an order by constraint
-     *
-     * @param string $field
-     * @param string $filter
-     * @return self
+     * {@inheritDoc}
      */
-    public function orderBy(string $field, string $filter = 'DESC'): self
+    protected function handleException(\Throwable $exception)
     {
-        $this->orderBy = [$field, $filter];
-        return $this;
+        try {
+            return parent::handleException($exception);
+        } catch (\Throwable $exception) {
+            throw Helpers::wrapException($exception);
+        }
     }
 
     /**
-     * Adds a limit constraint
+     * Deletes the query target rows. Doesn't modify itself.
      *
-     * @param integer $limit
-     * @return self
+     * @return int The number of deleted rows
+     * @throws DatabaseException
+     * @throws IncorrectQueryException
+     * @throws InvalidArgumentException
+     * @throws InvalidReturnValueException
+     * @throws \Throwable
      */
-    public function limit(int $limit): self
+    public function delete(): int
     {
-        $this->limit = $limit;
-        return $this;
+        try {
+            $query = (clone $this)->setDelete(); //->apply($this->connection->getTablePrefixer());
+            $compiled = $this->connection->getDriver()->getGrammar()->compileDelete($query);
+            return $this->connection->execute($compiled->getSQL(), $compiled->getBindings());
+        } catch (\Throwable $exception) {
+            return $this->handleException($exception);
+        }
     }
 
     /**
-     * Adds an offset constraint
+     * Makes the query have explicit tables in the column names.
      *
-     * @param integer $offset
-     * @return self
+     * Warning! In contrast to the other methods, it doesn't modify the query object, it returns a new object.
+     *
+     * @return static
      */
-    public function offset(int $offset): self
+    public function addTablesToColumnNames(): self
     {
-        $this->offset = $offset;
-        return $this;
+        return $this->apply(new ExplicitTables);
     }
 
     /**
-     * Choose fields to select
-     *
-     * @param string ...$fields
-     * @return self
+     * {@inheritDoc}
      */
-    public function select(string ...$fields): self
+    protected function constructEmptyCopy(): BaseQuery
     {
-        $this->type = self::TYPE_SELECT;
-        $this->fields = array_merge($this->fields, empty($fields) ? ['*'] : $fields);
-        return $this;
+        return new static($this->connection);
     }
 
     /**
-     * Makes an insert query to database
-     *
-     * @param array $values
-     * @return self
+     * @return Builder
      */
-    public function insert(array $values): self
+    public function newQuery(): self
     {
-        $this->type = self::TYPE_INSERT;
-        $this->values = $values;
-        return $this;
+        return new self($this->connection);
     }
 
     /**
-     * Makes an update query against database
-     *
-     * @param array $values
-     * @return self
+     * @param string[]|array[] ...$arguments
+     * @return BaseQuery
      */
-    public function update(array $values): self
+    public function where(...$arguments): Query
     {
-        $this->type = self::TYPE_UPDATE;
-        $this->values = $values;
-        return $this;
-    }
-
-    /**
-     * Makes a delete query against database
-     *
-     * @return self
-     */
-    public function delete(): self
-    {
-        $this->type = self::TYPE_DELETE;
-        return $this;
-    }
-
-    /**
-     * Get generated sql statement string
-     *
-     * @return string
-     */
-    public function getSql(): string
-    {
-        if ($this->sql) {
-            return $this->sql;
+        $count = count($arguments);
+        if (2 === $count || 3 === $count) {
+            return parent::where(...$arguments);
         }
 
-        $compiler = new Compiler();
-        switch ($this->type) {
-            case self::TYPE_SELECT:
-                $this->sql = $compiler->compileSelect(
-                    $this->table,
-                    empty($this->fields) ? ['*'] : $this->fields,
-                    $this->whereTokens,
-                    $this->joinTokens,
-                    $this->orderBy,
-                    $this->offset,
-                    $this->limit
-                );
-                break;
-            case self::TYPE_UPDATE:
-                $this->sql = $compiler->compileUpdate(
-                    $this->table,
-                    $this->values,
-                    $this->whereTokens
-                );
-                break;
-            case self::TYPE_INSERT:
-                $this->sql = $compiler->compileInsert(
-                    $this->table,
-                    $this->values
-                );
-                break;
-            case self::TYPE_DELETE:
-                $this->sql = $compiler->compileDelete(
-                    $this->table,
-                    $this->whereTokens,
-                    $this->whereParameters
-                );
-                break;
-            default:
-                throw new \Exception('This point should never be reached');
-                break;
+        $criterion = [];
+        foreach ($arguments as $argument) {
+            foreach ($argument as $key => $value) {
+                if (is_string($key)) {
+                    $criterion[] = [$key, $value];
+                } elseif (is_array($value)) {
+                    $criterion[] = $value;
+                }
+            }
         }
 
-        return $this->sql;
-    }
-
-    /**
-     * Get bound parameters
-     *
-     * @return array
-     */
-    public function getParameters(): array
-    {
-        return array_merge(array_values($this->values), $this->whereParameters);
-    }
-
-    /**
-     * Run builded query
-     *
-     * @return PDOStatement|bool
-     */
-    public function run()
-    {
-        $result = $this->type === self::TYPE_SELECT
-            ? $this->db->query($this->getSql(), $this->getParameters())
-            : $this->db->execute($this->getSql(), $this->getParameters());
-        $this->reset();
-
-        return $result;
-    }
-
-    /**
-     * Reset all the properties
-     *
-     * @return void
-     */
-    protected function reset()
-    {
-        // $this->table = null;
-        $this->type = null;
-        $this->sql = '';
-        $this->fields = [];
-        $this->values = [];
-        $this->whereTokens = [];
-        $this->whereParameters = [];
-        $this->joinTokens = [];
-    }
-
-    /**
-     * ---------------------------------------------------------
-     *
-     * Advanced query helper
-     *
-     * ---------------------------------------------------------
-     */
-
-    /**
-     * Makes raw query to database
-     *
-     * @param string $query
-     * @return self
-     */
-    public function raw(string $query): self
-    {
-        $this->sql = $query;
-        return $this;
-    }
-
-    /**
-     * Bind parameters to query
-     *
-     * @param array $parameters
-     * @return self
-     */
-    public function bind(array $parameters): self
-    {
-        $this->values = $parameters;
-        return $this;
-    }
-
-    /**
-     * Use the query builder to make a subquery
-     *
-     * @param Builder $query
-     * @param string|null $alias
-     * @return string
-     */
-    public function subQuery(Builder $query, ?string $alias = null): string
-    {
-        $sql = '('.$query->getSql().')';
-
-        return $alias
-            ? $sql . " AS $alias"
-            : $sql;
-    }
-
-    /**
-     * ----------------------------------------------------------
-     *
-     * Database operations decorators
-     *
-     * ----------------------------------------------------------
-     */
-
-    /**
-     * Retrieve all results for made query
-     *
-     * @return array
-     */
-    public function get(): array
-    {
-        return $this->run()->fetchAll();
-    }
-
-    /**
-     * Retrieve only the first result that match the query
-     *
-     * @return mixed
-     */
-    public function first()
-    {
-        return $this->limit(1)->run()->fetch();
-    }
-
-    /**
-     * Finds the first result or throw an exception
-     *
-     * @return mixed
-     */
-    public function firstOrFail()
-    {
-        $result = $this->first();
-
-        if (!$result) {
-            throw new ResourceNotFoundException();
-        }
-
-        return $result;
-    }
-
-    /**
-     * Find a specific entry
-     *
-     * @param mixed $value
-     * @param string $key
-     * @return mixed
-     */
-    public function find($value, string $key = 'id')
-    {
-        return $this->where($value, $key)->first();
-    }
-
-    /**
-     * Find an entry or throw an exception
-     *
-     * @param mixed $value
-     * @param string $key
-     * @return mixed
-     */
-    public function findOrFail($value, string $key = 'id')
-    {
-        return $this->where($value, $key)->firstOrFail();
-    }
-
-    /**
-     * Find all entries matching a criteria
-     *
-     * @param [type] $value
-     * @param string $key
-     * @return void
-     */
-    public function findAll($value, string $key = 'id')
-    {
-        return $this->where($value, $key)->get();
-    }
-
-    public function transaction(\Closure $transaction)
-    {
-        return $this->db->transaction($transaction, $this);
+        return parent::where($criterion);
     }
 }

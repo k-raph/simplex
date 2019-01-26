@@ -2,6 +2,7 @@
 
 namespace Simplex\Database\Driver;
 
+use Finesse\QueryScribe\GrammarInterface;
 use PDO;
 use PDOException;
 
@@ -16,10 +17,13 @@ class SqliteDriver extends AbstractDriver
      * Sqlite driver implementation
      *
      * @param array $options
+     * @param GrammarInterface $grammar
      */
-    public function __construct(array $options)
+    public function __construct(array $options, GrammarInterface $grammar)
     {
         $this->options = $options;
+        $this->grammar = $grammar;
+
         try {
             $this->connect();
         } catch (PDOException $e) {

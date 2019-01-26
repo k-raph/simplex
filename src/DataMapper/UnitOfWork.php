@@ -2,12 +2,9 @@
 
 namespace Simplex\DataMapper;
 
-use Simplex\DataMapper\Persistence\PersisterInterface;
-use Simplex\DataMapper\Proxy\Proxy;
-use Simplex\DataMapper\Proxy\ProxyFactory;
 use Simplex\DataMapper\Persistence\DatabasePersister;
-use Symfony\Component\Config\Definition\Exception\Exception;
-use Simplex\DataMapper\Mapping\EntityMetadata;
+use Simplex\DataMapper\Persistence\PersisterInterface;
+use Simplex\DataMapper\Proxy\ProxyFactory;
 
 class UnitOfWork
 {
@@ -59,7 +56,7 @@ class UnitOfWork
      *
      * @param string $entityClass
      * @param mixed $id
-     * @return void
+     * @return object|null
      */
     public function get(string $entityClass, $id): ?object
     {
