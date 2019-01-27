@@ -103,17 +103,29 @@ class EntityMapper
      * @param array $entities
      * @param array $relations
      * @return array
+     * @throws \Exception
      */
     public function loadRelations(array $entities, array $relations): array
     {
         $loader = new Loader($this->em);
 
         foreach ($relations as $name) {
+            // Gives the opportunity to load only certain fields of the relationship
+            $parts = explode(':', $name);
+            $name = $parts[0];
+            $fields = explode(',', $parts[1] ?? '*');
+
             $relation = $this->metadata->getRelation($name);
             $relation['name'] = $name;
 
             $relation = $loader->build($this->metadata->getEntityClass(), $relation);
-            $loaded = $relation->load($this->em, $entities);
+
+            $meta = $this->em->getMapperFor($relation->getTarget())->getMetadata();
+            foreach ($fields as $key => $field) {
+                $fields[$key] = $meta->getSQLName($field) ?? $field;
+            }
+
+            $loaded = $relation->load($this->em, $entities, $fields);
             $entities = $relation->assign($this->em, $name, $entities, $loaded);
         }
 

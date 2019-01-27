@@ -93,6 +93,7 @@ class Repository implements RepositoryInterface
      *
      * @param array $entities
      * @return array
+     * @throws \Exception
      */
     private function checkRelations(array $entities): array
     {
@@ -109,9 +110,9 @@ class Repository implements RepositoryInterface
      * Add relations to be loaded
      *
      * @param string ...$relations
-     * @return Repository
+     * @return RepositoryInterface
      */
-    public function with(string ...$relations): self
+    public function with(string ...$relations): RepositoryInterface
     {
         $this->relations = array_merge($this->relations, $relations);
         return $this;

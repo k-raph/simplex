@@ -47,10 +47,10 @@ class OneToMany implements RelationInterface
      *
      * @param EntityManager $em
      * @param array $entities
+     * @param array $fields
      * @return array
-     * @throws \Throwable
      */
-    public function load(EntityManager $em, array $entities): array
+    public function load(EntityManager $em, array $entities, array $fields): array
     {
         $mapper = $em->getMapperFor($this->getTarget());
 
@@ -63,8 +63,10 @@ class OneToMany implements RelationInterface
         $meta = $mapper->getMetadata();
 
         $query = $em->getConnection()->getQueryBuilder();
+
         $result = $query
             ->table($meta->getTableName())
+            ->select($fields)
             ->whereIn($this->getTargetField(), $criteria[$this->getOwnerField()] ?? [])
             ->get();
 

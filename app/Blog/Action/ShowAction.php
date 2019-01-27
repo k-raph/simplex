@@ -35,7 +35,7 @@ class ShowAction
      */
     public function single(int $id, EntityManager $em)
     {
-        $post = $em->getRepository(Post::class)->with('author')->find($id);
+        $post = $em->getRepository(Post::class)->with('author:name')->find($id);
         return $this->view->render('@blog/show', compact('post'));
     }
 
@@ -49,7 +49,7 @@ class ShowAction
     {
         return $this->view
             ->render('@blog/index', [
-                'posts' => $em->getRepository(Post::class)->with('author')->findAll()
+                'posts' => $em->getRepository(Post::class)->with('author:name')->findAll()
             ]);
     }
 }

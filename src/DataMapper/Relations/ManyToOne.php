@@ -27,10 +27,11 @@ class ManyToOne implements RelationInterface
      *
      * @param EntityManager $em
      * @param array $entities
+     * @param array $fields
      * @return array
      * @throws \Throwable
      */
-    public function load(EntityManager $em, array $entities): array
+    public function load(EntityManager $em, array $entities, array $fields): array
     {
         $ownerMapper = $em->getMapperFor($this->getOwner());
         $targetMapper = $em->getMapperFor($this->getTarget());
@@ -41,8 +42,10 @@ class ManyToOne implements RelationInterface
         }, $entities);
 
         $query = $em->getConnection()->getQueryBuilder();
+        $fields = array_merge([$this->getTargetField()], $fields);
         $result = $query
             ->table($targetMapper->getMetadata()->getTableName())
+            ->addSelect($fields)
             ->whereIn($this->getTargetField(), $ids)
             ->get();
 

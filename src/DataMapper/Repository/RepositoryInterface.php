@@ -44,4 +44,12 @@ interface RepositoryInterface
      * @return string
      */
     public function getClassName(): string;
+
+    /**
+     * Add relations to be eager loaded
+     *
+     * @param string ...$relations
+     * @return RepositoryInterface
+     */
+    public function with(string ...$relations): RepositoryInterface;
 }
