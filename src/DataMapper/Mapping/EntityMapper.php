@@ -44,7 +44,7 @@ class EntityMapper
         $proxy = $this->createProxy();
         $proxy->hydrate($props);
 
-        return $proxy->reveal();
+        return $this->postCreateEntity($proxy->reveal());
     }
 
     /**
@@ -80,7 +80,7 @@ class EntityMapper
 
         $proxy->hydrate($this->mapToProps($data));
 
-        return $proxy;
+        return $entity;
     }
 
     /**
@@ -121,11 +121,21 @@ class EntityMapper
             $relation = $loader->build($this->metadata->getEntityClass(), $relation);
 
             $meta = $this->em->getMapperFor($relation->getTarget())->getMetadata();
+            $exts = [];
+
             foreach ($fields as $key => $field) {
                 $fields[$key] = $meta->getSQLName($field) ?? $field;
+                if ($meta->hasRelation($field)) {
+                    $exts[] = $field;
+                }
             }
 
             $loaded = $relation->load($this->em, $entities, $fields);
+
+            if (!empty($exts)) {
+                $loaded = $this->loadRelations($loaded, $exts);
+            }
+
             $entities = $relation->assign($this->em, $name, $entities, $loaded);
         }
 
@@ -184,5 +194,43 @@ class EntityMapper
     protected function createProxy(): Proxy
     {
         return $this->proxyFactory->create($this->metadata->getEntityClass());
+    }
+
+    public function prePersist(object $entity)
+    {
+        $fields = [];
+        $proxy = $this->proxyFactory->wrap($entity);
+        foreach ($this->metadata->getNames() as $field) {
+            $type = $this->metadata->getColumnType($field);
+            switch ($type) {
+                case 'string':
+                case 'int':
+                    $fields[$field] = $proxy->getField($field);
+                    break;
+                case 'datetime':
+                    $fields[$field] = $proxy->getField($field)->format('d-m-Y H:i:s');
+                    break;
+            }
+        }
+
+        $proxy->hydrate($fields);
+        return $proxy->reveal();
+    }
+
+    protected function postCreateEntity(object $entity)
+    {
+        $fields = [];
+        $proxy = $this->proxyFactory->wrap($entity);
+        foreach ($this->metadata->getNames() as $field) {
+            $type = $this->metadata->getColumnType($field);
+            switch ($type) {
+                case 'datetime':
+                    $fields[$field] = \DateTime::createFromFormat('d-m-Y H:i:s', $proxy->getField($field));
+                    break;
+            }
+        }
+
+        $proxy->hydrate($fields);
+        return $proxy->reveal();
     }
 }

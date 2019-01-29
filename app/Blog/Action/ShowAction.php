@@ -3,7 +3,6 @@
 namespace App\Blog\Action;
 
 use App\Blog\Entity\Post;
-use App\Blog\Table\PostTable;
 use Simplex\DataMapper\EntityManager;
 use Simplex\Renderer\TwigRenderer;
 
@@ -35,7 +34,10 @@ class ShowAction
      */
     public function single(int $id, EntityManager $em)
     {
-        $post = $em->getRepository(Post::class)->with('author:name')->find($id);
+        $post = $em->getRepository(Post::class)
+            ->with('author:name', 'comments:content,author,createdAt')
+            ->find($id);
+
         return $this->view->render('@blog/show', compact('post'));
     }
 

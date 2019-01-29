@@ -123,7 +123,7 @@ class UnitOfWork
     public function commit()
     {
         $inserts = $this->entityStates[self::STATE_NEW];
-        $updates = array_values($this->entityStates[self::STATE_MANAGED]);
+        $updates = $this->entityStates[self::STATE_MANAGED];
         $removes = array_values($this->entityStates[self::STATE_REMOVED]);
 
         if (empty($inserts) && empty($updates) && empty($removes)) {
@@ -132,16 +132,20 @@ class UnitOfWork
 
         foreach ($inserts as $class => $entities) {
             $persister = $this->getPersister($class);
+            $mapper = $this->em->getMapperFor($class);
             foreach ($entities as $entity) {
+                $entity = $mapper->prePersist($entity);
                 $persister->addInsert($entity);
             }
             $persister->performInsert();
         }
 
-        foreach ($updates as $entity) {
-            $persister = $this->getPersister(get_class($entity));
+        foreach ($updates as $class => $entity) {
+            $persister = $this->getPersister($class);
+            $mapper = $this->em->getMapperFor($class);
             $changes = $this->getChangeSet($entity);
             if (!empty($changes)) {
+                $entity = $mapper->prePersist($entity);
                 $persister->update($entity, $changes);
             }
         }
@@ -187,7 +191,7 @@ class UnitOfWork
     {
         $mapper = $this->em->getMapperFor(\get_class($entity));
         $data = $mapper->extract($entity);
-        $original = $mapper->extract($this->originalEntities[spl_object_hash($entity)]);
+        $original = $mapper->extract($this->originalEntities[spl_object_hash($entity)] ?? new \stdClass());
         $changes = [];
 
         foreach ($data as $key => $value) {

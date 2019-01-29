@@ -5,7 +5,6 @@ namespace Simplex\Renderer;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use Simplex\Renderer\TwigRenderer;
 
 class TwigServiceProvider extends AbstractServiceProvider
 {
@@ -22,9 +21,14 @@ class TwigServiceProvider extends AbstractServiceProvider
      */
     public function register()
     {
-        $this->container->add(TwigRenderer::class, function() {    
+        $this->container->add(
+            TwigRenderer::class, function () {
             $loader = new FilesystemLoader();
             $twig = new Environment($loader);
+            $config = $this->container->get('config');
+            foreach ($config['twig']['extensions'] ?? [] as $extension) {
+                $twig->addExtension($this->container->get($extension));
+            }
 
             return new TwigRenderer($twig, $loader);
         });

@@ -2,8 +2,10 @@
 
 namespace App\Blog\Action;
 
-use Simplex\Renderer\TwigRenderer;
+use App\Blog\Entity\Post;
 use App\Blog\Table\PostTable;
+use Simplex\DataMapper\EntityManager;
+use Simplex\Renderer\TwigRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -65,9 +67,12 @@ class PostEditAction
         return $this->view->render('@blog/new_post', ['post' => $this->posts->find($id)]);
     }
 
-    public function delete(int $id)
+    public function delete(int $id, EntityManager $em)
     {
-        $this->posts->delete($id);
+        $post = $em->find(Post::class, $id);
+        $em->remove($post);
+        $em->flush();
+        //$this->posts->delete($id);
         return new Response('Deleted', 204);
     }
 

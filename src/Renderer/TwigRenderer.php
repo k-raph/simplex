@@ -41,8 +41,9 @@ class TwigRenderer
      * Add a template path
      *
      * @param string $path
-     * @param [type] $namespace
+     * @param string $namespace
      * @return void
+     * @throws \Twig_Error_Loader
      */
     public function addPath(string $path, $namespace = self::NAMESPACE)
     {
@@ -55,6 +56,9 @@ class TwigRenderer
      * @param string $file
      * @param array $params
      * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function render(string $file, array $params = []): string
     {

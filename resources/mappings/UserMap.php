@@ -1,7 +1,8 @@
 <?php
 
-use App\Blog\Entity\User;
+use App\Blog\Entity\Comment;
 use App\Blog\Entity\Post;
+use App\Blog\Entity\User;
 
 return [
     User::class => [
@@ -27,6 +28,11 @@ return [
                 'posts' => [
                     'field' => 'id',
                     'target' => Post::class,
+                    'targetField' => 'author_id'
+                ],
+                'comments' => [
+                    'field' => 'id',
+                    'target' => Comment::class,
                     'targetField' => 'author_id'
                 ]
             ]

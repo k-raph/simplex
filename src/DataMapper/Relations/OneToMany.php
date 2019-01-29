@@ -49,6 +49,7 @@ class OneToMany implements RelationInterface
      * @param array $entities
      * @param array $fields
      * @return array
+     * @throws \Throwable
      */
     public function load(EntityManager $em, array $entities, array $fields): array
     {
@@ -64,9 +65,10 @@ class OneToMany implements RelationInterface
 
         $query = $em->getConnection()->getQueryBuilder();
 
+        $fields = array_merge([$this->getTargetField()], $fields);
         $result = $query
             ->table($meta->getTableName())
-            ->select($fields)
+            ->addSelect($fields)
             ->whereIn($this->getTargetField(), $criteria[$this->getOwnerField()] ?? [])
             ->get();
 

@@ -153,10 +153,14 @@ class EntityMetadata
     {
         return $this->datas['relations'];
     }
-    
-    public function getRelationsNames(): array
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasRelation(string $name): bool
     {
-        return array_keys($this->datas['relations']);
+        return in_array($name, array_keys($this->datas['relations']));
     }
 
     /**

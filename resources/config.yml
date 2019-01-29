@@ -8,6 +8,10 @@ providers:
   - Simplex\Renderer\TwigServiceProvider
   - Simplex\DataMapper\DataMapperServiceProvider
 
+twig:
+  extensions:
+    - Simplex\Routing\Extensions\TwigRouterExtension
+
 middlewares:
     - Simplex\Middleware\TrailingSlashMiddleware
     - Simplex\Middleware\RoutingMiddleware
