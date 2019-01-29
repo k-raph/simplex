@@ -140,7 +140,8 @@ class UnitOfWork
             $persister->performInsert();
         }
 
-        foreach ($updates as $class => $entity) {
+        foreach ($updates as $entity) {
+            $class = get_class($entity);
             $persister = $this->getPersister($class);
             $mapper = $this->em->getMapperFor($class);
             $changes = $this->getChangeSet($entity);

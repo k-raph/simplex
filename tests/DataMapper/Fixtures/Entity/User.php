@@ -25,6 +25,11 @@ class User
      */
     private $password;
 
+    /**
+     * @var \DateTime
+     */
+    private $joinedAt;
+
     private $comments;
 
     public function setId(int $id)
@@ -65,5 +70,21 @@ class User
     public function getPassword(): ?string
     {
         return $this->password;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getJoinedAt(): \DateTime
+    {
+        return $this->joinedAt;
+    }
+
+    /**
+     * @param \DateTime $joinedAt
+     */
+    public function setJoinedAt(\DateTime $joinedAt): void
+    {
+        $this->joinedAt = $joinedAt;
     }
 }

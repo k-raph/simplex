@@ -7,6 +7,7 @@ use App\Blog\Entity\User;
 return [
     Post::class => [
         'table' => 'posts',
+        'repositoryClass' => \App\Blog\Repository\PostRepository::class,
         'id' => 'id',
         'fields' => [
             'id' => [

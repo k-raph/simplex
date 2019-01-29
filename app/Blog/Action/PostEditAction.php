@@ -27,20 +27,28 @@ class PostEditAction
      */
     private $posts;
 
-    public function __construct(TwigRenderer $renderer, PostTable $posts)
+    public function __construct(TwigRenderer $renderer)
     {
         $this->view = $renderer;
-        $this->posts = $posts;
     }
 
-    public function add(Request $request)
+    public function add(Request $request, EntityManager $em)
     {
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
 
             if ($this->isValid($data)) {
+                $post = new Post();
+                $post->setContent($data['content']);
+                $post->setTitle($data['title']);
+                $post->setSlug('my-post-slug-' . time());
+                $post->setAuthor(1);
+
                 $data['author_id'] = 1;
                 $data['slug'] = 'my-post-slug-'.time();
+                $em->persist($post);
+                $em->flush();
+                return $post;
                 $this->posts->insert($data);
                 return $data;
             } else {
@@ -51,28 +59,31 @@ class PostEditAction
         return $this->view->render('@blog/new_post');
     }
 
-    public function update(int $id, Request $request)
+    public function update(int $id, Request $request, EntityManager $manager)
     {
+        $post = $manager->find(Post::class, $id);
+
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
 
             if ($this->isValid($data)) {
-                $this->posts->update($id, $data);
-                return json_encode($this->posts->find($id));
+                $post->setContent($data['content']);
+                $post->setTitle($data['title']);
+                $manager->persist($post);
+                $manager->flush();
+                return json_encode($post);
             } else {
                 return 'Error';
             }
         }
 
-        return $this->view->render('@blog/new_post', ['post' => $this->posts->find($id)]);
+        return $this->view->render('@blog/new_post', compact('post'));
     }
 
     public function delete(int $id, EntityManager $em)
     {
-        $post = $em->find(Post::class, $id);
-        $em->remove($post);
-        $em->flush();
-        //$this->posts->delete($id);
+        $em->getRepository(Post::class)
+            ->remove($id);
         return new Response('Deleted', 204);
     }
 

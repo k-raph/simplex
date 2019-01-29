@@ -2,8 +2,11 @@
 
 namespace Simplex\DataMapper\Repository;
 
+use Simplex\Database\Query\Builder;
 use Simplex\DataMapper\EntityManager;
 use Simplex\DataMapper\Mapping\EntityMapper;
+use Simplex\DataMapper\Mapping\EntityMetadata;
+use Simplex\DataMapper\Persistence\PersisterInterface;
 
 class Repository implements RepositoryInterface
 {
@@ -19,17 +22,21 @@ class Repository implements RepositoryInterface
     protected $mapper;
 
     /**
-     * @var string
+     * @var EntityMetadata
      */
-    protected $className;
+    private $metadata;
 
-    protected $relations = [];
+    /**
+     * @var PersisterInterface
+     */
+    private $store;
 
     public function __construct(EntityManager $manager, EntityMapper $mapper)
     {
-        $this->mapper = $mapper;
-        $this->className = $mapper->getMetadata()->getEntityClass();
         $this->em = $manager;
+        $this->mapper = $mapper;
+        $this->metadata = $mapper->getMetadata();
+        $this->store = $manager->getUnitOfWork()->getPersister($this->metadata->getEntityClass());
     }
 
     /**
@@ -37,10 +44,7 @@ class Repository implements RepositoryInterface
      */
     public function find($id): ?object
     {
-        $entity = $this->em->find($this->className, $id);
-        return $entity
-            ? current($this->checkRelations([$entity]))
-            : null;
+        return $this->em->find($this->metadata->getEntityClass(), $id);
     }
 
     /**
@@ -54,18 +58,14 @@ class Repository implements RepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function findBy(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, int $offset = 0): array
+    public function findBy(array $criteria): array
     {
-        $uow = $this->em->getUnitOfWork();
-        $persister = $uow->getPersister($this->className);
-        $result = $persister->loadAll($criteria, $orderBy, $limit, $offset);
-        
+        $result = $this->store->loadAll($criteria);
+
         $result = array_map(function (array $data) {
             $entity = $this->mapper->createEntity($data);
             return $entity;
         }, $result);
-
-        $result = $this->checkRelations($result);
 
         return $result;
     }
@@ -75,46 +75,44 @@ class Repository implements RepositoryInterface
      */
     public function findOneBy(array $criteria): ?object
     {
-        return $this->findBy($criteria, null, 1, null);
+        return $this->query()
+            ->where($criteria)
+            ->first();
     }
 
     /**
-     * Get managed entity class name
-     *
-     * @return string
+     * @param string|null $alias
+     * @return Builder
      */
-    public function getClassName(): string
+    protected function query(?string $alias = null): Builder
     {
-        return $this->className;
+        return $this->store->getQueryBuilder($alias);
     }
 
     /**
-     * Check if relations need to be loaded
-     *
-     * @param array $entities
-     * @return array
-     * @throws \Exception
+     * @param $id
+     * @param array $values
+     * @return mixed|void
      */
-    private function checkRelations(array $entities): array
+    public function update($id, array $values)
     {
-        if (empty($this->relations)) {
-            return $entities;
-        }
-
-        $result = $this->mapper->loadRelations($entities, $this->relations);
-        $this->relations = [];
-        return $result;
+        $this->query()
+            ->where([
+                $this->metadata->getIdentifier() => $id
+            ])
+            ->update($values);
     }
 
     /**
-     * Add relations to be loaded
-     *
-     * @param string ...$relations
-     * @return RepositoryInterface
+     * @param $id
+     * @return mixed|void
      */
-    public function with(string ...$relations): RepositoryInterface
+    public function remove($id)
     {
-        $this->relations = array_merge($this->relations, $relations);
-        return $this;
+        $this->query()
+            ->where([
+                $this->metadata->getIdentifier() => $id
+            ])
+            ->delete();
     }
 }

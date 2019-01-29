@@ -2,6 +2,8 @@
 
 namespace Simplex\DataMapper\Persistence;
 
+use Simplex\Database\Query\Builder;
+
 interface PersisterInterface
 {
     /**
@@ -22,7 +24,7 @@ interface PersisterInterface
      * @return array
      */
     public function loadAll(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, ?int $offset = 0): array;
-    
+
     /**
      * Adds an object to insert to store
      *
@@ -41,6 +43,8 @@ interface PersisterInterface
     /**
      * Performs entity update
      *
+     * @param object $entity
+     * @param array $changes
      * @return void
      */
     public function update(object $entity, array $changes);
@@ -52,4 +56,9 @@ interface PersisterInterface
      * @return void
      */
     public function delete(object $entity);
+
+    /**
+     * @return Builder
+     */
+    public function getQueryBuilder(?string $alias = null): Builder;
 }

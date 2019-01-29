@@ -4,7 +4,7 @@
         <a href="{{ route('post_show', {'id': post.id}) }}">
             {{ post.title }}
         </a>
-    </h1> <em>by {{ post.author.name }}</em>
+    </h1> <em>by {{ post.author }}</em>
         <div>{{ post.content }}</div>
     </p>
 {% endfor %}

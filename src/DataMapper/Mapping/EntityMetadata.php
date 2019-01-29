@@ -17,10 +17,30 @@ class EntityMetadata
      */
     protected $datas;
 
+    /**
+     * EntityMetadata constructor.
+     * @param string $className
+     * @param array $mapping
+     */
     public function __construct(string $className, array $mapping)
     {
         $this->className = $className;
         $parts = explode('\\', $className);
+
+        // Parse the fields
+        $fields = $mapping['fields'];
+        $mapping['fields'] = [];
+        foreach ($fields as $key => $field) {
+            if (is_integer($key)) {
+                $key = $field;
+                $field = [
+                    'type' => 'string'
+                ];
+            }
+
+            $mapping['fields'][$key] = $field;
+        }
+
         $this->datas = array_merge([
             'table' => sprintf('%ss', strtolower(array_pop($parts))),
             'repositoryClass' => Repository::class,
@@ -28,19 +48,6 @@ class EntityMetadata
             'fields' => [],
             'relations' => []
         ], $mapping);
-
-        if (!empty($this->datas['relations'])) {
-            $assoc = [];
-            foreach ($this->datas['relations'] as $type => $relations) {
-                foreach ($relations as $field => $config) {
-                    $this->datas['fields'][$field] = $this->datas['fields'][$field] ?? [];
-                    $config['type'] = $type;
-                    $assoc[$field] = $config;
-                }
-            }
-
-            $this->datas['relations'] = $assoc;
-        }
     }
 
     /**
@@ -137,42 +144,7 @@ class EntityMetadata
         $field = $this->datas['fields'][$name];
         return $field['column'] ?? $name;
     }
-    
-    /**
-     * @return boolean
-     */
-    public function hasRelations(): bool
-    {
-        return !empty($this->datas['relations']);
-    }
-    
-    /**
-     * @return array
-     */
-    public function getRelations(): array
-    {
-        return $this->datas['relations'];
-    }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
-    public function hasRelation(string $name): bool
-    {
-        return in_array($name, array_keys($this->datas['relations']));
-    }
-
-    /**
-     * @param $name
-     *
-     * @return null|array
-     */
-    public function getRelation($name): ?array
-    {
-        return $this->datas['relations'][$name] ?? null;
-    }
-    
     /**
      * Get provided column name's type
      *
@@ -180,7 +152,7 @@ class EntityMetadata
      *
      * @return Type
      */
-    public function getColumnType(string $name): string
+    public function getColumnType(string $name): ?string
     {
         if (!isset($this->datas['fields'][$name])) {
             return null;
@@ -214,5 +186,4 @@ class EntityMetadata
     /**
      * @return mixed
      */
-    // public function getPrimaryColumns();
 }

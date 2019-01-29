@@ -93,7 +93,7 @@ class Post
     /**
      * @return User
      */
-    public function getAuthor(): User
+    public function getAuthor()//: User
     {
         return $this->author;
     }
@@ -101,7 +101,8 @@ class Post
     /**
      * @param User $author
      */
-    public function setAuthor(User $author): void
+    public function setAuthor(/*User*/
+        $author): void
     {
         $this->author = $author;
     }
@@ -109,7 +110,7 @@ class Post
     /**
      * @return Comment[]
      */
-    public function getComments(): array
+    public function getComments()//: array
     {
         return $this->comments;
     }

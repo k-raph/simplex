@@ -2,9 +2,8 @@
 
 namespace Simplex\Tests\DataMapper\Fixtures\Mapping;
 
-use Simplex\Tests\DataMapper\Fixtures\Entity\User;
 use Simplex\DataMapper\Persistence\ArrayPersister;
-use Simplex\Tests\DataMapper\Fixtures\Entity\Comment;
+use Simplex\Tests\DataMapper\Fixtures\Entity\User;
 
 return [
     User::class => [
@@ -16,23 +15,13 @@ return [
                 'type' => 'int'
             ],
             'name' => [
-                'type' => 'string',
                 'column' => 'username'
             ],
-            'email' => [
-                'type' => 'string'
-            ],
-            'password' => [
-                'type' => 'string'
-            ]
-        ],
-        'relations' => [
-            'oneToMany' => [
-                'comments' => [
-                    'field' => 'id',
-                    'target' => Comment::class,
-                    'targetField' => 'author_id'
-                ]
+            'email',
+            'password',
+            'joinedAt' => [
+                'type' => 'datetime',
+                'column' => 'joined_at'
             ]
         ]
     ]

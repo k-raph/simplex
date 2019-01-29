@@ -2,9 +2,8 @@
 
 namespace Simplex\Tests\DataMapper\Fixtures\Mapping;
 
-use Simplex\Tests\DataMapper\Fixtures\Entity\Comment;
 use Simplex\DataMapper\Persistence\ArrayPersister;
-use Simplex\Tests\DataMapper\Fixtures\Entity\User;
+use Simplex\Tests\DataMapper\Fixtures\Entity\Comment;
 
 return [
     Comment::class => [
@@ -15,19 +14,7 @@ return [
             'id' => [
                 'type' => 'int'
             ],
-            'content' => [
-                'type' => 'string',
-                'column' => 'username'
-            ],
-        ],
-        'relations' => [
-            'manyToOne' => [
-                'author' => [
-                    'field' => 'author_id',
-                    'target' => User::class,
-                    'targetField' => 'id'
-                ]
-            ]
+            'content'
         ]
     ]
 ];

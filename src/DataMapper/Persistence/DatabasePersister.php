@@ -3,11 +3,11 @@
 namespace Simplex\DataMapper\Persistence;
 
 use Simplex\Database\Query\Builder;
-use Simplex\DataMapper\Mapping\EntityMetadata;
-use Simplex\DataMapper\Proxy\ProxyFactory;
-use Simplex\DataMapper\Proxy\Proxy;
 use Simplex\DataMapper\EntityManager;
 use Simplex\DataMapper\Mapping\EntityMapper;
+use Simplex\DataMapper\Mapping\EntityMetadata;
+use Simplex\DataMapper\Proxy\Proxy;
+
 
 class DatabasePersister implements PersisterInterface
 {
@@ -34,8 +34,14 @@ class DatabasePersister implements PersisterInterface
      */
     protected $entityInserts = [];
 
+    /**
+     * @var EntityMapper
+     */
+    private $mapper;
+
     public function __construct(EntityManager $manager, EntityMapper $mapper)
     {
+        $this->mapper = $mapper;
         $this->metadata = $mapper->getMetadata();
         $this->em = $manager;
         $this->builder = $manager->getConnection()
@@ -80,7 +86,7 @@ class DatabasePersister implements PersisterInterface
      */
     public function performInsert()
     {
-        $this->builder->transaction(function () {
+        $this->em->getConnection()->transaction(function () {
             $input = array_values($this->entityInserts);
             $this->builder->insert($input);
         });
@@ -93,8 +99,7 @@ class DatabasePersister implements PersisterInterface
     {
         $class = $this->metadata->getEntityClass();
         if ($entity instanceof $class) {
-            $uow = $this->em->getUnitOfWork();
-            $this->entityInserts[] = $uow->extract($entity);
+            $this->entityInserts[] = $this->mapper->extract($entity);
         }
     }
 
@@ -105,7 +110,7 @@ class DatabasePersister implements PersisterInterface
     {
         $where = $this->getWhere($entity);
 
-        $this->builder->where($where)->update($changes)->run();
+        $this->builder->where($where)->update($changes);
     }
 
     /**
@@ -128,9 +133,17 @@ class DatabasePersister implements PersisterInterface
     {
         $id = $this->metadata->getIdentifier();
         $field = $this->metadata->getSQLName($id);
-        $value = $this->em->getUnitOfWork()->proxify($entity)->getValue($id);
+        $value = $this->mapper->getField($entity, $id);
         $where = [$field => $value];
         
         return $where;
+    }
+
+    /**
+     * @return Builder
+     */
+    public function getQueryBuilder(?string $alias = null): Builder
+    {
+        return $this->builder->newQuery()->table($this->metadata->getTableName(), $alias);
     }
 }

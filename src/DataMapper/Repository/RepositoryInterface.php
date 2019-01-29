@@ -28,7 +28,7 @@ interface RepositoryInterface
      * @param integer $offset
      * @return object[]
      */
-    public function findBy(array $criteria, ?string $orderBy = 'DESC', ?int $limit = null, int $offset = 0): array;
+    public function findBy(array $criteria);
 
     /**
      * Get a single entry matching a criteria
@@ -39,17 +39,19 @@ interface RepositoryInterface
     public function findOneBy(array $criteria): ?object;
 
     /**
-     * Get managed entity class name
+     * Shortcut for updating without retrieving first
      *
-     * @return string
+     * @param $id
+     * @param array $values
+     * @return mixed
      */
-    public function getClassName(): string;
+    public function update($id, array $values);
 
     /**
-     * Add relations to be eager loaded
+     * Shortcut for deleting without retrieving first
      *
-     * @param string ...$relations
-     * @return RepositoryInterface
+     * @param $id
+     * @return mixed
      */
-    public function with(string ...$relations): RepositoryInterface;
+    public function remove($id);
 }

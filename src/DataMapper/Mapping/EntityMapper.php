@@ -5,7 +5,6 @@ namespace Simplex\DataMapper\Mapping;
 use Simplex\DataMapper\EntityManager;
 use Simplex\DataMapper\Proxy\Proxy;
 use Simplex\DataMapper\Proxy\ProxyFactory;
-use Simplex\DataMapper\Relations\Loader;
 
 class EntityMapper
 {
@@ -98,51 +97,6 @@ class EntityMapper
     }
 
     /**
-     * Loads relations and add them to entity
-     *
-     * @param array $entities
-     * @param array $relations
-     * @return array
-     * @throws \Exception
-     */
-    public function loadRelations(array $entities, array $relations): array
-    {
-        $loader = new Loader($this->em);
-
-        foreach ($relations as $name) {
-            // Gives the opportunity to load only certain fields of the relationship
-            $parts = explode(':', $name);
-            $name = $parts[0];
-            $fields = explode(',', $parts[1] ?? '*');
-
-            $relation = $this->metadata->getRelation($name);
-            $relation['name'] = $name;
-
-            $relation = $loader->build($this->metadata->getEntityClass(), $relation);
-
-            $meta = $this->em->getMapperFor($relation->getTarget())->getMetadata();
-            $exts = [];
-
-            foreach ($fields as $key => $field) {
-                $fields[$key] = $meta->getSQLName($field) ?? $field;
-                if ($meta->hasRelation($field)) {
-                    $exts[] = $field;
-                }
-            }
-
-            $loaded = $relation->load($this->em, $entities, $fields);
-
-            if (!empty($exts)) {
-                $loaded = $this->loadRelations($loaded, $exts);
-            }
-
-            $entities = $relation->assign($this->em, $name, $entities, $loaded);
-        }
-
-        return $entities;
-    }
-
-    /**
      * Get mapped class metadata
      *
      * @return EntityMetadata
@@ -196,6 +150,12 @@ class EntityMapper
         return $this->proxyFactory->create($this->metadata->getEntityClass());
     }
 
+    /**
+     * Method to invoke before persist
+     *
+     * @param object $entity
+     * @return object
+     */
     public function prePersist(object $entity)
     {
         $fields = [];
@@ -208,7 +168,11 @@ class EntityMapper
                     $fields[$field] = $proxy->getField($field);
                     break;
                 case 'datetime':
-                    $fields[$field] = $proxy->getField($field)->format('d-m-Y H:i:s');
+                    $value = $proxy->getField($field);
+                    $value = $value instanceof \DateTime
+                        ? $value->format('d-m-Y H:i:s')
+                        : $value;
+                    $fields[$field] = $value;
                     break;
             }
         }
@@ -217,6 +181,12 @@ class EntityMapper
         return $proxy->reveal();
     }
 
+    /**
+     * Invoked after creating entity
+     *
+     * @param object $entity
+     * @return object
+     */
     protected function postCreateEntity(object $entity)
     {
         $fields = [];
