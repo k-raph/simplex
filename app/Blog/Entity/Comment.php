@@ -51,7 +51,7 @@ class Comment
     /**
      * @return User
      */
-    public function getAuthor(): User
+    public function getAuthor()//: User
     {
         return $this->author;
     }
@@ -59,7 +59,8 @@ class Comment
     /**
      * @param User $author
      */
-    public function setAuthor(User $author): void
+    public function setAuthor(/*User*/
+        $author): void
     {
         $this->author = $author;
     }
@@ -91,7 +92,8 @@ class Comment
     /**
      * @param Post $post
      */
-    public function setPost(Post $post): void
+    public function setPost(/*Post*/
+        $post): void
     {
         $this->post = $post;
     }

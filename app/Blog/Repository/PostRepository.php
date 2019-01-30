@@ -52,4 +52,17 @@ class PostRepository extends Repository
                 ->first()
         );
     }
+
+    /**
+     * Checks wether a post exists
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function exists(int $id)
+    {
+        return (bool)$this->query('p')
+            ->where('p.id', $id)
+            ->count();
+    }
 }

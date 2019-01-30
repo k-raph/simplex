@@ -1,7 +1,13 @@
-<form method="POST">
-    <label for="title">Title : </label><input type="text" name="title" id="title" {% if post %} value="{{ post.title }}" {% endif %} ><br>
-    <label for="content">Content : </label><textarea name="content" id="content" rows="5" cols="20">
-        {% if post %} {{ post.content }} {% endif %}
-    </textarea>
-    <button>Submit</button>
-</form>
+{% extends 'layout.twig' %}
+
+{% block title %} New Post {% endblock %}
+
+{% block content %}
+    <form method="POST">
+        <label for="title">Title : </label><input type="text" name="title"
+                                                  id="title" {% if post %} value="{{ post.title }}" {% endif %} ><br>
+        <label for="content">Content : </label>
+        <textarea name="content" id="content" rows="5" cols="20">{% if post %}{{ post.content }}{% endif %}</textarea>
+        <button>Submit</button>
+    </form>
+{% endblock %}

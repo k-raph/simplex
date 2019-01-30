@@ -2,6 +2,7 @@
 
 namespace Simplex\Database\Query\Traits;
 
+use Finesse\QueryScribe\Query;
 use Finesse\QueryScribe\StatementInterface;
 use Simplex\Database\Database;
 use Simplex\Database\Exceptions\DatabaseException;

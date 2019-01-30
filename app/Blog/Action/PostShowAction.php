@@ -2,11 +2,12 @@
 
 namespace App\Blog\Action;
 
+use App\Blog\Entity\Comment;
 use App\Blog\Entity\Post;
 use Simplex\DataMapper\EntityManager;
 use Simplex\Renderer\TwigRenderer;
 
-class ShowAction
+class PostShowAction
 {
     /**
      * Renderer engine
@@ -35,6 +36,8 @@ class ShowAction
     public function single(int $id, EntityManager $em)
     {
         $post = $em->getRepository(Post::class)->find($id);
+        $comments = $em->getRepository(Comment::class)->findForPost($post);
+        $post->setComments($comments);
 
         return $this->view->render('@blog/show', compact('post'));
     }

@@ -59,7 +59,7 @@ class EntityMapper
         $result = [];
 
         foreach ($this->getMappings() as $prop => $column) {
-            $result[$column] = $props[$prop];
+            $result[$column] = $props[$prop] ?? null;
         }
 
         return $result;

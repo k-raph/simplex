@@ -115,5 +115,13 @@ class Post
         return $this->comments;
     }
 
+    /**
+     * @param Comment[] $comments
+     */
+    public function setComments(array $comments): void
+    {
+        $this->comments = $comments;
+    }
+
 
 }

@@ -1,22 +1,45 @@
-<div>
-    <h1>{{ post.title }}</h1> <em>by {{ post.author }}</em>
-    <button data-id="{{ post.id }}">Delete</button>
-    <div>{{ post.content }}</div>
-    <div>
-        <h3>Comments</h3>
-        {% for comment in post.comments %}
-            <div>
-                <strong>{{ comment.author.name }}</strong> on {{ comment.createdAt.format('Y/m/d H:i') }} :
-                <p>
-                    {{ comment.content }}
-                </p>
-            </div>
-        {% else %}
-            No comment yet
-        {% endfor %}
-    </div>
-</div>
+{% extends 'layout.twig' %}
 
+{% block title %} {{ post.title }} {% endblock %}
+
+{% block content %}
+    <div>
+        <h1>{{ post.title }}</h1> <em>by {{ post.author }}</em>
+        {# <button data-id="{{ post.id }}">Delete</button> #}
+        <div>{{ post.content }}</div>
+        <div>
+            <h3>Comments</h3>
+            <form action="{{ route('comment_add', {'post_id': post.id}) }}" method="post">
+                <div>
+                    <label for="pseudo">Pseudo : </label>
+                    <input type="text" id="pseudo" name="pseudo">
+                </div>
+                <div>
+                    <label for="email">Email : </label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div>
+                    <label for="content">Comment : </label>
+                    <textarea name="content" id="content" cols="30" rows="10"></textarea>
+                </div>
+                <button>Submit</button>
+            </form>
+            <hr>
+            {% for comment in post.comments %}
+                <div>
+                    <strong>{{ comment.author }}</strong> on {{ comment.createdAt.format('Y/m/d H:i') }} :
+                    <p>
+                        {{ comment.content }}
+                    </p>
+                </div>
+            {% else %}
+                No comment yet
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{#
 <script>
     let del = document.querySelector('button');
     del.addEventListener("click", e => {
@@ -31,3 +54,4 @@
             .catch(error => console.log(error.message))
     })
 </script>
+#}

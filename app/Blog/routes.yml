@@ -1,12 +1,19 @@
 blog_index:
   path: /
-  controller: App\Blog\Action\ShowAction:all
+  controller: App\Blog\Action\PostShowAction:all
 
 post_show:
   path: /{id}
-  controller: App\Blog\Action\ShowAction:single
+  controller: App\Blog\Action\PostShowAction:single
   requirements:
     id: '\d+'
+
+comment_add:
+  path: /{post_id}/comments/new
+  controller: App\Blog\Action\CommentAddAction
+  methods: [POST]
+  requirements:
+    post_id: '\d+'
 
 post_new:
   path: /new
@@ -26,5 +33,3 @@ post_delete:
   methods: [DELETE]
   requirements:
     id: '\d+'
-
-

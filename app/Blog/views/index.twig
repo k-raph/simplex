@@ -1,10 +1,16 @@
-{% for post in posts %}
-    <p>
-    <h1>
-        <a href="{{ route('post_show', {'id': post.id}) }}">
-            {{ post.title }}
-        </a>
-    </h1> <em>by {{ post.author }}</em>
+{% extends 'layout.twig' %}
+
+{% block title %} Blog {% endblock %}
+
+{% block content %}
+    {% for post in posts %}
+        <p>
+        <h1>
+            <a href="{{ route('post_show', {'id': post.id}) }}">
+                {{ post.title }}
+            </a>
+        </h1> <em>by {{ post.author }}</em>
         <div>{{ post.content }}</div>
-    </p>
-{% endfor %}
+        </p>
+    {% endfor %}
+{% endblock %}

@@ -22,15 +22,20 @@ class TwigServiceProvider extends AbstractServiceProvider
     public function register()
     {
         $this->container->add(
-            TwigRenderer::class, function () {
-            $loader = new FilesystemLoader();
-            $twig = new Environment($loader);
-            $config = $this->container->get('config');
-            foreach ($config['twig']['extensions'] ?? [] as $extension) {
-                $twig->addExtension($this->container->get($extension));
-            }
+            TwigRenderer::class,
+            function () {
+                $loader = new FilesystemLoader();
+                $twig = new Environment($loader);
 
-            return new TwigRenderer($twig, $loader);
+                $config = $this->container->get('config')['twig'];
+                $loader->addPath(/*$config['path']*/
+                    dirname(__DIR__) . '/../resources/views');
+
+                foreach ($config['extensions'] ?? [] as $extension) {
+                    $twig->addExtension($this->container->get($extension));
+                }
+
+                return new TwigRenderer($twig, $loader);
         });
     }
    

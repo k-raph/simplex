@@ -9,6 +9,8 @@ providers:
   - Simplex\DataMapper\DataMapperServiceProvider
 
 twig:
+  path: ./resources/views
+  file_ext: twig
   extensions:
     - Simplex\Routing\Extensions\TwigRouterExtension
 

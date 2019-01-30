@@ -13,6 +13,7 @@ use App\Blog\Entity\User;
 return [
     Comment::class => [
         'table' => 'comments',
+        'repositoryClass' => \App\Blog\Repository\CommentRepository::class,
         'id' => 'id',
         'fields' => [
             'id' => [

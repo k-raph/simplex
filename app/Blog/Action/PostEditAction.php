@@ -9,7 +9,6 @@ use Simplex\Renderer\TwigRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
 class PostEditAction
 {
 
@@ -49,8 +48,6 @@ class PostEditAction
                 $em->persist($post);
                 $em->flush();
                 return $post;
-                $this->posts->insert($data);
-                return $data;
             } else {
                 return 'Error';
             }
