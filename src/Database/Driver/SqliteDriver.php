@@ -37,7 +37,6 @@ class SqliteDriver extends AbstractDriver
     {
         try {
             $path = $this->options['database'];
-            $path = realpath('../'.$path);
             $dsn = "sqlite:$path";
             $this->pdo = new PDO($dsn);
         } catch (PDOException $e) {

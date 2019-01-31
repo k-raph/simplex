@@ -1,4 +1,4 @@
-modules: 
+modules:
   - App\Blog\BlogModule
 
 providers:
@@ -9,22 +9,23 @@ providers:
   - Simplex\DataMapper\DataMapperServiceProvider
 
 twig:
-  path: ./resources/views
+  path: '%resources%/views'
   file_ext: twig
   extensions:
     - Simplex\Routing\Extensions\TwigRouterExtension
 
 middlewares:
-    - Simplex\Middleware\TrailingSlashMiddleware
-    - Simplex\Middleware\RoutingMiddleware
-    - web: []
-      # - Simplex\Session\SessionMiddleware
-    - api: []
+  - Simplex\Middleware\TrailingSlashMiddleware
+  - Simplex\Middleware\RoutingMiddleware
+  - web:
+      - Simplex\Session\SessionMiddleware
+      #- Simplex\Middleware\TwigSessionMiddleware
+  - api: []
 
 database:
   default: sqlite
   connections:
     sqlite:
       type: sqlite
-      database: ./resources/database.db
-  
+      database: '%resources%/db/database.db'
+

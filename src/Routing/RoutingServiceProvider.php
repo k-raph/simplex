@@ -3,9 +3,10 @@
 namespace Simplex\Routing;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
-use Symfony\Component\Routing\Loader\YamlFileLoader;
-use Symfony\Component\Config\FileLocator;
+use Simplex\Configuration\Configuration;
 use Simplex\Http\Pipeline;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Routing\Loader\YamlFileLoader;
 
 class RoutingServiceProvider extends AbstractServiceProvider
 {
@@ -26,7 +27,9 @@ class RoutingServiceProvider extends AbstractServiceProvider
         $router = new SymfonyRouter($loader);
         
         // Register middlewares group on router
-        $pipes = $this->container->get('config')['middlewares'];
+        $pipes = $this->container
+            ->get(Configuration::class)
+            ->get('middlewares', []);
         foreach ($pipes as $key => $pipe) {
             if (!is_array($pipe)) {
                 continue;

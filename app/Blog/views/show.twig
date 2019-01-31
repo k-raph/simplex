@@ -9,6 +9,11 @@
         <div>{{ post.content }}</div>
         <div>
             <h3>Comments</h3>
+            {% if flash.has('success') %}
+                {% for success in flash.get('success') %}
+                    <div>{{ success }}</div>
+                {% endfor %}
+            {% endif %}
             <form action="{{ route('comment_add', {'post_id': post.id}) }}" method="post">
                 <div>
                     <label for="pseudo">Pseudo : </label>

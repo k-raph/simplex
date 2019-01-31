@@ -1,0 +1,7 @@
+env: debug
+app_name: %app%
+database:
+  name: %app%.db
+  path: %root%/name
+  user: root
+  password: root

@@ -14,6 +14,7 @@ use App\Blog\Entity\Post;
 use App\Blog\Repository\PostRepository;
 use Simplex\DataMapper\EntityManager;
 use Simplex\Routing\RouterInterface;
+use Simplex\Session\SessionFlash;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,28 +32,32 @@ class CommentAddAction
     }
 
     /**
-     * @param int $post_id
      * @param Request $request
      * @param EntityManager $entityManager
+     * @param SessionFlash $flash
      * @return RedirectResponse
+     * @throws \Exception
      */
-    public function __invoke(int $post_id, Request $request, EntityManager $entityManager)
+    public function __invoke(Request $request, EntityManager $entityManager, SessionFlash $flash)
     {
         /** @var PostRepository $repo */
+        $id = $request->attributes->get('_route_params')['post_id'];
         $repo = $entityManager->getRepository(Post::class);
         $data = $request->request->all();
-        if ($repo->exists($post_id) && $this->isValid($data)) {
+        if ($repo->exists($id) && $this->isValid($data)) {
             $comment = new Comment();
             $comment->setContent($data['content']);
             $comment->setCreatedAt(new \DateTime());
-            $comment->setPost($post_id);
+            $comment->setPost($id);
             $comment->setAuthor(1);
 
             $entityManager->persist($comment);
             $entityManager->flush();
+
+            $flash->success('Your comment has been successfully added');
         }
 
-        return new RedirectResponse($this->router->generate('post_show', ['id' => $post_id]));
+        return new RedirectResponse($this->router->generate('post_show', ['id' => $id]));
     }
 
     /**

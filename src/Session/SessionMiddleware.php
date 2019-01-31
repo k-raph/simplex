@@ -3,8 +3,8 @@
 namespace Simplex\Session;
 
 use Simplex\Http\MiddlewareInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Simplex\Http\RequestHandlerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -17,7 +17,7 @@ class SessionMiddleware implements MiddlewareInterface
     private $session;
 
     /**
-     * Consttructor
+     * Constructor
      *
      * @param SessionInterface $session
      */

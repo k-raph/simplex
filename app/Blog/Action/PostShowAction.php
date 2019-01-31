@@ -6,6 +6,7 @@ use App\Blog\Entity\Comment;
 use App\Blog\Entity\Post;
 use Simplex\DataMapper\EntityManager;
 use Simplex\Renderer\TwigRenderer;
+use Symfony\Component\HttpFoundation\Request;
 
 class PostShowAction
 {
@@ -29,17 +30,20 @@ class PostShowAction
     /**
      * Show a single post
      *
-     * @param integer $id
+     * @param Request $request
      * @param EntityManager $em
      * @return string
      */
-    public function single(int $id, EntityManager $em)
+    public function single(Request $request, EntityManager $em)
     {
+        $id = $request->attributes->get('_route_params')['id'];
+        $flash = $request->getSession()->getFlashBag();
+
         $post = $em->getRepository(Post::class)->find($id);
         $comments = $em->getRepository(Comment::class)->findForPost($post);
         $post->setComments($comments);
 
-        return $this->view->render('@blog/show', compact('post'));
+        return $this->view->render('@blog/show', compact('post', 'flash'));
     }
 
     /**

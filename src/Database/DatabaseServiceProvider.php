@@ -3,6 +3,8 @@
 namespace Simplex\Database;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
+use Simplex\Configuration\Configuration;
+use Simplex\Database\Configuration as DatabaseConfiguration;
 
 class DatabaseServiceProvider extends AbstractServiceProvider
 {
@@ -18,8 +20,10 @@ class DatabaseServiceProvider extends AbstractServiceProvider
      */
     public function register()
     {
-        $options = $this->container->get('config')['database'] ?? [];
-        $config = new Configuration($options);
+        $options = $this->container
+            ->get(Configuration::class)
+            ->get('database', []);
+        $config = new DatabaseConfiguration($options);
 
         $this->container->add(DatabaseInterface::class, new Database($config));
     }

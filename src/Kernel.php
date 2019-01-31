@@ -2,19 +2,18 @@
 
 namespace Simplex;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Psr\Container\ContainerInterface;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
-use League\Container\Exception\NotFoundException;
-use Simplex\Http\Pipeline;
+use Psr\Container\ContainerInterface;
+use Simplex\Configuration\Configuration;
 use Simplex\Database\Exception\ResourceNotFoundException as DatabaseResourceNotFoundException;
+use Simplex\Http\Pipeline;
+use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class Kernel
 {
@@ -66,10 +65,15 @@ class Kernel
     public function configure(): void
     {
         try {
-            $path = dirname(__DIR__).'/resources';
-            $locator = new FileLocator($path);
-            $config = Yaml::parseFile($locator->locate('config.yml'));
-            $this->container->add('config', $config);
+            $root = dirname(__DIR__);
+            $locator = new FileLocator("$root/config");
+            $config = new Configuration([
+                'root' => $root,
+                'resources' => "$root/resources"
+            ]);
+
+            $config->load($locator->locate('config.yml'));
+            $this->container->add(Configuration::class, $config);
         } catch (FileLocatorFileNotFoundException $e) {
             throw new \RuntimeException('Config files not found!');
         }
@@ -85,7 +89,9 @@ class Kernel
     {
         $this->configure();
 
-        $providers = $this->container->get('config')['providers'] ?? [];
+        $providers = $this->container
+            ->get(Configuration::class)
+            ->get('providers', []);
         foreach ($providers as $provider) {
             $this->container->addServiceProvider($provider);
         }
@@ -100,11 +106,11 @@ class Kernel
     {
         if ($this->booted)
             return;
-        
-        $config =  $this->container->get('config');
+
+        $config = $this->container->get(Configuration::class);
 
         // Register middlewares
-        $pipes = $config['middlewares'] ?? [];
+        $pipes = $config->get('middlewares', []);
         foreach ($pipes as $key => $middleware) {
             if (is_array($middleware)) {
                 continue;
@@ -113,7 +119,7 @@ class Kernel
         }
 
         // Load modules
-        $modules = $config['modules'] ?? [];
+        $modules = $config->get('modules', []);
         $this->modules = array_map(function ($module) {
             return $this->container->get($module);
         }, $modules);
@@ -125,7 +131,7 @@ class Kernel
      * Handle the request
      *
      * @param Request $request
-     * @return Resonse
+     * @return Response
      */
     public function handle(Request $request)
     {
