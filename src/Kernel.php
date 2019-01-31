@@ -6,7 +6,6 @@ use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\Database\Exception\ResourceNotFoundException as DatabaseResourceNotFoundException;
 use Simplex\Http\Pipeline;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
@@ -14,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Tracy\Debugger;
 
 class Kernel
 {
@@ -109,6 +109,10 @@ class Kernel
 
         $config = $this->container->get(Configuration::class);
 
+        if ('debug' === $config->get('env')) {
+            Debugger::enable();
+        }
+
         // Register middlewares
         $pipes = $config->get('middlewares', []);
         foreach ($pipes as $key => $middleware) {
@@ -151,7 +155,7 @@ class Kernel
      */
     private function handleException(\Exception $exception)
     {
-        if ($exception instanceof ResourceNotFoundException || $exception instanceof DatabaseResourceNotFoundException) {
+        if ($exception instanceof ResourceNotFoundException) {
             return new Response($exception->getMessage(), 404);
         } elseif ($exception instanceof MethodNotAllowedException) {
             return new Response(

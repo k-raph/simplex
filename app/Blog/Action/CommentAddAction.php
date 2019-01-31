@@ -12,9 +12,11 @@ namespace App\Blog\Action;
 use App\Blog\Entity\Comment;
 use App\Blog\Entity\Post;
 use App\Blog\Repository\PostRepository;
+use Rakit\Validation\Validation;
 use Simplex\DataMapper\EntityManager;
 use Simplex\Routing\RouterInterface;
 use Simplex\Session\SessionFlash;
+use Simplex\Validation\Validator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,9 +28,15 @@ class CommentAddAction
      */
     private $router;
 
-    public function __construct(RouterInterface $router)
+    /**
+     * @var Validator
+     */
+    private $validator;
+
+    public function __construct(RouterInterface $router, Validator $validator)
     {
         $this->router = $router;
+        $this->validator = $validator;
     }
 
     /**
@@ -44,7 +52,10 @@ class CommentAddAction
         $id = $request->attributes->get('_route_params')['post_id'];
         $repo = $entityManager->getRepository(Post::class);
         $data = $request->request->all();
-        if ($repo->exists($id) && $this->isValid($data)) {
+
+        $data = $this->validate($data)->getValidData();
+
+        if ($repo->exists($id)) {
             $comment = new Comment();
             $comment->setContent($data['content']);
             $comment->setCreatedAt(new \DateTime());
@@ -61,19 +72,15 @@ class CommentAddAction
     }
 
     /**
-     * Validate input
-     *
-     * @param array $values
-     * @return bool
+     * @param array $input
+     * @return \Rakit\Validation\Validation
      */
-    private function isValid(array $values)
+    private function validate(array $input): Validation
     {
-        foreach ($values as $key => $value) {
-            if (empty($value)) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->validator->validate($input, [
+            'pseudo' => 'required|alpha_dash',
+            'email' => 'required|email',
+            'content' => 'required|alpha_spaces',
+        ]);
     }
 }

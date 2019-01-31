@@ -1,3 +1,4 @@
+env: debug
 modules:
   - App\Blog\BlogModule
 
@@ -7,6 +8,7 @@ providers:
   - Simplex\Session\SessionServiceProvider
   - Simplex\Renderer\TwigServiceProvider
   - Simplex\DataMapper\DataMapperServiceProvider
+  - Simplex\Validation\ValidationServiceProvider
 
 twig:
   path: '%resources%/views'
@@ -16,6 +18,7 @@ twig:
 
 middlewares:
   - Simplex\Middleware\TrailingSlashMiddleware
+  - Simplex\Middleware\ValidationErrorsMiddleware
   - Simplex\Middleware\RoutingMiddleware
   - web:
       - Simplex\Session\SessionMiddleware
