@@ -7,6 +7,7 @@ use League\Container\ReflectionContainer;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\Http\Pipeline;
+use Simplex\Module\ModuleLoader;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +32,7 @@ class Kernel
     /**
      * Registered modules
      *
-     * @var array
+     * @var ModuleLoader
      */
     protected $modules;
 
@@ -124,9 +125,9 @@ class Kernel
 
         // Load modules
         $modules = $config->get('modules', []);
-        $this->modules = array_map(function ($module) {
-            return $this->container->get($module);
-        }, $modules);
+        $loader = new ModuleLoader($this->container);
+        $loader->load($modules);
+        $this->modules = $loader;
 
         $this->booted = true;
     }

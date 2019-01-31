@@ -2,10 +2,11 @@
 
 namespace App\Blog;
 
+use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
 
-class BlogModule
+class BlogModule extends AbstractModule
 {
 
     /**
@@ -20,4 +21,11 @@ class BlogModule
         $renderer->addPath(__DIR__.'/views', 'blog');
     }
 
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return 'blog';
+    }
 }
