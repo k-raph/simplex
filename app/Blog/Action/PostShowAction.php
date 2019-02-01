@@ -34,16 +34,13 @@ class PostShowAction
      * @param EntityManager $em
      * @return string
      */
-    public function single(Request $request, EntityManager $em)
+    public function single(int $id, EntityManager $em)
     {
-        $id = $request->attributes->get('_route_params')['id'];
-        $flash = $request->getSession()->getFlashBag();
-
         $post = $em->getRepository(Post::class)->find($id);
         $comments = $em->getRepository(Comment::class)->findForPost($post);
         $post->setComments($comments);
 
-        return $this->view->render('@blog/show', compact('post', 'flash'));
+        return $this->view->render('@blog/show', compact('post'));
     }
 
     /**

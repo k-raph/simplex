@@ -115,7 +115,7 @@ class Kernel
         }
 
         // Register middlewares
-        $pipes = $config->get('middlewares', []);
+        $pipes = $config->get('routing.middlewares.global', []);
         foreach ($pipes as $key => $middleware) {
             if (is_array($middleware)) {
                 continue;

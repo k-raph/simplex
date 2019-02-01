@@ -15,22 +15,20 @@
                 {% endfor %}
             {% endif %}
 
-            {% if flash.has('errors') %}{% set errors = flash.get('errors') %} {% endif %}
-
             <form action="{{ route('comment_add', {'post_id': post.id}) }}" method="post">
                 <div>
                     <label for="pseudo">Pseudo : </label>
-                    {{ errors.pseudo }}
+                    {{ errors.get('pseudo') }}
                     <input type="text" id="pseudo" name="pseudo">
                 </div>
                 <div>
                     <label for="email">Email : </label>
-                    {{ errors.email }}
+                    {{ errors.get('email') }}
                     <input type="email" id="email" name="email">
                 </div>
                 <div>
                     <label for="content">Comment : </label>
-                    {{ errors.content }}
+                    {{ errors.get('content') }}
                     <textarea name="content" id="content" cols="30" rows="10"></textarea>
                 </div>
                 <button>Submit</button>

@@ -120,12 +120,13 @@ class SymfonyRouter implements RouterInterface
             $parameters = $matcher->matchRequest($request);
 
             $route = new Route($parameters['_route'], $parameters['_controller']);
+
             $middlewares = array_merge(
-                [],
                 $parameters['_middlewares'] ?? [],
-                $this->getStrategyMiddlewares($parameters['_strategy'] ?? 'web')
+                $this->getStrategy($parameters['_strategy'] ?? 'web')
             );
-            $route->setMiddlewares(/*$parameters['_middlewares'] ?? []*/$middlewares);
+
+            $route->setMiddlewares($middlewares);
 
             $parameters = array_filter($parameters, function (string $key) {
                 return strpos($key, '_') !== 0;
@@ -168,24 +169,22 @@ class SymfonyRouter implements RouterInterface
     /**
      * {@inheritDoc}
      */
-    public function middleware(MiddlewareInterface $middleware, ?string $group = null)
+    public function middleware(MiddlewareInterface $middleware)
     {
-        if ($group) {
-            $this->middlewares['groups'][$group][] = $middleware;
-        } else {
-            $this->middlewares['routes'] = $middleware;
-        }
+        $this->middlewares['routes'] = $middleware;
     }
 
     /**
      * Get middleware stack associated to current middleware group
      *
      * @param string $strategy
-     * @return MiddlewareInterface[]
+     * @return array
      */
-    private function getStrategyMiddlewares($strategy): array
+    private function getStrategy($strategy): array
     {
-        return $this->middlewares['groups'][$strategy] ?? [];
+        $strategy = $this->middlewares['groups'][$strategy] ?? null;
+
+        return $strategy ? [$strategy] : [];
     }
 
     /**
@@ -194,5 +193,14 @@ class SymfonyRouter implements RouterInterface
     public function setStrategy(string $strategy)
     {
         $this->builder->setDefault('_strategy', $strategy);
+    }
+
+    /**
+     * @param string $name
+     * @param MiddlewareInterface $middleware
+     */
+    public function addStrategy(string $name, MiddlewareInterface $middleware)
+    {
+        $this->middlewares['groups'][$name] = $middleware;
     }
 }

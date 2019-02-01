@@ -2,17 +2,16 @@
 
 namespace Simplex\Middleware;
 
-use Simplex\Http\MiddlewareInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Simplex\Http\RequestHandlerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
-use Simplex\Http\Pipeline;
-use Simplex\Routing\RouterInterface;
-use Simplex\Routing\Middleware\RouteMiddleware;
-use Simplex\Routing\Middleware\DispatchMiddleware;
+use League\Container\ContainerAwareTrait;
 use Psr\Container\ContainerInterface;
+use Simplex\Http\MiddlewareInterface;
+use Simplex\Http\Pipeline;
+use Simplex\Http\RequestHandlerInterface;
+use Simplex\Routing\Middleware\DispatchMiddleware;
+use Simplex\Routing\Middleware\RouteMiddleware;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class RoutingMiddleware implements MiddlewareInterface, ContainerAwareInterface
 {
@@ -34,8 +33,6 @@ class RoutingMiddleware implements MiddlewareInterface, ContainerAwareInterface
      */
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
-        /** @var RouterInterface $router */
-        $router = $this->container->get(RouterInterface::class);
         $pipeline = new Pipeline();
         
         $pipes = [

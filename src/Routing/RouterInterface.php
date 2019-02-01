@@ -2,8 +2,8 @@
 
 namespace Simplex\Routing;
 
-use Symfony\Component\HttpFoundation\Request;
 use Simplex\Http\MiddlewareInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 interface RouterInterface
 {
@@ -60,7 +60,7 @@ interface RouterInterface
      * @param MiddlewareInterface $middleware
      * @return void
      */
-    public function middleware(MiddlewareInterface $middleware, ?string $group = null);
+    public function middleware(MiddlewareInterface $middleware);
 
     /**
      * Set middleware group

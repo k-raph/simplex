@@ -16,14 +16,21 @@ twig:
   extensions:
     - Simplex\Routing\Extensions\TwigRouterExtension
 
-middlewares:
-  - Simplex\Middleware\TrailingSlashMiddleware
-  - Simplex\Middleware\ValidationErrorsMiddleware
-  - Simplex\Middleware\RoutingMiddleware
-  - web:
+routing:
+  strategies:
+    web: Simplex\Middleware\WebMiddleware
+
+  middlewares:
+    global:
+      - Simplex\Middleware\TrailingSlashMiddleware
+      - Simplex\Middleware\ErrorHandlerMiddleware
+      - Simplex\Middleware\ValidationErrorsMiddleware
+      - Simplex\Middleware\RoutingMiddleware
+    web:
       - Simplex\Session\SessionMiddleware
-      #- Simplex\Middleware\TwigSessionMiddleware
-  - api: []
+      - Simplex\Middleware\ErrorHandlerMiddleware
+      - Simplex\Middleware\TwigSessionMiddleware
+    api: []
 
 database:
   default: sqlite

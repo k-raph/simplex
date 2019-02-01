@@ -3,11 +3,11 @@
 namespace Simplex\Routing\Middleware;
 
 use Simplex\Http\MiddlewareInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Simplex\Http\RequestHandlerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Simplex\Routing\RouterInterface;
 use Simplex\Http\Pipeline;
+use Simplex\Http\RequestHandlerInterface;
+use Simplex\Routing\RouterInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class RouteMiddleware implements MiddlewareInterface
 {

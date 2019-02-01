@@ -4,7 +4,6 @@ namespace Simplex\Routing;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Simplex\Configuration\Configuration;
-use Simplex\Http\Pipeline;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 
@@ -25,19 +24,10 @@ class RoutingServiceProvider extends AbstractServiceProvider
     {
         $loader = new YamlFileLoader(new FileLocator());
         $router = new SymfonyRouter($loader);
-        
-        // Register middlewares group on router
-        $pipes = $this->container
-            ->get(Configuration::class)
-            ->get('middlewares', []);
-        foreach ($pipes as $key => $pipe) {
-            if (!is_array($pipe)) {
-                continue;
-            }
 
-            $group = current(array_keys($pipe));
-            $pipes = array_values($pipe[$group]);
-            $router->middleware((new Pipeline())->seed($pipes, [$this->container, 'get']), $group);
+        // Register strategies on router
+        foreach ($this->container->get(Configuration::class)->get('routing.strategies') as $name => $strategy) {
+            $router->addStrategy($name, $this->container->get($strategy));
         }
         $router->setStrategy('web');
 

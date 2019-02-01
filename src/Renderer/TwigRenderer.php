@@ -64,4 +64,12 @@ class TwigRenderer
     {
         return $this->twig->render("$file.twig", $params);
     }
+
+    /**
+     * @return Environment
+     */
+    public function getEnv(): Environment
+    {
+        return $this->twig;
+    }
 }
