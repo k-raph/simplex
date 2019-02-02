@@ -15,6 +15,7 @@ twig:
   file_ext: twig
   extensions:
     - Simplex\Routing\Extensions\TwigRouterExtension
+    - Simplex\Security\Csrf\TwigCsrfExtension
 
 routing:
   strategies:
@@ -22,13 +23,14 @@ routing:
 
   middlewares:
     global:
-      - Simplex\Middleware\TrailingSlashMiddleware
       - Simplex\Middleware\ErrorHandlerMiddleware
       - Simplex\Middleware\ValidationErrorsMiddleware
+      - Simplex\Middleware\TrailingSlashMiddleware
       - Simplex\Middleware\RoutingMiddleware
     web:
+      - Simplex\Middleware\OverrideRequestMethodMiddleware
       - Simplex\Session\SessionMiddleware
-      - Simplex\Middleware\ErrorHandlerMiddleware
+      - Simplex\Middleware\CsrfTokenMiddleware
       - Simplex\Middleware\TwigSessionMiddleware
     api: []
 

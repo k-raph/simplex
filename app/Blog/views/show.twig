@@ -23,6 +23,7 @@
     {% endif %}
 
     <form action="{{ route('comment_add', {'post_id': post.id}) }}" method="post" class="col-6">
+        {{ csrf_field() }}
         <div class="form-group column">
             <label for="pseudo" class="form-label">Pseudo : </label>
             {% if errors.has('pseudo') %}
