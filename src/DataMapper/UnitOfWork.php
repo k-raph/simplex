@@ -188,7 +188,7 @@ class UnitOfWork
      * @param object $entity
      * @return array
      */
-    protected function getChangeSet(object $entity): array
+    public function getChangeSet(object $entity): array
     {
         $mapper = $this->em->getMapperFor(\get_class($entity));
         $data = $mapper->extract($entity);
@@ -202,5 +202,16 @@ class UnitOfWork
         }
 
         return $changes;
+    }
+
+    /**
+     * Set given entity as managed
+     *
+     * @param object $entity
+     */
+    public function setManaged(object $entity)
+    {
+        $uid = spl_object_hash($entity);
+        $this->entityStates[self::STATE_MANAGED][$uid] = $entity;
     }
 }

@@ -17,7 +17,7 @@ environments:
     development:
         adapter: sqlite
         host: localhost
-        name: ./resources/database.db
+        name: ./resources/db/database.db
         user: root
         pass: ''
         port: 3306

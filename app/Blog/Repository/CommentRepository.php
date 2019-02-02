@@ -21,13 +21,11 @@ class CommentRepository extends Repository
     public function findForPost(Post $post)
     {
         $result = $this->query('c')
-            ->addSelect(['content', 'created_at'])
-            ->addSelect('u.username', 'author_id')
-            ->innerJoin(['users', 'u'], 'c.author_id', 'u.id')
+            ->addSelect(['content', 'created_at', 'usr_pseudo'])
             ->where('post_id', $post->getId())
             ->get();
 
-        return array_map([$this->mapper, 'createEntity'], $result);
+        return $result;
     }
 
 }

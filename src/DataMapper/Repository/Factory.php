@@ -3,6 +3,7 @@
 namespace Simplex\DataMapper\Repository;
 
 use Simplex\DataMapper\EntityManager;
+use Simplex\DataMapper\QueryBuilder;
 
 class Factory
 {
@@ -16,8 +17,9 @@ class Factory
     /**
      * Get metadata instance associed to a classname
      *
+     * @param EntityManager $manager
      * @param string $className
-     * @return EntityMetadata|null
+     * @return RepositoryInterface
      */
     public function getRepository(EntityManager $manager, string $className): RepositoryInterface
     {
@@ -51,6 +53,6 @@ class Factory
         $mapper = $manager->getMapperFor($className);
         $repository = $mapper->getMetadata()->getRepositoryClass();
 
-        return new $repository($manager, $mapper);
+        return new $repository(new QueryBuilder($manager, $mapper));
     }
 }

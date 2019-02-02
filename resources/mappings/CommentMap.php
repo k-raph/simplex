@@ -7,8 +7,6 @@
  */
 
 use App\Blog\Entity\Comment;
-use App\Blog\Entity\Post;
-use App\Blog\Entity\User;
 
 return [
     Comment::class => [
@@ -30,19 +28,10 @@ return [
                 'column' => 'post_id'
             ],
             'author' => [
-                'column' => 'author_id'
-            ]
-        ],
-        'relations' => [
-            'manyToOne' => [
-                'author' => [
-                    'target' => User::class,
-                    'targetField' => 'id'
-                ],
-                'post' => [
-                    'target' => Post::class,
-                    'targetField' => 'id'
-                ]
+                'column' => 'usr_pseudo'
+            ],
+            'email' => [
+                'column' => 'usr_email'
             ]
         ]
     ]

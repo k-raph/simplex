@@ -2,41 +2,23 @@
 
 namespace Simplex\DataMapper\Repository;
 
-use Simplex\Database\Query\Builder;
-use Simplex\DataMapper\EntityManager;
-use Simplex\DataMapper\Mapping\EntityMapper;
-use Simplex\DataMapper\Mapping\EntityMetadata;
-use Simplex\DataMapper\Persistence\PersisterInterface;
+use Simplex\DataMapper\QueryBuilder;
 
 class Repository implements RepositoryInterface
 {
 
     /**
-     * @var EntityManager
+     * @var QueryBuilder
      */
-    protected $em;
+    private $builder;
 
     /**
-     * @var EntityMapper
+     * Repository constructor.
+     * @param QueryBuilder $builder
      */
-    protected $mapper;
-
-    /**
-     * @var EntityMetadata
-     */
-    private $metadata;
-
-    /**
-     * @var PersisterInterface
-     */
-    private $store;
-
-    public function __construct(EntityManager $manager, EntityMapper $mapper)
+    public function __construct(QueryBuilder $builder)
     {
-        $this->em = $manager;
-        $this->mapper = $mapper;
-        $this->metadata = $mapper->getMetadata();
-        $this->store = $manager->getUnitOfWork()->getPersister($this->metadata->getEntityClass());
+        $this->builder = $builder;
     }
 
     /**
@@ -44,7 +26,7 @@ class Repository implements RepositoryInterface
      */
     public function find($id): ?object
     {
-        return $this->em->find($this->metadata->getEntityClass(), $id);
+        return $this->builder->find($id);
     }
 
     /**
@@ -60,12 +42,9 @@ class Repository implements RepositoryInterface
      */
     public function findBy(array $criteria): array
     {
-        $result = $this->store->loadAll($criteria);
-
-        $result = array_map(function (array $data) {
-            $entity = $this->mapper->createEntity($data);
-            return $entity;
-        }, $result);
+        $result = $this->builder
+            ->where($criteria)
+            ->get();
 
         return $result;
     }
@@ -82,11 +61,11 @@ class Repository implements RepositoryInterface
 
     /**
      * @param string|null $alias
-     * @return Builder
+     * @return QueryBuilder
      */
-    protected function query(?string $alias = null): Builder
+    protected function query(?string $alias = null): QueryBuilder
     {
-        return $this->store->getQueryBuilder($alias);
+        return $this->builder->newQuery($alias);
     }
 
     /**
@@ -94,25 +73,19 @@ class Repository implements RepositoryInterface
      * @param array $values
      * @return mixed|void
      */
-    public function update($id, array $values)
+    public function update(object $entity)
     {
         $this->query()
-            ->where([
-                $this->metadata->getIdentifier() => $id
-            ])
-            ->update($values);
+            ->update($entity);
     }
 
     /**
-     * @param $id
+     * @param object $entity
      * @return mixed|void
+     * @throws \Throwable
      */
-    public function remove($id)
+    public function remove(object $entity)
     {
-        $this->query()
-            ->where([
-                $this->metadata->getIdentifier() => $id
-            ])
-            ->delete();
+        $this->query()->delete($entity);
     }
 }

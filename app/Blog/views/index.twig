@@ -4,13 +4,21 @@
 
 {% block content %}
     {% for post in posts %}
-        <p>
-        <h1>
-            <a href="{{ route('post_show', {'id': post.id}) }}">
-                {{ post.title }}
-            </a>
-        </h1> <em>by {{ post.author }}</em>
-        <div>{{ post.content }}</div>
-        </p>
+        <article>
+            <h2><a href="{{ route('post_show', {id: post.id}) }}" title="{{ post.title }}">{{ post.title }}</a></h2>
+            <p>
+                <small>
+                    by {{ post.author }}
+                    on {{ post.createdAt|date("M dS Y") }}</small>
+            </p>
+            <p>
+                {{ post.content|excerpt(150) }}
+            </p>
+            <p class="text-right">
+                <a href="{{ route('post_show', {id: post.id}) }}" class="btn btn-primary">Read more...</a>
+            </p>
+        </article>
     {% endfor %}
+
+    {% include 'pagination.twig' %}
 {% endblock %}

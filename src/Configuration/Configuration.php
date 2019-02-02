@@ -107,7 +107,7 @@ class Configuration
         switch ($type) {
             case 'yml':
             case 'yaml':
-                $values = Yaml::parseFile($file);
+                $values = Yaml::parseFile($file) ?? [];
                 break;
             case 'json':
                 $values = json_decode(file_get_contents($file), true);

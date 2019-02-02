@@ -23,7 +23,6 @@ class PostRepository extends Repository
     {
         $result = $this->buildSelect()->get();
 
-        $result = array_map([$this->mapper, 'createEntity'], $result);
         return $result;
     }
 
@@ -46,11 +45,19 @@ class PostRepository extends Repository
      */
     public function find($id): ?object
     {
-        return $this->mapper->createEntity(
-            $this->buildSelect()
-                ->where('p.id', $id)
-                ->first()
-        );
+        return $this->buildSelect()
+            ->where('p.id', $id)
+            ->first();
+    }
+
+    /**
+     * Gets result for given page
+     *
+     * @return Builder
+     */
+    public function queryForIndex(): Builder
+    {
+        return $this->buildSelect();
     }
 
     /**

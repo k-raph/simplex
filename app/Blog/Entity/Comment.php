@@ -18,9 +18,14 @@ class Comment
     protected $content;
 
     /**
-     * @var User
+     * @var string
      */
     protected $author;
+
+    /**
+     * @var string
+     */
+    protected $email;
 
     /**
      * @var Post
@@ -49,18 +54,17 @@ class Comment
     }
 
     /**
-     * @return User
+     * @return string
      */
-    public function getAuthor()//: User
+    public function getAuthor(): string
     {
         return $this->author;
     }
 
     /**
-     * @param User $author
+     * @param string $author
      */
-    public function setAuthor(/*User*/
-        $author): void
+    public function setAuthor(string $author): void
     {
         $this->author = $author;
     }
@@ -96,6 +100,22 @@ class Comment
         $post): void
     {
         $this->post = $post;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
     }
 
 

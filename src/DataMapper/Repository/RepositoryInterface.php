@@ -41,17 +41,16 @@ interface RepositoryInterface
     /**
      * Shortcut for updating without retrieving first
      *
-     * @param $id
-     * @param array $values
+     * @param object $entity
      * @return mixed
      */
-    public function update($id, array $values);
+    public function update(object $entity);
 
     /**
      * Shortcut for deleting without retrieving first
      *
-     * @param $id
+     * @param object $entity
      * @return mixed
      */
-    public function remove($id);
+    public function remove(object $entity);
 }

@@ -4,7 +4,6 @@ namespace Simplex\Database\Query;
 
 use Finesse\QueryScribe\PostProcessors\ExplicitTables;
 use Finesse\QueryScribe\Query;
-use Finesse\QueryScribe\Query as BaseQuery;
 use Finesse\QueryScribe\StatementInterface;
 use Simplex\Database\DatabaseInterface;
 use Simplex\Database\Exceptions\DatabaseException;
@@ -25,7 +24,7 @@ use Simplex\Database\Query\Traits\SelectTrait;
  *
  * @author Surgie
  */
-class Builder extends BaseQuery
+class Builder extends Query
 {
     use SelectTrait, InsertTrait, RawHelpersTrait;
 
@@ -40,6 +39,7 @@ class Builder extends BaseQuery
     public function __construct(DatabaseInterface $database)
     {
         $this->connection = $database;
+        $this->grammar = $database->getDriver()->getGrammar();
     }
 
     /**
@@ -54,7 +54,7 @@ class Builder extends BaseQuery
      * @throws InvalidReturnValueException
      * @throws \Throwable
      */
-    public function update(array $values): int
+    public function update($values): int
     {
         try {
             $query = (clone $this)->addUpdate($values); //->apply($this->connection->getTablePrefixer());
@@ -113,7 +113,7 @@ class Builder extends BaseQuery
     /**
      * {@inheritDoc}
      */
-    protected function constructEmptyCopy(): BaseQuery
+    protected function constructEmptyCopy(): Query
     {
         return new static($this->connection);
     }
@@ -128,7 +128,7 @@ class Builder extends BaseQuery
 
     /**
      * @param string[]|array[] ...$arguments
-     * @return BaseQuery
+     * @return Query
      */
     public function where(...$arguments): Query
     {
@@ -149,5 +149,17 @@ class Builder extends BaseQuery
         }
 
         return parent::where($criterion);
+    }
+
+    /**
+     * Gets compiled sql
+     *
+     * @return string
+     */
+    public function getSql(): string
+    {
+        return $this->grammar
+            ->compile($this)
+            ->getSQL();
     }
 }

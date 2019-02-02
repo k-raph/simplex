@@ -3,64 +3,65 @@
 {% block title %} {{ post.title }} {% endblock %}
 
 {% block content %}
-    <div>
-        <h1>{{ post.title }}</h1> <em>by {{ post.author }}</em>
-        {# <button data-id="{{ post.id }}">Delete</button> #}
-        <div>{{ post.content }}</div>
-        <div>
-            <h3>Comments</h3>
-            {% if flash.has('success') %}
-                {% for success in flash.get('success') %}
-                    <div>{{ success }}</div>
-                {% endfor %}
+    <h1>{{ post.title }}</h1>
+    <p>
+        <small>
+            by {{ post.author }}
+            on {{ post.createdAt|date("M dS Y") }}
+        </small>
+    </p>
+
+    {{ post.content|raw }}
+
+    <p>&nbsp;</p>
+    <h3>Comment this post</h3>
+
+    {% if flash.has('success') %}
+        {% for success in flash.get('success') %}
+            <div>{{ success }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form action="{{ route('comment_add', {'post_id': post.id}) }}" method="post" class="col-6">
+        <div class="form-group column">
+            <label for="pseudo" class="form-label">Pseudo : </label>
+            {% if errors.has('pseudo') %}
+                <span class="text-error">{{ errors.get('pseudo') }}</span>
             {% endif %}
-
-            <form action="{{ route('comment_add', {'post_id': post.id}) }}" method="post">
-                <div>
-                    <label for="pseudo">Pseudo : </label>
-                    {{ errors.get('pseudo') }}
-                    <input type="text" id="pseudo" name="pseudo">
-                </div>
-                <div>
-                    <label for="email">Email : </label>
-                    {{ errors.get('email') }}
-                    <input type="email" id="email" name="email">
-                </div>
-                <div>
-                    <label for="content">Comment : </label>
-                    {{ errors.get('content') }}
-                    <textarea name="content" id="content" cols="30" rows="10"></textarea>
-                </div>
-                <button>Submit</button>
-            </form>
-            <hr>
-            {% for comment in post.comments %}
-                <div>
-                    <strong>{{ comment.author }}</strong> on {{ comment.createdAt.format('Y/m/d H:i') }} :
-                    <p>
-                        {{ comment.content }}
-                    </p>
-                </div>
-            {% else %}
-                No comment yet
-            {% endfor %}
+            <input type="text" id="pseudo" name="pseudo"
+                   class="form-input{% if errors.has('pseudo') %} is-error{% endif %}">
         </div>
-    </div>
-{% endblock %}
+        <div class="form-group column">
+            <label for="email" class="form-label">Email : </label>
+            {% if errors.has('email') %}
+                <span class="text-error">{{ errors.get('email') }}</span>
+            {% endif %}
+            <input type="email" id="email" name="email"
+                   class="form-input{% if errors.has('email') %} is-error{% endif %}">
+        </div>
+        <div class="form-group column">
+            <label for="content" class="form-label">Comment : </label>
+            {% if errors.has('content') %}
+                <span class="text-error">{{ errors.get('content') }}</span>
+            {% endif %}
+            <textarea name="content" id="content" cols="30" rows="5"
+                      class="form-input{% if errors.has('content') %} is-error{% endif %}"></textarea>
+        </div>
+        <div class="form-group column">
+            <button class="btn btn-primary">Post a comment</button>
+        </div>
+    </form>
 
-{#
-<script>
-    let del = document.querySelector('button');
-    del.addEventListener("click", e => {
-        let route = "{{ route('post_delete', {'id': 50}) }}";
-        fetch(route.replace(50, e.target.dataset['id']), {method: 'DELETE'})
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = "{{ route('blog_index') }}";
-                    alert('Deleted');
-                } else console.log(response);
-            })
-            .catch(error => console.log(error.message))
-    })
-</script>
-#}
+    <p>&nbsp;</p>
+    <h3>{{ post.comments|length }} Comment{% if post.comments|length > 0 %}s{% endif %}</h3>
+
+    {% for comment in post.comments %}
+        <div class="row">
+            <div class="col-md-10">
+                <p><strong>{{ comment.author }}</strong> {{ comment.createdAt|date('M dS Y') }}</p>
+                <p>{{ comment.content }}</p>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}

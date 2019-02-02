@@ -58,9 +58,10 @@ class CommentAddAction
         if ($repo->exists($id)) {
             $comment = new Comment();
             $comment->setContent($data['content']);
+            $comment->setAuthor($data['pseudo']);
+            $comment->setEmail($data['email']);
             $comment->setCreatedAt(new \DateTime());
             $comment->setPost($id);
-            $comment->setAuthor(1);
 
             $entityManager->persist($comment);
             $entityManager->flush();
@@ -80,7 +81,7 @@ class CommentAddAction
         return $this->validator->validate($input, [
             'pseudo' => 'required|alpha_dash',
             'email' => 'required|email',
-            'content' => 'required|alpha_spaces',
+            'content' => 'required',
         ]);
     }
 }

@@ -1,8 +1,6 @@
 <?php
 
-use App\Blog\Entity\Comment;
 use App\Blog\Entity\Post;
-use App\Blog\Entity\User;
 
 return [
     Post::class => [
@@ -24,21 +22,6 @@ return [
             ],
             'author' => [
                 'column' => 'author_id'
-            ]
-        ],
-        'relations' => [
-            'manyToOne' => [
-                'author' => [
-                    'target' => User::class,
-                    'targetField' => 'id'
-                ]
-            ],
-            'oneToMany' => [
-                'comments' => [
-                    'field' => 'id',
-                    'target' => Comment::class,
-                    'targetField' => 'post_id'
-                ]
             ]
         ]
     ]
