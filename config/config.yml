@@ -1,5 +1,6 @@
 env: debug
 modules:
+  - App\Auth\AuthModule
   - App\Blog\BlogModule
 
 providers:
@@ -7,8 +8,9 @@ providers:
   - Simplex\Database\DatabaseServiceProvider
   - Simplex\Session\SessionServiceProvider
   - Simplex\Renderer\TwigServiceProvider
-  - Simplex\DataMapper\DataMapperServiceProvider
   - Simplex\Validation\ValidationServiceProvider
+  - Simplex\DataMapper\DataMapperServiceProvider
+  - Simplex\Security\Authentication\AuthenticationServiceProvider
 
 twig:
   path: '%resources%/views'
@@ -16,6 +18,7 @@ twig:
   extensions:
     - Simplex\Routing\Extensions\TwigRouterExtension
     - Simplex\Security\Csrf\TwigCsrfExtension
+    - Simplex\Security\Authentication\TwigAuthExtension
 
 routing:
   strategies:
@@ -41,3 +44,5 @@ database:
       type: sqlite
       database: '%resources%/db/database.db'
 
+auth:
+  login_field: email

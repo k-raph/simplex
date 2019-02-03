@@ -122,8 +122,8 @@ class SymfonyRouter implements RouterInterface
             $route = new Route($parameters['_route'], $parameters['_controller']);
 
             $middlewares = array_merge(
-                $parameters['_middlewares'] ?? [],
-                $this->getStrategy($parameters['_strategy'] ?? 'web')
+                $this->getStrategy($parameters['_strategy'] ?? 'web'),
+                $parameters['_middlewares'] ?? []
             );
 
             $route->setMiddlewares($middlewares);

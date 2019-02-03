@@ -19,18 +19,21 @@ class UsersSeeder extends AbstractSeed
             [
                 'username' => 'admin',
                 'email' => 'admin@admin.fr',
-                'password' => 'adminpass'
+                'password' => 'adminpass',
+                'session_token' => base64_encode(random_bytes(20))
             ], 
             [
                 'username' => 'user',
                 'email' => 'user@admin.fr',
-                'password' => 'userpass'
+                'password' => 'userpass',
+                'session_token' => base64_encode(random_bytes(20))
             ]
         ];
 
-        $this->table('users')
-            ->insert($data)
-            ->save();
+        $table = $this->table('users');
+        $table->truncate();
+
+        $table->insert($data)->save();
 
     }
 }

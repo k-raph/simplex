@@ -2,6 +2,7 @@
 
 namespace Simplex\Routing\Middleware;
 
+use Psr\Container\ContainerInterface;
 use Simplex\Http\MiddlewareInterface;
 use Simplex\Http\Pipeline;
 use Simplex\Http\RequestHandlerInterface;
@@ -16,15 +17,21 @@ class RouteMiddleware implements MiddlewareInterface
      * @var RouterInterface
      */
     private $router;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * Constructor
      *
      * @param RouterInterface $router
+     * @param ContainerInterface $container
      */
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, ContainerInterface $container)
     {
         $this->router = $router;
+        $this->container = $container;
     }
 
     /**
@@ -37,7 +44,11 @@ class RouteMiddleware implements MiddlewareInterface
         $request->attributes->set('_route', $route);
 
         $pipeline = new Pipeline();
+
         foreach ($route->getMiddlewares() as $middleware) {
+            if (is_string($middleware)) {
+                $middleware = $this->container->get($middleware);
+            }
             $pipeline->pipe($middleware);
         }
 

@@ -3,9 +3,15 @@
         <a href="/" class="navbar-brand h1 mr-2">Simplex</a>
     </section>
     <section class="navbar-section">
-        <div class="input-group input-inline">
-            <input class="form-input" type="text" placeholder="search">
-            <button class="btn btn-primary input-group-btn">Search</button>
+        {% if current_user() %}
+            <div class="form-group form-inline">
+                <form action="{{ route('auth_logout') }}" method="post">
+                    {{ csrf_field() }}
+                    <button class="btn">Logout</button>
+                </form>
         </div>
+        {% else %}
+            <a href="{{ route('auth_login') }}" class="btn">Login</a>
+        {% endif %}
     </section>
 </header>

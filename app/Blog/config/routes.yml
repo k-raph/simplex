@@ -5,6 +5,9 @@ blog_index:
 post_show:
   path: /{id}
   controller: App\Blog\Action\PostShowAction:single
+  defaults:
+    _middlewares: []
+    #- Simplex\Middleware\AuthenticationMiddleware
   requirements:
     id: '\d+'
 
