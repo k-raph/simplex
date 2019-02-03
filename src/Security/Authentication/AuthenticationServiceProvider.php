@@ -11,6 +11,7 @@ namespace Simplex\Security\Authentication;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Simplex\Configuration\Configuration;
+use Simplex\Http\CookieStorage;
 use Simplex\Security\Authentication\Provider\DatabaseUserProvider;
 use Simplex\Security\Authentication\Provider\UserProviderInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -47,6 +48,7 @@ class AuthenticationServiceProvider extends AbstractServiceProvider
         $this->container->add(UserProviderInterface::class, $provider);
         $this->container->add(AuthenticationManager::class)
             ->addArgument(UserProviderInterface::class)
-            ->addArgument(SessionInterface::class);
+            ->addArgument(SessionInterface::class)
+            ->addArgument(CookieStorage::class);
     }
 }

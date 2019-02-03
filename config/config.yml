@@ -6,7 +6,7 @@ modules:
 providers:
   - Simplex\Routing\RoutingServiceProvider
   - Simplex\Database\DatabaseServiceProvider
-  - Simplex\Session\SessionServiceProvider
+  - Simplex\Http\Session\SessionServiceProvider
   - Simplex\Renderer\TwigServiceProvider
   - Simplex\Validation\ValidationServiceProvider
   - Simplex\DataMapper\DataMapperServiceProvider
@@ -31,8 +31,9 @@ routing:
       - Simplex\Middleware\TrailingSlashMiddleware
       - Simplex\Middleware\RoutingMiddleware
     web:
+      - Simplex\Middleware\AddCookiesToResponseMiddleware
       - Simplex\Middleware\OverrideRequestMethodMiddleware
-      - Simplex\Session\SessionMiddleware
+      - Simplex\Http\Session\SessionMiddleware
       - Simplex\Middleware\CsrfTokenMiddleware
       - Simplex\Middleware\TwigSessionMiddleware
     api: []

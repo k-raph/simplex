@@ -9,6 +9,7 @@
 namespace Simplex\Security\Authentication;
 
 
+use Simplex\Http\CookieStorage;
 use Simplex\Security\Authentication\Provider\UserProviderInterface;
 use Simplex\Security\Authentication\User\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,14 +31,27 @@ class AuthenticationManager
     private $session;
 
     /**
+     * @var CookieStorage
+     */
+    private $cookies;
+
+    /**
+     * @var string
+     */
+    private $cookieKey;
+
+    /**
      * AuthManager constructor.
      * @param UserProviderInterface $provider
      * @param SessionInterface $session
+     * @param CookieStorage $cookies
      */
-    public function __construct(UserProviderInterface $provider, SessionInterface $session)
+    public function __construct(UserProviderInterface $provider, SessionInterface $session, CookieStorage $cookies)
     {
         $this->provider = $provider;
         $this->session = $session;
+        $this->cookies = $cookies;
+        $this->cookieKey = 'simplex_remember';
     }
 
     /**
@@ -48,7 +62,8 @@ class AuthenticationManager
      */
     public function authenticate(Request $request): bool
     {
-        $this->user = $this->check($request->getSession());
+        $session = $request->getSession();
+        $this->user = $this->check($session) ?? $this->checkCookies($request);
 
         return (bool)$this->user;
     }
@@ -72,15 +87,23 @@ class AuthenticationManager
      * Performs a login using $credentials
      *
      * @param array $credentials
+     * @param bool $remember
      * @return bool
      */
-    public function login(array $credentials): bool
+    public function login(array $credentials, bool $remember = false): bool
     {
         $user = $this->provider->loadUserByUsername($credentials['login']);
 
         if ($user && ($user->getPassword() === $credentials['password'])) {
             $this->user = $user;
             $this->session->set('auth.user', $user->getToken());
+            $this->session->migrate();
+
+            if ($remember) {
+                $cookie = $this->generateCookie($this->user);
+                $expires = (new \DateTime())->add(new \DateInterval('P7D'));
+                $this->cookies->setCookie($this->cookieKey, $cookie, $expires);
+            }
             return true;
         }
 
@@ -96,6 +119,7 @@ class AuthenticationManager
     {
         $this->provider->forget($this->getUser());
         $this->user = null;
+        $this->cookies->setCookie($this->cookieKey, null, -256000);
         $this->session->remove('auth.user');
         return $this->session->migrate();
     }
@@ -112,5 +136,55 @@ class AuthenticationManager
         }
 
         return $this->user;
+    }
+
+    /**
+     * Generate a cookie for authentified user
+     *
+     * @param UserInterface $user
+     * @return string
+     */
+    private function generateCookie(UserInterface $user): string
+    {
+        $id = base64_encode($user->getUsername());
+        return base64_encode($id . ':' . $user->getToken());
+    }
+
+    /**
+     * @param string $cookie
+     * @return array|null
+     */
+    private function decodeCookie(string $cookie): ?array
+    {
+        $parts = explode(':', base64_decode($cookie, true));
+
+        if (2 !== count($parts)) {
+            return null;
+        }
+
+        return [
+            base64_decode($parts[0]),
+            $parts[1]
+        ];
+    }
+
+    /**
+     * @param Request $request
+     * @return UserInterface|null
+     */
+    private function checkCookies(Request $request): ?UserInterface
+    {
+        $cookie = $request->cookies->get($this->cookieKey, null);
+
+        if ($cookie) {
+            [$username, $token] = $this->decodeCookie($cookie);
+            $user = $this->provider->loadUserByUsername($username);
+
+            return $user->getToken() === $token
+                ? $user
+                : null;
+        }
+
+        return null;
     }
 }

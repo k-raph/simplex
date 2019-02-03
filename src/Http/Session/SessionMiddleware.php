@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplex\Session;
+namespace Simplex\Http\Session;
 
 use Simplex\Http\MiddlewareInterface;
 use Simplex\Http\RequestHandlerInterface;

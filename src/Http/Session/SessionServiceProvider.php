@@ -1,12 +1,12 @@
 <?php
 
-namespace Simplex\Session;
+namespace Simplex\Http\Session;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SessionServiceProvider extends AbstractServiceProvider
 {

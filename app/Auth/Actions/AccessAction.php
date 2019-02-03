@@ -9,10 +9,10 @@
 namespace App\Auth\Actions;
 
 
+use Simplex\Http\Session\SessionFlash;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
 use Simplex\Security\Authentication\AuthenticationManager;
-use Simplex\Session\SessionFlash;
 use Simplex\Validation\Validator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,8 +72,9 @@ class AccessAction
     {
         if ('POST' === $request->getMethod()) {
             $credentials = $this->validate($request->request->all())->getValidData();
+            $remember = in_array($credentials['remember'], ['on', 1]);
 
-            if ($this->auth->login($credentials)) {
+            if ($this->auth->login($credentials, $remember)) {
                 $flash->info("You've been successfully logged on");
                 $path = $request->getSession()->get('auth.referer', '/');
                 $request->getSession()->remove('auth.referer');
@@ -95,7 +96,8 @@ class AccessAction
         return $this->validator
             ->validate($input, [
                 'login' => 'required',
-                'password' => 'required'
+                'password' => 'required',
+                'remember' => 'default:off|in:on,off'
             ]);
     }
 
