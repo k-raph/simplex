@@ -22,38 +22,15 @@
         {% endfor %}
     {% endif %}
 
-    <form action="{{ route('comment_add', {'post_id': post.id}) }}" method="post" class="col-6">
+    {{ form_open({action: route('comment_add', {'post_id': post.id}), method: 'POST', class: 'col-6'}) }}
         {{ csrf_field() }}
-        <div class="form-group column">
-            <label for="pseudo" class="form-label">Pseudo : </label>
-            {% if errors.has('pseudo') %}
-                <span class="text-error">{{ errors.get('pseudo') }}</span>
-            {% endif %}
-            <input type="text" id="pseudo" name="pseudo"
-                   class="form-input{% if errors.has('pseudo') %} is-error{% endif %}">
-        </div>
-        <div class="form-group column">
-            <label for="email" class="form-label">Email : </label>
-            {% if errors.has('email') %}
-                <span class="text-error">{{ errors.get('email') }}</span>
-            {% endif %}
-            <input type="email" id="email" name="email"
-                   class="form-input{% if errors.has('email') %} is-error{% endif %}">
-        </div>
-        <div class="form-group column">
-            <label for="content" class="form-label">Comment : </label>
-            {% if errors.has('content') %}
-                <span class="text-error">{{ errors.get('content') }}</span>
-            {% endif %}
-            <textarea name="content" id="content" cols="30" rows="5"
-                      class="form-input{% if errors.has('content') %} is-error{% endif %}"></textarea>
-        </div>
-        <div class="form-group column">
-            <button class="btn btn-primary">Post a comment</button>
-        </div>
-    </form>
+    {{ form_widget('text', 'pseudo', 'Pseudo : ') }}
+    {{ form_widget('email', 'email', 'Email : ') }}
+    {{ form_widget('textarea', 'content', 'Comment : ') }}
+    {{ form_submit('Post a comment') }}
+    {{ form_close() }}
 
-    <p>&nbsp;</p>
+    <p></p>
     <h3>{{ post.comments|length }} Comment{% if post.comments|length > 0 %}s{% endif %}</h3>
 
     {% for comment in post.comments %}

@@ -7,40 +7,19 @@
         <div class="panel-header">
             <div class="panel-title h2">Login</div>
         </div>
-        <form action="{{ route('auth_login') }}" method="post" class="col-5">
+        {{ form_open({action: route('auth_login'), method: 'POST', class: 'col-5'}) }}
             <div class="panel-body">
                 {% for error in flash.get('error') %}
                     <div class="text-error text-center">{{ error }}</div>
                 {% endfor %}
                 {{ csrf_field() }}
-                <div class="form-group column">
-                    <label for="login" class="form-label">Email : </label>
-                    {% if errors.has('login') %}
-                        <span class="text-error">{{ errors.get('login') }}</span>
-                    {% endif %}
-                    <input type="email" id="login" name="login"
-                           class="form-input{% if errors.has('login') %} is-error{% endif %}">
-                </div>
-                <div class="form-group column">
-                    <label for="password" class="form-label">Password : </label>
-                    {% if errors.has('password') %}
-                        <span class="text-error">{{ errors.get('password') }}</span>
-                    {% endif %}
-                    <input type="password" id="password" name="password"
-                           class="form-input{% if errors.has('password') %} is-error{% endif %}">
-                </div>
-                <div class="form-group flex-centered">
-                    <label class="form-switch">
-                        <input type="checkbox" name="remember">
-                        <i class="form-icon"></i> Remember me
-                    </label>
-                </div>
+                {{ form_widget('email', 'login', 'Email : ') }}
+                {{ form_widget('password', 'password', 'Password : ') }}
+                {{ form_widget('checkbox', 'remember', 'Remember me', null, {switch: true}) }}
             </div>
             <div class="panel-footer">
-                <div class="form-group text-center">
-                    <button class="btn btn-primary">Login</button>
-                </div>
+                {{ form_submit('Login', {class: 'flex-centered'}) }}
             </div>
-        </form>
+        {{ form_close() }}
     </div>
 {% endblock %}

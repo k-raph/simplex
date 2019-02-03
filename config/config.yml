@@ -18,6 +18,7 @@ twig:
   extensions:
     - Simplex\Routing\Extensions\TwigRouterExtension
     - Simplex\Security\Csrf\TwigCsrfExtension
+    - Simplex\Renderer\TwigFormExtension
     - Simplex\Security\Authentication\TwigAuthExtension
 
 routing:
