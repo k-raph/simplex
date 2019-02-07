@@ -1,0 +1,17 @@
+.bg-darker {
+    background-color: #343a40;
+}
+
+.nav {
+    margin-top: 0px;
+    min-height: max-content;
+}
+
+.nav .nav-item a,
+.nav-link, #drop {
+    color: white;
+}
+
+.nav-link:hover, #drop:hover {
+    color: white;
+}

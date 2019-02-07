@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>{% block title %}Simplex Admin{% endblock %}</title>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/spectre.min.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/kadmin.css"/>
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+{% include '@admin/layout/nav.twig' %}
+
+<div class="columns">
+    <div class="column col-2 col-sm-2 col-md-2">
+        {# include '@admin/layout/sidebar.twig' #}
+    </div>
+    <div class="column col-10 col-mr-auto col-sm-10 col-md-10">
+        <div class="container">
+            {% if flash.has('success') %}
+                <div class="mt-1 toast toast-success">
+                    <button class="btn btn-clear float-right"></button>
+                    {{ flash.get('success') }}
+                </div>
+            {% endif %}
+
+            {% if flash.has('error') %}
+                <div class="mt-1 toast toast-error">
+                    <button class="btn btn-clear float-right"></button>
+                    {{ flash.get('error') }}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+{% include '@admin/layout/logout_modal.twig' %}
+
+{# <script src="/js/kadmin.js"></script> #}
+{% block scripts %}{% endblock %}
+</body>
+</html>

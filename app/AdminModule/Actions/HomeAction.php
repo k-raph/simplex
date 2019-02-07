@@ -9,12 +9,14 @@
 namespace App\AdminModule\Actions;
 
 
+use Simplex\Renderer\TwigRenderer;
+
 class HomeAction
 {
 
-    public function panel()
+    public function panel(TwigRenderer $renderer)
     {
-        return '<h1>Welcome to my admin panel</h1>';
+        return $renderer->render('@admin/panel');
     }
 
 }
