@@ -26,7 +26,7 @@ class CommentSeeder extends AbstractSeed
                 'usr_pseudo' => $names[$random],
                 'usr_email' => $emails[$random],
                 'post_id' => rand(1, 15),
-                'created_at' => (new DateTime())->format('d-m-Y H:i:s')
+                'created_at' => (new DateTime())->format('Y-m-d H:i:s')
             ];
         }
 

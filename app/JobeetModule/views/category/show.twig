@@ -1,0 +1,16 @@
+{% extends '@jobeet/layout.twig' %}
+
+{% block title %}Category {{ category.name }} {% endblock %}
+
+{% block body %}
+    <h4>{{ category.name }}</h4>
+    <hr>
+    {% include '@jobeet/category/table.twig' with {jobs: category.jobs} %}
+
+    <div class="columns col-10">
+        <div class="column mt-2 col-mr-auto">
+            {{ pages.totalItems }} in this category - page {{ pages.current }}/{{ pages.lastPage }}
+        </div>
+        {% include 'pagination.twig' with {class: 'col-1'} %}
+    </div>
+{% endblock %}

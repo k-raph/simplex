@@ -170,7 +170,7 @@ class EntityMapper
                 case 'datetime':
                     $value = $proxy->getField($field);
                     $value = $value instanceof \DateTime
-                        ? $value->format('d-m-Y H:i:s')
+                        ? $value->format('Y-m-d H:i:s')
                         : $value;
                     $fields[$field] = $value;
                     break;
@@ -195,7 +195,7 @@ class EntityMapper
             $type = $this->metadata->getColumnType($field);
             switch ($type) {
                 case 'datetime':
-                    $fields[$field] = \DateTime::createFromFormat('d-m-Y H:i:s', $proxy->getField($field));
+                    $fields[$field] = \DateTime::createFromFormat('Y-m-d H:i:s', $proxy->getField($field));
                     break;
             }
         }

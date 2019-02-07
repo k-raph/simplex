@@ -2,15 +2,12 @@
 
 namespace Simplex\DataMapper;
 
-use Simplex\DataMapper\Repository\RepositoryInterface;
-use Simplex\DataMapper\Repository\Factory as RepositoryFactory;
-use Simplex\DataMapper\Mapping\EntityMetadata;
-use Simplex\DataMapper\Mapping\MetadataFactory;
 use Simplex\Database\DatabaseInterface;
-use Simplex\DataMapper\Proxy\ProxyFactory;
-use UnexpectedValueException;
-use Simplex\Tests\DataMapper\EntityManagerTest;
 use Simplex\DataMapper\Mapping\EntityMapper;
+use Simplex\DataMapper\Mapping\MetadataFactory;
+use Simplex\DataMapper\Proxy\ProxyFactory;
+use Simplex\DataMapper\Repository\Factory as RepositoryFactory;
+use Simplex\DataMapper\Repository\RepositoryInterface;
 
 class EntityManager
 {
@@ -152,5 +149,16 @@ class EntityManager
     public function flush()
     {
         return $this->uow->commit();
+    }
+
+    /**
+     * Creates a query builder instance for a given class
+     *
+     * @param string $entityClass
+     * @return QueryBuilder
+     */
+    public function createQueryBuilder(string $entityClass): QueryBuilder
+    {
+        return new QueryBuilder($this, $this->getMapperFor($entityClass));
     }
 }

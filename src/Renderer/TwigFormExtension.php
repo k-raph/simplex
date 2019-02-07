@@ -20,6 +20,9 @@ class TwigFormExtension extends AbstractExtension
         return [
             new TwigFunction('form_open', [$this, 'open']),
             new TwigFunction('form_widget', [$this, 'widget'], ['needs_environment' => true, 'needs_context' => true]),
+            new TwigFunction('form_field', [$this, 'field'], ['needs_environment' => true, 'needs_context' => true]),
+            new TwigFunction('form_error', [$this, 'error'], ['needs_environment' => true, 'needs_context' => true]),
+            new TwigFunction('form_label', [$this, 'label']),
             new TwigFunction('form_submit', [$this, 'submit']),
             new TwigFunction('form_close', [$this, 'close'])
         ];
@@ -66,6 +69,26 @@ HTML;
     /**
      * @param Environment $env
      * @param array $context
+     * @param string $name
+     * @return false|string
+     * @throws \Throwable
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Syntax
+     */
+    public function error(Environment $env, array $context, string $name)
+    {
+        $output = <<<HTML
+{% if errors.has('$name') %}
+    <span class="text-error">{{ errors.get('$name') }}</span>
+{% endif %}
+HTML;
+
+        echo $env->createTemplate($output)->render($context);
+    }
+
+    /**
+     * @param Environment $env
+     * @param array $context
      * @param string $type
      * @param string $name
      * @param string $label
@@ -98,7 +121,7 @@ HTML;
 
         $output = <<<HTML
 <div class="form-group column">
-    <label for="$type" class="form-label"> $label </label>
+    <label for="$name" class="form-label"> $label </label>
     {% if errors.has('$name') %}
         <span class="text-error">{{ errors.get('$name') }}</span>
     {% endif %}
@@ -184,5 +207,29 @@ HTML;
     <button class="btn btn-primary">$value</button>
 </div>
 HTML;
+    }
+
+    public function field(Environment $env, array $context, string $type, string $name, $value = null, array $attributes = [])
+    {
+        switch ($type) {
+            case 'checkbox':
+                $class = $attributes['switch'] ? 'form-switch' : 'form-checkbox';
+                $checked = $attributes['checked'] ? 'checked' : '';
+                $field = <<<HTML
+<label class="$class">
+    <input type="checkbox" name="$name" id="$name" $checked>
+            <i class="form-icon"></i>
+</label>
+HTML;
+                break;
+            case 'textarea':
+                $field = $this->textarea($name, $value, $attributes);
+                break;
+            default:
+                $field = $this->input($type, $name, $value);
+                break;
+        }
+
+        echo $env->createTemplate($field)->render($context);
     }
 }

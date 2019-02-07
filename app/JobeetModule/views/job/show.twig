@@ -1,0 +1,23 @@
+{% extends '@jobeet/layout.twig' %}
+
+{% block title %}{{ job.company }} - {{ job.position }} - {{ job.id }}{% endblock %}
+
+{% block body %}
+    <div class="columns">
+        <div class="column col-8">
+            <h5>{{ job.company }}</h5>
+            <h6>{{ job.location }}</h6>
+            <hr>
+            {{ job.position }} - {{ job.type }}
+            <hr>
+        </div>
+    </div>
+    <p>
+        {{ job.description }}
+    </p>
+
+    <i>How to apply ?</i>
+    <p>
+        {{ job.application }}
+    </p>
+{% endblock %}

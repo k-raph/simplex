@@ -2,6 +2,7 @@ env: debug
 modules:
   - App\Auth\AuthModule
   - App\Blog\BlogModule
+  - App\JobeetModule\JobeetServiceProvider
 
 providers:
   - Simplex\Routing\RoutingServiceProvider
@@ -30,10 +31,10 @@ routing:
       - Simplex\Middleware\ErrorHandlerMiddleware
       - Simplex\Middleware\ValidationErrorsMiddleware
       - Simplex\Middleware\TrailingSlashMiddleware
+      - Simplex\Middleware\OverrideRequestMethodMiddleware
       - Simplex\Middleware\RoutingMiddleware
     web:
       - Simplex\Middleware\AddCookiesToResponseMiddleware
-      - Simplex\Middleware\OverrideRequestMethodMiddleware
       - Simplex\Http\Session\SessionMiddleware
       - Simplex\Middleware\CsrfTokenMiddleware
       - Simplex\Middleware\TwigSessionMiddleware

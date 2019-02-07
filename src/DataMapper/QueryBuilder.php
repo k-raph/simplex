@@ -45,6 +45,7 @@ class QueryBuilder extends Builder
         $this->mapper = $mapper;
         $this->metadata = $mapper->getMetadata();
         $this->uow = $manager->getUnitOfWork();
+        $this->table($this->metadata->getTableName());
     }
 
     /**
@@ -163,8 +164,8 @@ class QueryBuilder extends Builder
 
         if ($entity && $this->isSupported($entity)) {
             return parent::where($this->getId($entity))->delete();
+        } else {
+            return parent::delete();
         }
-
-        return 0;
     }
 }

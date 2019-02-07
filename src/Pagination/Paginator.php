@@ -224,4 +224,12 @@ class Paginator
     {
         return $this->last > $this->current;
     }
+
+    /**
+     * @return int
+     */
+    public function getTotalItems(): int
+    {
+        return $this->total;
+    }
 }

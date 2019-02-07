@@ -24,6 +24,7 @@ class Configuration
     public function __construct(array $defaults = [])
     {
         $this->defaults = $defaults;
+        $this->values = $defaults;
     }
 
     /**

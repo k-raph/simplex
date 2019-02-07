@@ -1,0 +1,25 @@
+{% extends '@jobeet/layout.twig' %}
+
+{% block title %}Jobeet{% endblock %}
+
+{% block body %}
+    {% for category in categories %}
+        <h4>
+            <a href="{{ route('category_show', {slug: category.slug}) }}">
+                {{ category.name }}
+            </a>
+        </h4>
+        <hr>
+        {% include '@jobeet/category/table.twig' with {jobs: category.jobs|slice(0, 10)} %}
+        {% set length = category.jobs|length - 10 %}
+        {% if length > 0 %}
+            <div class="text-right">
+                <a href="{{ route('category_show', {slug: category.slug}) }}">
+                    and {{ length }} more...
+                </a>
+            </div>
+        {% endif %}
+        <p></p>
+        <p></p>
+    {% endfor %}
+{% endblock %}

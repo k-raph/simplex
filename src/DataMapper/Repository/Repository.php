@@ -26,7 +26,7 @@ class Repository implements RepositoryInterface
      */
     public function find($id): ?object
     {
-        return $this->builder->find($id);
+        return $this->query()->find($id);
     }
 
     /**
@@ -42,7 +42,7 @@ class Repository implements RepositoryInterface
      */
     public function findBy(array $criteria): array
     {
-        $result = $this->builder
+        $result = $this->query()
             ->where($criteria)
             ->get();
 

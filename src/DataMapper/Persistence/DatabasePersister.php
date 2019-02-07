@@ -109,6 +109,11 @@ class DatabasePersister implements PersisterInterface
     public function update(object $entity, array $changes)
     {
         $where = $this->getWhere($entity);
+        foreach ($changes as $name => $value) {
+            if ($value instanceof \DateTime) {
+                $changes[$name] = $value->format('Y-m-d H:i:s');
+            }
+        }
 
         $this->builder->where($where)->update($changes);
     }

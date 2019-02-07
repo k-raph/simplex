@@ -1,0 +1,117 @@
+{{ form_open({method: 'post', action: route, class: '"col-8 form-horizontal"', enctype: 'multipart/form-data'}) }}
+    {{ csrf_field() }}
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('Category :', 'category') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('category') }}
+        <select class="form-select" name="category" id="category">
+            {% for category in categories %}
+                <option value="{{ category.slug }}" {{ job.category is same as(category.slug) ? 'selected' : '' }}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('Type :', 'type') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('type') }}
+        {% for name, short in types %}
+            <label class="form-radio">
+                <input type="radio" name="type" value="{{ short }}"
+                       {% if job.type is same as(name) %}checked{% endif %}>
+                <i class="form-icon"></i>{{ name }}
+            </label>
+        {% endfor %}
+    </div>
+    <div class="col-4">
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('Company :', 'company') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('company') }}
+        {{ form_field('text', 'company', job.company) }}
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('Logo :', 'logo') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('logo') }}
+        {{ form_field('file', 'logo', job.logo) }}
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('URL :', 'url') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('url') }}
+        {{ form_field('url', 'url', job.url) }}
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('Position :', 'position') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('position') }}
+        {{ form_field('text', 'position', job.position) }}
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('Location :', 'location') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('location') }}
+        {{ form_field('text', 'location', job.location) }}
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('Email :', 'email') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('email') }}
+        {{ form_field('email', 'email', job.email) }}
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('Description :', 'description') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('description') }}
+        {{ form_field('textarea', 'description', job.description) }}
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('How to apply :', 'application') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('application') }}
+        {{ form_field('textarea', 'application', job.application) }}
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-3 col-sm-12">
+        {{ form_label('Is public :', 'public') }}
+    </div>
+    <div class="col-6 col-sm-12">
+        {{ form_error('public') }}
+        {{ form_field('checkbox', 'public', 1, {switch: true, checked: job.public}) }}
+    </div>
+</div>
+{{ form_submit((job is defined ? 'Update' : 'Post a') ~ ' job', {class: 'flex-centered'}) }}
+{{ form_close() }}
