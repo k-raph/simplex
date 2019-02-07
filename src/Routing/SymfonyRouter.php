@@ -44,13 +44,20 @@ class SymfonyRouter implements RouterInterface
     ];
 
     /**
+     * @var string
+     */
+    private $host;
+
+    /**
      * Cnstructor
      *
      * @param LoaderInterface $loader
      */
-    public function __construct(LoaderInterface $loader)
+    public function __construct(LoaderInterface $loader, string $host)
     {
+        $this->host = $host;
         $this->builder =  new RouteCollectionBuilder($loader);
+        $this->builder->setHost($host);
     }
 
     /**
@@ -60,11 +67,13 @@ class SymfonyRouter implements RouterInterface
     {
         $options = array_merge([
             'prefix' => '/',
-            'format' => 'yaml'
+            'format' => 'yaml',
+            'host' => $this->host
         ], $options);
 
         $builder = $this->builder->import($from, $options['prefix'], $options['format']);
-        unset($options['prefix'], $options['format']);
+        $builder = $builder->setHost($options['host']);
+        unset($options['prefix'], $options['format'], $options['host']);
 
         foreach ($options as $key => $value) {
             $builder->setDefault("$key", $value);

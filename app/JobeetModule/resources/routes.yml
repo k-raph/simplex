@@ -8,43 +8,12 @@ category_show:
   requirements:
     slug: '[a-z0-9-]+'
 
-job_show:
-  path: /job/{company}/{location}/{id}/{position}
-  controller: App\JobeetModule\Actions\JobShowAction:show
-  requirements:
-    id: '\d+'
+job:
+  resource: routes/jobs.yml
+  name_prefix: job_
+  prefix: /job
 
-job_new:
-  path: /job/new
-  controller: App\JobeetModule\Actions\JobEditAction:new
-  methods: ['GET']
-
-job_create:
-  path: /job/new
-  controller: App\JobeetModule\Actions\JobEditAction:create
-  methods: ['POST']
-
-job_preview:
-  path: /job/{token}
-  controller: App\JobeetModule\Actions\JobManageAction:preview
-  methods: ['GET']
-
-job_publish:
-  path: /job/{token}/publish
-  controller: App\JobeetModule\Actions\JobManageAction:publish
-  methods: ['GET']
-
-job_edit:
-  path: /job/{token}/edit
-  controller: App\JobeetModule\Actions\JobEditAction:edit
-  methods: ['GET']
-
-job_update:
-  path: /job/{token}/edit
-  controller: App\JobeetModule\Actions\JobEditAction:update
-  methods: ['POST']
-
-job_delete:
-  path: /job/{token}/delete
-  controller: App\JobeetModule\Actions\JobEditAction:delete
-  methods: ['DELETE']
+affiliate:
+  resource: routes/affiliates.yml
+  name_prefix: affiliate_
+  prefix: /affiliate

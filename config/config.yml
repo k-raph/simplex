@@ -1,8 +1,10 @@
 env: debug
+app_host: simplex.io
 modules:
   - App\Auth\AuthModule
   - App\Blog\BlogModule
   - App\JobeetModule\JobeetServiceProvider
+  - App\AdminModule\AdminModuleProvider
 
 providers:
   - Simplex\Routing\RoutingServiceProvider

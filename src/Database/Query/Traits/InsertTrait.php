@@ -37,12 +37,13 @@ trait InsertTrait
     public function insertGetId(array $row, string $sequence = null)
     {
         try {
-            $query = (clone $this)->addInsert([$row])->apply($this->connection->getTablePrefixer());
+            $query = (clone $this)->addInsert([$row]);//->apply($this->connection->getTablePrefixer());
             $statements = $this->connection->getDriver()->getGrammar()->compileInsert($query);
 
             $id = null;
             foreach ($statements as $statement) {
-                $id = $this->connection->execute($statement->getSQL(), $statement->getBindings(), $sequence);
+                $this->connection->execute($statement->getSQL(), $statement->getBindings(), $sequence);
+                $id = $this->connection->lastInsertId();
             }
 
             return $id;

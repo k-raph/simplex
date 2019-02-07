@@ -103,13 +103,14 @@ class AccessAction
 
     /**
      * @param SessionFlash $flash
+     * @param RouterInterface $router
      * @return RedirectResponse
      */
-    public function logout(SessionFlash $flash)
+    public function logout(SessionFlash $flash, RouterInterface $router)
     {
         $this->auth->logout();
         $flash->success("You've successfully been logged out");
 
-        return new RedirectResponse('/');
+        return new RedirectResponse($router->generate('auth_login'));
     }
 }

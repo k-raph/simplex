@@ -8,6 +8,7 @@
 
 namespace App\JobeetModule;
 
+use Simplex\Configuration\Configuration;
 use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
@@ -20,9 +21,10 @@ class JobeetServiceProvider extends AbstractModule
      * JobeetServiceProvider constructor.
      * @param RouterInterface $router
      * @param TwigRenderer $renderer
+     * @param Configuration $config
      * @throws \Twig_Error_Loader
      */
-    public function __construct(RouterInterface $router, TwigRenderer $renderer)
+    public function __construct(RouterInterface $router, TwigRenderer $renderer, Configuration $config)
     {
         $renderer->addPath(__DIR__ . '/views', 'jobeet');
 
@@ -33,7 +35,10 @@ class JobeetServiceProvider extends AbstractModule
             return strtolower($string);
         }));
 
-        $router->import(__DIR__ . '/resources/routes.yml', ['prefix' => 'jobeet']);
+        $router->import(__DIR__ . '/resources/routes.yml', [
+            //'prefix' => 'jobeet',
+            'host' => 'jobeet.' . $config->get('app_host', 'localhost')
+        ]);
     }
 
     /**

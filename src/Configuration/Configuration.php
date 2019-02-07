@@ -34,6 +34,10 @@ class Configuration
      */
     public function get(string $key, $default = null)
     {
+        if (isset($this->values[$key])) {
+            return $this->values[$key];
+        }
+
         $parts = explode('.', $key);
         $temp = $this->values[array_shift($parts)] ?? null;
 

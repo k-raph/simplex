@@ -15,7 +15,7 @@
 <div class="container">
     {% if flash.has('success') %}
         {% for success in flash.get('success') %}
-            <div class="toast toast-success">{{ success }}</div>
+            <div class="toast toast-success my-2">{{ success }}</div>
         {% endfor %}
     {% endif %}
     {% block content %}{% endblock %}

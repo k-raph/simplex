@@ -1,0 +1,14 @@
+new:
+  path: /new
+  controller: App\JobeetModule\Actions\AffiliateRegisterAction:form
+  methods: ['GET']
+
+create:
+  path: /new
+  controller: App\JobeetModule\Actions\AffiliateRegisterAction:request
+  methods: ['POST']
+
+wait:
+  path: /wait
+  controller: App\JobeetModule\Actions\AffiliateRegisterAction:success
+  methods: ['GET']

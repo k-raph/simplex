@@ -213,12 +213,14 @@ HTML;
     {
         switch ($type) {
             case 'checkbox':
-                $class = $attributes['switch'] ? 'form-switch' : 'form-checkbox';
-                $checked = $attributes['checked'] ? 'checked' : '';
+                $class = isset($attributes['switch']) ? 'form-switch' : 'form-checkbox';
+                $checked = isset($attributes['checked']) ? 'checked' : '';
+                $label = $attributes['label'] ?? '';
+                $value = $value ? "value=$value" : '';
                 $field = <<<HTML
 <label class="$class">
-    <input type="checkbox" name="$name" id="$name" $checked>
-            <i class="form-icon"></i>
+    <input type="checkbox" name="$name" id="$name" $value $checked>
+            <i class="form-icon"></i>$label
 </label>
 HTML;
                 break;

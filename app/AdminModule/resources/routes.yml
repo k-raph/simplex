@@ -1,0 +1,8 @@
+panel:
+  path: /
+  controller: App\AdminModule\Actions\HomeAction:panel
+
+jobeet:
+  resource: routes/jobeet.yml
+  prefix: /jobeet
+  name_prefix: admin_jobeet_
