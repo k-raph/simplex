@@ -152,7 +152,7 @@ class JobEditAction
         $job->setLocation($input['location']);
         $job->setDescription($input['description']);
         $job->setCompany($input['company']);
-        $job->setPublic('on' === $input['public']);
+        $job->setPublic(1 === (int)$input['public']);
         $job->setCategory($input['category']);
     }
 
@@ -177,23 +177,25 @@ class JobEditAction
      * Performs entity update
      *
      * @param Request $request
-     * @param EntityManager $manager
+     * @param JobRepository $repository
      * @param SessionFlash $flash
      * @param RouterInterface $router
      * @return RedirectResponse
+     * @throws \Simplex\Database\Exceptions\ResourceNotFoundException
      */
-    public function update(Request $request, EntityManager $manager, SessionFlash $flash, RouterInterface $router)
+    public function update(Request $request, JobRepository $repository, SessionFlash $flash, RouterInterface $router)
     {
         $input = $this->sanitize($request);
         $token = $request->attributes->get('_route_params')['token'];
         /** @var Job $job */
-        $job = $manager->getRepository(Job::class)->findByToken($token);
+        $job = $repository->findByToken($token);
 
         $this->hydrate($job, $input);
         if ($job->getLogo() && isset($input['logo'])) {
             $job->setLogo($input['logo']);
         }
-        $manager->flush();
+
+        $repository->getMapper()->update($job);
 
         $flash->success('Your job has been successfully updated');
 
@@ -204,14 +206,15 @@ class JobEditAction
      * Delete an entity
      *
      * @param string $token
-     * @param EntityManager $manager
+     * @param JobRepository $repository
      * @param SessionFlash $flash
      * @param RouterInterface $router
      * @return RedirectResponse
      */
-    public function delete(string $token, EntityManager $manager, SessionFlash $flash, RouterInterface $router)
+    public function delete(string $token, JobRepository $repository, SessionFlash $flash, RouterInterface $router)
     {
-        $manager->createQueryBuilder(Job::class)
+        $repository->getMapper()
+            ->query()
             ->where(['token' => $token])
             ->delete();
 
@@ -241,7 +244,7 @@ class JobEditAction
             'description' => 'required',
             'application' => 'required',
             'email' => 'required|email',
-            'public' => 'default:off|required|in:on,off',
+            'public' => 'default:0|required|in:0,1',
             'category' => "required|in:$categories",
             'type' => "required|in:$types"
         ];

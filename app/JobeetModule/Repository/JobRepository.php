@@ -10,6 +10,7 @@ namespace App\JobeetModule\Repository;
 
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Mapper\JobMapper;
+use Simplex\Database\Exceptions\ResourceNotFoundException;
 use Simplex\DataMapper\QueryBuilder;
 use Simplex\DataMapper\Repository\Repository;
 

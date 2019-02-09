@@ -78,13 +78,26 @@ class JobMapper extends EntityMapper
     /**
      * Extract an entity to persistable state
      *
-     * @param object $entity
+     * @param Job $job
      * @return array
      */
-    public function extract(object $entity): array
+    public function extract(object $job): array
     {
         return [
-
+            'company' => $job->getCompany(),
+            'type' => $job->getType(),
+            'url' => $job->getUrl(),
+            'position' => $job->getPosition(),
+            'location' => $job->getLocation(),
+            'email' => $job->getEmail(),
+            'category_id' => $job->getCategory(),
+            'description' => $job->getDescription(),
+            'application' => $job->getApplication(),
+            'is_public' => $job->isPublic(),
+            'logo' => $job->getLogo(),
+            'token' => $job->getToken(),
+            'created_at' => $job->getCreatedAt()->format('Y-m-d H:i:s'),
+            'expires_at' => $job->getExpiresAt() ? $job->getExpiresAt()->format('Y-m-d H:i:s') : null
         ];
     }
 
@@ -96,6 +109,7 @@ class JobMapper extends EntityMapper
      */
     public function update(object $job)
     {
+        $job->setType(Job::TYPES[$job->getType()]);
         $changes = $this->uow->getChangeSet($job);
         $changes = $this->map($changes);
 

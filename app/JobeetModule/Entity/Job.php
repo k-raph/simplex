@@ -82,12 +82,11 @@ class Job
      */
     private $expiresAt;
 
-    public function __construct(string $company, string $position, string $location/*, string $category*/)
+    public function __construct(?string $company = null, ?string $position = null, ?string $location = null)
     {
         $this->company = $company;
         $this->position = $position;
         $this->location = $location;
-        //$this->category = $category;
     }
 
     /**
@@ -163,9 +162,9 @@ class Job
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }
