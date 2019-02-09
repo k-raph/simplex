@@ -38,19 +38,4 @@ interface RepositoryInterface
      */
     public function findOneBy(array $criteria): ?object;
 
-    /**
-     * Shortcut for updating without retrieving first
-     *
-     * @param object $entity
-     * @return mixed
-     */
-    public function update(object $entity);
-
-    /**
-     * Shortcut for deleting without retrieving first
-     *
-     * @param object $entity
-     * @return mixed
-     */
-    public function remove(object $entity);
 }

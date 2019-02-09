@@ -11,7 +11,6 @@ namespace App\Blog\Action;
 
 use App\Blog\Entity\Comment;
 use App\Blog\Entity\Post;
-use App\Blog\Repository\PostRepository;
 use Rakit\Validation\Validation;
 use Simplex\DataMapper\EntityManager;
 use Simplex\Http\Session\SessionFlash;
@@ -48,20 +47,23 @@ class CommentAddAction
      */
     public function __invoke(Request $request, EntityManager $entityManager, SessionFlash $flash)
     {
-        /** @var PostRepository $repo */
         $id = $request->attributes->get('_route_params')['post_id'];
-        $repo = $entityManager->getRepository(Post::class);
         $data = $request->request->all();
 
         $data = $this->validate($data)->getValidData();
+        $exists = (bool)$entityManager
+            ->getMapper(Post::class)
+            ->query()
+            ->where('id', $id)
+            ->count();
 
-        if ($repo->exists($id)) {
+        if ($exists) {
             $comment = new Comment();
             $comment->setContent($data['content']);
             $comment->setAuthor($data['pseudo']);
             $comment->setEmail($data['email']);
             $comment->setCreatedAt(new \DateTime());
-            $comment->setPost($id);
+            $comment->setPostId($id);
 
             $entityManager->persist($comment);
             $entityManager->flush();

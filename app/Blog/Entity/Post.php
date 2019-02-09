@@ -32,7 +32,7 @@ class Post
     /**
      * @var Comment[]
      */
-    private $comments;
+    private $comments = [];
 
     /**
      * @return int
@@ -110,7 +110,7 @@ class Post
     /**
      * @return Comment[]
      */
-    public function getComments()//: array
+    public function getComments(): array
     {
         return $this->comments;
     }
@@ -121,6 +121,14 @@ class Post
     public function setComments(array $comments): void
     {
         $this->comments = $comments;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
 

@@ -6,10 +6,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Simplex\Database\DatabaseInterface;
 use Simplex\Database\Query\Builder;
-use Simplex\DataMapper\Configuration;
 use Simplex\DataMapper\EntityManager;
 use Simplex\DataMapper\Mapping\EntityMetadata;
-use Simplex\DataMapper\Repository\Repository;
 use Simplex\Tests\DataMapper\Fixtures\Entity\User;
 
 class EntityManagerTest extends TestCase
@@ -29,12 +27,7 @@ class EntityManagerTest extends TestCase
         $qb->get()->willReturn([]);
         $db->getQueryBuilder()->willReturn($qb);
 
-        $this->em = new class(new Configuration(__DIR__.'/Fixtures/Mapping'), $db->reveal()) extends EntityManager {
-            public function getMetadataFor(string $className): EntityMetadata
-            {
-                return $this->getMapperFor($className)->getMetadata();
-            }
-        };
+        $this->em = new EntityManager($db->reveal());
 
         $user = new User();
         $user->setId(1);
@@ -43,22 +36,6 @@ class EntityManagerTest extends TestCase
 
         $this->em->persist($user);
         $this->em->flush();
-    }
-
-    public function testGetMetadataForEntityClass()
-    {
-        $this->expectException(\UnexpectedValueException::class);
-        $meta = $this->em->getMetadataFor(\stdClass::class);
-        $this->assertNull($meta);
-
-        $meta = $this->em->getMetadataFor(User::class);
-        $this->assertInstanceOf(EntityMetadata::class, $meta);
-    }
-
-    public function testGetRepository()
-    {
-        $repo = $this->em->getRepository(User::class);
-        $this->assertInstanceOf(Repository::class, $repo);
     }
 
     public function testFindWhenExistsReturnObject()

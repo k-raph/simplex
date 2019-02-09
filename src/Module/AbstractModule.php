@@ -17,9 +17,16 @@ abstract class AbstractModule implements ModuleInterface
      * @param Configuration $configuration
      * @return mixed|void
      */
-    public function loadConfig(Configuration $configuration)
+    public function configure(Configuration $configuration)
     {
         // TODO: Implement loadConfig() method.
     }
 
+    /**
+     * @return array
+     */
+    public function getMappings(): array
+    {
+        return [];
+    }
 }

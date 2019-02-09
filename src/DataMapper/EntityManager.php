@@ -4,28 +4,11 @@ namespace Simplex\DataMapper;
 
 use Simplex\Database\DatabaseInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;
-use Simplex\DataMapper\Mapping\MetadataFactory;
-use Simplex\DataMapper\Proxy\ProxyFactory;
-use Simplex\DataMapper\Repository\Factory as RepositoryFactory;
-use Simplex\DataMapper\Repository\RepositoryInterface;
+use Simplex\DataMapper\Mapping\EntityMapperInterface;
+use Simplex\DataMapper\Mapping\MapperRegistry;
 
 class EntityManager
 {
-
-    /**
-     * @var MetadataFactory
-     */
-    protected $metadataFactory;
-
-    /**
-     * @var RepositoryFactory
-     */
-    protected $repositoryFactory;
-
-    /**
-     * @var ProxyFactory
-     */
-    protected $proxyFactory;
 
     /**
      * @var DatabaseInterface
@@ -44,29 +27,32 @@ class EntityManager
      */
     protected $mappers = [];
 
-    public function __construct(Configuration $config, DatabaseInterface $connection)
+    /**
+     * @var MapperRegistry
+     */
+    private $mapperRegistry;
+
+    /**
+     * EntityManager constructor.
+     * @param DatabaseInterface $connection
+     */
+    public function __construct(DatabaseInterface $connection)
     {
         $this->connection = $connection;
-        $this->repositoryFactory = new RepositoryFactory();
-        
-        $config->setup($this);
-        $this->metadataFactory = $config->getMetadataFactory();
-
-        $this->proxyFactory = new ProxyFactory($this->metadataFactory);
-        $this->uow = new UnitOfWork($this, $this->proxyFactory);
+        $this->uow = new UnitOfWork($this);
+        $this->mapperRegistry = new MapperRegistry();
     }
 
     /**
      * Get metadata for provided class
      *
      * @param string $className
-     * @return EntityMapper
+     * @return EntityMapperInterface
      */
-    public function getMapperFor(string $className): EntityMapper
+    public function getMapper(string $className): EntityMapperInterface
     {
         if (!isset($this->mappers[$className])) {
-            $meta = $this->metadataFactory->getClassMetadata($className);
-            $this->mappers[$className] = new EntityMapper($meta, $this) ;
+            $this->mappers[$className] = $this->mapperRegistry->resolve($className);
         }
 
         return $this->mappers[$className];
@@ -79,20 +65,9 @@ class EntityManager
      * @param mixed $key
      * @return object
      */
-    public function find(string $entityClass, $key)//: object
+    public function find(string $entityClass, $key): object
     {
         return $this->uow->get($entityClass, $key);
-    }
-
-    /**
-     * Get repository for entity class
-     *
-     * @param string $entityClass
-     * @return RepositoryInterface
-     */
-    public function getRepository(string $entityClass): RepositoryInterface
-    {
-        return $this->repositoryFactory->getRepository($this, $entityClass);
     }
 
     /**
@@ -103,16 +78,6 @@ class EntityManager
     public function getConnection(): DatabaseInterface
     {
         return $this->connection;
-    }
-
-    /**
-     * Gets proxy factory
-     *
-     * @return ProxyFactory
-     */
-    public function getProxyFactory(): ProxyFactory
-    {
-        return $this->proxyFactory;
     }
 
     /**
@@ -127,16 +92,18 @@ class EntityManager
 
     /**
      * Store an entity as persistent
+     * @param object $entity
      */
-    public function persist(/*object*/ $entity)
+    public function persist(object $entity)
     {
         $this->uow->persist($entity);
     }
 
     /**
      * Removes an entity from the manager
+     * @param object $entity
      */
-    public function remove(/*object*/ $entity)
+    public function remove(object $entity)
     {
         return $this->uow->remove($entity);
     }
@@ -152,13 +119,12 @@ class EntityManager
     }
 
     /**
-     * Creates a query builder instance for a given class
+     * MapperRegistry setter
      *
-     * @param string $entityClass
-     * @return QueryBuilder
+     * @param MapperRegistry $registry
      */
-    public function createQueryBuilder(string $entityClass): QueryBuilder
+    public function setRegistry(MapperRegistry $registry)
     {
-        return new QueryBuilder($this, $this->getMapperFor($entityClass));
+        $this->mapperRegistry = $registry;
     }
 }

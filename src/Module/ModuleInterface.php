@@ -26,5 +26,12 @@ interface ModuleInterface
      * @param Configuration $configuration
      * @return mixed
      */
-    public function loadConfig(Configuration $configuration);
+    public function configure(Configuration $configuration);
+
+    /**
+     * Get entity maps provided by the module
+     *
+     * @return array
+     */
+    public function getMappings(): array;
 }

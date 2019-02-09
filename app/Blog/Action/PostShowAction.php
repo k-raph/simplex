@@ -2,11 +2,9 @@
 
 namespace App\Blog\Action;
 
-use App\Blog\Entity\Comment;
-use App\Blog\Entity\Post;
+use App\Blog\Repository\PostRepository;
 use Simplex\Configuration\Configuration;
 use Simplex\Database\Exceptions\ResourceNotFoundException;
-use Simplex\DataMapper\EntityManager;
 use Simplex\Pagination\Paginator;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
@@ -42,15 +40,12 @@ class PostShowAction
      * Show a single post
      *
      * @param int $id
-     * @param EntityManager $em
+     * @param PostRepository $repository
      * @return string
      */
-    public function single(int $id, EntityManager $em)
+    public function single(int $id, PostRepository $repository)
     {
-        $post = $em->getRepository(Post::class)->find($id);
-
-        $comments = $em->getRepository(Comment::class)->findForPost($post);
-        $post->setComments($comments);
+        $post = $repository->find($id);
 
         return $this->view->render('@blog/show', compact('post'));
     }
@@ -59,16 +54,18 @@ class PostShowAction
      * Show all posts on the blog
      *
      * @param Request $request
-     * @param EntityManager $em
-     * @param Paginator $paginator
+     * @param PostRepository $repository
      * @param RouterInterface $router
      * @return string
+     * @throws ResourceNotFoundException
      */
-    public function all(Request $request, EntityManager $em, Paginator $paginator, RouterInterface $router)
+    public function all(Request $request, PostRepository $repository, RouterInterface $router)
     {
         $page = $request->query->getInt('page', 1);
 
-        $query = $em->getRepository(Post::class)->queryForIndex();
+        $query = $repository->queryForIndex();
+
+        $paginator = new Paginator();
         $paginator
             ->withUrl($router->generate('blog_index'))
             ->paginate($query, $page, $this->postPerPage);

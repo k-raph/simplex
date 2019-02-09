@@ -9,10 +9,26 @@
 namespace App\Blog\Repository;
 
 use App\Blog\Entity\Post;
+use App\Blog\Mapper\CommentMapper;
+use Simplex\DataMapper\QueryBuilder;
 use Simplex\DataMapper\Repository\Repository;
 
 class CommentRepository extends Repository
 {
+
+    /**
+     * @var CommentMapper
+     */
+    private $mapper;
+
+    /**
+     * CommentRepository constructor.
+     * @param CommentMapper $mapper
+     */
+    public function __construct(CommentMapper $mapper)
+    {
+        $this->mapper = $mapper;
+    }
 
     /**
      * @param Post $post
@@ -28,4 +44,22 @@ class CommentRepository extends Repository
         return $result;
     }
 
+    /**
+     * @param string|null $alias
+     * @return QueryBuilder
+     */
+    protected function query(?string $alias = null): QueryBuilder
+    {
+        return $this->mapper->query($alias);
+    }
+
+    /**
+     * Gets an entry by its primary primary key
+     *
+     * @param mixed $id
+     * @return object|null
+     */
+    public function find($id): ?object
+    {
+    }
 }

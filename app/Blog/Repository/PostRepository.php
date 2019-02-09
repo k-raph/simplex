@@ -9,11 +9,35 @@
 namespace App\Blog\Repository;
 
 
+use App\Blog\Entity\Post;
+use App\Blog\Mapper\PostMapper;
 use Simplex\Database\Query\Builder;
+use Simplex\DataMapper\QueryBuilder;
 use Simplex\DataMapper\Repository\Repository;
 
 class PostRepository extends Repository
 {
+
+    /**
+     * @var PostMapper
+     */
+    private $mapper;
+
+    /**
+     * @var CommentRepository
+     */
+    private $commentRepository;
+
+    /**
+     * PostRepository constructor.
+     * @param PostMapper $mapper
+     * @param CommentRepository $commentRepository
+     */
+    public function __construct(PostMapper $mapper, CommentRepository $commentRepository)
+    {
+        $this->mapper = $mapper;
+        $this->commentRepository = $commentRepository;
+    }
 
     /**
      * @return array
@@ -21,22 +45,7 @@ class PostRepository extends Repository
      */
     public function findAll(): array
     {
-        $result = $this->buildSelect()->get();
-
-        return $result;
-    }
-
-    /**
-     * Select query builder helper
-     *
-     * @return Builder
-     */
-    private function buildSelect(): Builder
-    {
-        return $this->query('p')
-            ->addSelect(['p.id', 'title', 'slug', 'content'])
-            ->addSelect('u.username', 'author_id')
-            ->innerJoin(['users', 'u'], 'p.author_id', 'u.id');
+        return $this->mapper->findAll();
     }
 
     /**
@@ -45,9 +54,11 @@ class PostRepository extends Repository
      */
     public function find($id): ?object
     {
-        return $this->buildSelect()
-            ->where('p.id', $id)
-            ->first();
+        /** @var Post $post */
+        $post = $this->mapper->find($id);
+        $post->setComments($this->commentRepository->findForPost($post));
+
+        return $post;
     }
 
     /**
@@ -57,7 +68,7 @@ class PostRepository extends Repository
      */
     public function queryForIndex(): Builder
     {
-        return $this->buildSelect();
+        return $this->mapper->buildSelect();
     }
 
     /**
@@ -71,5 +82,14 @@ class PostRepository extends Repository
         return (bool)$this->query('p')
             ->where('p.id', $id)
             ->count();
+    }
+
+    /**
+     * @param string|null $alias
+     * @return QueryBuilder
+     */
+    protected function query(?string $alias = null): QueryBuilder
+    {
+        return $this->mapper->query($alias);
     }
 }

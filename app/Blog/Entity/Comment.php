@@ -28,9 +28,9 @@ class Comment
     protected $email;
 
     /**
-     * @var Post
+     * @var int
      */
-    protected $post;
+    protected $postId;
 
     /**
      * @var \DateTime
@@ -86,23 +86,6 @@ class Comment
     }
 
     /**
-     * @return Post
-     */
-    public function getPost(): Post
-    {
-        return $this->post;
-    }
-
-    /**
-     * @param Post $post
-     */
-    public function setPost(/*Post*/
-        $post): void
-    {
-        $this->post = $post;
-    }
-
-    /**
      * @return string
      */
     public function getEmail(): string
@@ -116,6 +99,22 @@ class Comment
     public function setEmail(string $email): void
     {
         $this->email = $email;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPostId(): int
+    {
+        return $this->postId;
+    }
+
+    /**
+     * @param int $postId
+     */
+    public function setPostId(int $postId): void
+    {
+        $this->postId = $postId;
     }
 
 

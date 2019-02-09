@@ -11,7 +11,8 @@ class DataMapperServiceProvider extends AbstractServiceProvider
      * {@inheritDoc}
      */
     protected $provides = [
-        EntityManager::class
+        EntityManager::class,
+        UnitOfWork::class
     ];
 
     /**
@@ -20,9 +21,9 @@ class DataMapperServiceProvider extends AbstractServiceProvider
     public function register()
     {
         $db = $this->container->get(DatabaseInterface::class);
-        $config = new Configuration(dirname(__DIR__).'/../resources/mappings');
-        $em = new EntityManager($config, $db);
 
+        $em = new EntityManager($db);
         $this->container->add(EntityManager::class, $em);
+        $this->container->add(UnitOfWork::class, $em->getUnitOfWork());
     }
 }

@@ -1,10 +1,6 @@
-<?php
+<?php /** @noinspection PhpInternalEntityUsedInspection */
 
 namespace Simplex\DataMapper;
-
-use Simplex\DataMapper\Persistence\DatabasePersister;
-use Simplex\DataMapper\Persistence\PersisterInterface;
-use Simplex\DataMapper\Proxy\ProxyFactory;
 
 class UnitOfWork
 {
@@ -18,37 +14,25 @@ class UnitOfWork
      * @var EntityManager
      */
     protected $em;
-
     /**
-     * @var ProxyFactory
-     */
-    protected $proxyFactory;
-
-    /**
-     * @var PersisterInterface[]
-     */
-    protected $persisters = [];
-
-    /**
-     * Container of entities' states
+     * Container of entities by states
      *
      * @var array
      */
-    protected $entityStates = [
+    protected $entities = [
         self::STATE_NEW => [],
-        self::STATE_MANAGED => [],
         self::STATE_REMOVED => []
     ];
 
     /**
-     * @var array
+     * @var IdentityMap
      */
-    protected $originalEntities = [];
+    private $identityMap;
 
-    public function __construct(EntityManager $manager, ProxyFactory $proxies)
+    public function __construct(EntityManager $manager)
     {
         $this->em = $manager;
-        $this->proxyFactory = $proxies;
+        $this->identityMap = new IdentityMap();
     }
 
     /**
@@ -60,26 +44,15 @@ class UnitOfWork
      */
     public function get(string $entityClass, $id): ?object
     {
-        $mapper = $this->em->getMapperFor($entityClass);
-        $meta = $mapper->getMetadata();
-        $persister = $this->getPersister($entityClass);
-
-        // Loads parent result first
-        $result = $persister->load([
-            $meta->getIdentifier() => $id
-        ]);
-
-        if (!$result) {
-            return null;
+        if ($this->identityMap->has($entityClass, $id)) {
+            return $this->identityMap->get($entityClass, $id);
         }
 
-        $entity = $mapper->createEntity($result);
-        $uid = spl_object_hash($entity);
+        $mapper = $this->em->getMapper($entityClass);
+        $result = $mapper->find($id);
+        $this->identityMap->add($result, $id);
 
-        $this->entityStates[self::STATE_MANAGED][$uid] = $entity;
-        $this->originalEntities[$uid] = clone $entity;
-
-        return $entity;
+        return $result;
     }
 
     /**
@@ -90,13 +63,10 @@ class UnitOfWork
      */
     public function persist(object $entity)
     {
-        $uid = spl_object_hash($entity);
-
-        if (isset($this->entityStates[self::STATE_MANAGED][$uid])) {
-            $this->entityStates[self::STATE_MANAGED][$uid] = $entity;
+        if (!$this->identityMap->hasEntity($entity)) {
+            $this->entities[self::STATE_NEW][get_class($entity)][] = $entity;
         } else {
-            $class = get_class($entity);
-            $this->entityStates[self::STATE_NEW][$class][$uid] = $entity;
+            //$this->entities[self::STATE_MANAGED][] = $entity;
         }
     }
 
@@ -108,10 +78,9 @@ class UnitOfWork
      */
     public function remove(object $entity)
     {
-        $uid = spl_object_hash($entity);
-        if (isset($this->entityStates[self::STATE_MANAGED][$uid])) {
-            unset($this->entityStates[self::STATE_MANAGED][$uid]);
-            $this->entityStates[self::STATE_REMOVED][$uid] = $entity;
+        if ($this->identityMap->hasEntity($entity)) {
+            $this->identityMap->forget($entity);
+            $this->entities[self::STATE_REMOVED][] = $entity;
         }
     }
 
@@ -122,64 +91,36 @@ class UnitOfWork
      */
     public function commit()
     {
-        $inserts = $this->entityStates[self::STATE_NEW];
-        $updates = $this->entityStates[self::STATE_MANAGED];
-        $removes = array_values($this->entityStates[self::STATE_REMOVED]);
+        $inserts = $this->entities[self::STATE_NEW];
+        $updates = $this->identityMap->getEntities();
+        $removes = array_values($this->entities[self::STATE_REMOVED]);
 
         if (empty($inserts) && empty($updates) && empty($removes)) {
             return;
         }
 
         foreach ($inserts as $class => $entities) {
-            $persister = $this->getPersister($class);
-            $mapper = $this->em->getMapperFor($class);
+            $mapper = $this->em->getMapper($class);
             foreach ($entities as $entity) {
-                $entity = $mapper->prePersist($entity);
-                $persister->addInsert($entity);
+                $mapper->queueInsert($entity);
             }
-            $persister->performInsert();
+            $mapper->executeInsert();
         }
 
         foreach ($updates as $entity) {
             $class = get_class($entity);
-            $persister = $this->getPersister($class);
-            $mapper = $this->em->getMapperFor($class);
-            $changes = $this->getChangeSet($entity);
-            if (!empty($changes)) {
-                $entity = $mapper->prePersist($entity);
-                $persister->update($entity, $changes);
-            }
+            $mapper = $this->em->getMapper($class);
+            $mapper->update($entity);
         }
 
         foreach ($removes as $entity) {
-            $persister = $this->getPersister(get_class($entity));
-            $persister->delete($entity);
+            $mapper = $this->em->getMapper(get_class($entity));
+            $mapper->delete($entity);
         }
 
-        $this->entityStates[self::STATE_NEW] =
-        $this->entityStates[self::STATE_MANAGED] =
-        $this->entityStates[self::STATE_REMOVED] = [];
-    }
-
-    /**
-     * Gets given entity class persister
-     *
-     * @param string $className
-     * @return PersisterInterface
-     */
-    public function getPersister(string $className): PersisterInterface
-    {
-        if (!isset($this->persisters[$className])) {
-            $mapper = $this->em->getMapperFor($className);
-            $meta = $mapper->getMetadata();
-            $persister = $meta->customPersister() ?? DatabasePersister::class;
-            $this->persisters[$className] = new $persister(
-                $this->em,
-                $mapper
-            );
-        }
-
-        return $this->persisters[$className];
+        $this->entities[self::STATE_NEW] =
+        $this->entities[self::STATE_MANAGED] =
+        $this->entities[self::STATE_REMOVED] = [];
     }
 
     /**
@@ -190,28 +131,17 @@ class UnitOfWork
      */
     public function getChangeSet(object $entity): array
     {
-        $mapper = $this->em->getMapperFor(\get_class($entity));
-        $data = $mapper->extract($entity);
-        $original = $mapper->extract($this->originalEntities[spl_object_hash($entity)] ?? new \stdClass());
-        $changes = [];
+        $this->em->getMapper(\get_class($entity));
+        $original = $this->identityMap->getOriginal($entity) ?? new \stdClass();
 
-        foreach ($data as $key => $value) {
-            if (!isset($original[$key]) || ($value !== $original[$key])) {
-                $changes[$key] = $value;
-            }
-        }
-
-        return $changes;
+        return ChangeTracker::getChanges($original, $entity);
     }
 
     /**
-     * Set given entity as managed
-     *
-     * @param object $entity
+     * @return IdentityMap
      */
-    public function setManaged(object $entity)
+    public function getIdentityMap(): IdentityMap
     {
-        $uid = spl_object_hash($entity);
-        $this->entityStates[self::STATE_MANAGED][$uid] = $entity;
+        return $this->identityMap;
     }
 }

@@ -2,205 +2,120 @@
 
 namespace Simplex\DataMapper\Mapping;
 
-use Simplex\DataMapper\EntityManager;
-use Simplex\DataMapper\Proxy\Proxy;
-use Simplex\DataMapper\Proxy\ProxyFactory;
+use Simplex\Database\DatabaseInterface;
+use Simplex\DataMapper\QueryBuilder;
+use Simplex\DataMapper\UnitOfWork;
 
-class EntityMapper
+abstract class EntityMapper implements EntityMapperInterface
 {
-    /**
-     * @var EntityMetadata
-     */
-    protected $metadata;
 
     /**
-     * @var ProxyFactory
+     * @var string
      */
-    protected $proxyFactory;
+    protected $table;
 
     /**
-     * @var EntityManager
+     * @var array
      */
-    protected $em;
+    protected $queued = [];
 
-    public function __construct(EntityMetadata $metadata, EntityManager $manager)
+    /**
+     * @var DatabaseInterface
+     */
+    protected $database;
+
+    /**
+     * @var \Simplex\DataMapper\QueryBuilder
+     */
+    protected $builder;
+
+    /**
+     * @var UnitOfWork
+     */
+    protected $uow;
+
+    public function __construct(string $table, DatabaseInterface $database, UnitOfWork $uow)
     {
-        $this->metadata = $metadata;
-        $this->em = $manager;
-        $this->proxyFactory = $manager->getProxyFactory();
+        $this->table = $table;
+        $this->database = $database;
+        $this->builder = new QueryBuilder($database, $this);
+        $this->uow = $uow;
     }
 
     /**
-     * Create an entity based on given data
+     * Retrieves all data
      *
-     * @param array $data
-     * @return object
-     */
-    public function createEntity(array $data): object
-    {
-        $props = $this->mapToProps($data);
-
-        $proxy = $this->createProxy();
-        $proxy->hydrate($props);
-
-        return $this->postCreateEntity($proxy->reveal());
-    }
-
-    /**
-     * Extracts fields data from given entity
-     *
-     * @param object $entity
      * @return array
      */
-    public function extract(object $entity): array
+    public function findAll(): array
     {
-        $proxy = $this->proxyFactory->wrap($entity);
-        $props = $proxy->toArray();
-        $result = [];
-
-        foreach ($this->getMappings() as $prop => $column) {
-            $result[$column] = $props[$prop] ?? null;
-        }
-
-        return $result;
+        return $this->query()->get();
     }
 
     /**
-     * Hydrates an object with provided data
-     *
-     * @param object $entity
-     * @param array $data
-     * @return void
+     * @param $id
+     * @return object
      */
-    public function hydrate(object $entity, array $data)
+    public function find($id): object
     {
-        $proxy = $this->proxyFactory
-            ->wrap($entity);
-
-        $proxy->hydrate($this->mapToProps($data));
-
-        return $entity;
+        return $this->query()
+            ->where('id', $id)
+            ->first();
     }
 
     /**
-     * Get the value of a field from provided object
+     * Performs an entity insertion
      *
      * @param object $entity
-     * @param string $field
      * @return mixed
      */
-    public function getField(object $entity, string $field)
+    public function insert(object $entity)
     {
-        return $this->proxyFactory
-            ->wrap($entity)
-            ->getField($field);
+        $this->queueInsert($entity);
+        $this->executeInsert();
     }
 
     /**
-     * Get mapped class metadata
+     * Queue an entity for insertion
      *
-     * @return EntityMetadata
-     */
-    public function getMetadata(): EntityMetadata
-    {
-        return $this->metadata;
-    }
-
-    /**
-     * Get fields mappings
-     *
-     * @return array
-     */
-    protected function getMappings(): array
-    {
-        return array_combine(
-            $this->metadata->getNames(),
-            $this->metadata->getSQLNames()
-        );
-    }
-
-    /**
-     * Maps a data array to props array
-     *
-     * @param array $data
-     * @return array
-     */
-    protected function mapToProps(array $data): array
-    {
-        $props = [];
-        $fields = $this->getMappings();
-
-        foreach ($fields as $prop => $column) {
-            if (!isset($data[$column])) {
-                continue;
-            }
-            $props[$prop] = $data[$column];
-        }
-
-        return $props;
-    }
-
-    /**
-     * Creates a proxy instance
-     *
-     * @return Proxy
-     */
-    protected function createProxy(): Proxy
-    {
-        return $this->proxyFactory->create($this->metadata->getEntityClass());
-    }
-
-    /**
-     * Method to invoke before persist
-     *
+     * @internal
      * @param object $entity
-     * @return object
+     * @return mixed
      */
-    public function prePersist(object $entity)
+    public function queueInsert(object $entity)
     {
-        $fields = [];
-        $proxy = $this->proxyFactory->wrap($entity);
-        foreach ($this->metadata->getNames() as $field) {
-            $type = $this->metadata->getColumnType($field);
-            switch ($type) {
-                case 'string':
-                case 'int':
-                    $fields[$field] = $proxy->getField($field);
-                    break;
-                case 'datetime':
-                    $value = $proxy->getField($field);
-                    $value = $value instanceof \DateTime
-                        ? $value->format('Y-m-d H:i:s')
-                        : $value;
-                    $fields[$field] = $value;
-                    break;
-            }
-        }
-
-        $proxy->hydrate($fields);
-        return $proxy->reveal();
+        $this->queued[] = $this->extract($entity);
     }
 
     /**
-     * Invoked after creating entity
+     * Performs batch insert
      *
-     * @param object $entity
-     * @return object
+     * @internal
+     * @return mixed
      */
-    protected function postCreateEntity(object $entity)
+    public function executeInsert()
     {
-        $fields = [];
-        $proxy = $this->proxyFactory->wrap($entity);
-        foreach ($this->metadata->getNames() as $field) {
-            $type = $this->metadata->getColumnType($field);
-            switch ($type) {
-                case 'datetime':
-                    $fields[$field] = \DateTime::createFromFormat('Y-m-d H:i:s', $proxy->getField($field));
-                    break;
-            }
-        }
+        return $this->database->transaction(function () {
+            $this->builder->insert($this->queued);
+        });
+    }
 
-        $proxy->hydrate($fields);
-        return $proxy->reveal();
+    /**
+     * Gets entity table
+     *
+     * @return string
+     */
+    public function getTable(): string
+    {
+        return $this->table;
+    }
+
+    /**
+     * @param string|null $alias
+     * @return QueryBuilder
+     */
+    public function query(?string $alias = null): QueryBuilder
+    {
+        return $this->builder->newQuery()->table($this->table, $alias);
     }
 }

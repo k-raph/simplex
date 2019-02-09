@@ -8,44 +8,29 @@
 
 namespace Simplex\DataMapper;
 
+use Simplex\Database\DatabaseInterface;
 use Simplex\Database\Query\Builder;
-use Simplex\DataMapper\Mapping\EntityMapper;
+use Simplex\DataMapper\Mapping\EntityMapperInterface;
 
 class QueryBuilder extends Builder
 {
 
     /**
-     * @var EntityMapper
+     * @var EntityMapperInterface
      */
     protected $mapper;
-    /**
-     * @var EntityManager
-     */
-    protected $manager;
-    /**
-     * @var Mapping\EntityMetadata
-     */
-    private $metadata;
-
-    /**
-     * @var UnitOfWork
-     */
-    private $uow;
 
     /**
      * QueryBuilder constructor.
      *
-     * @param EntityManager $manager
-     * @param EntityMapper $mapper
+     * @param DatabaseInterface $connection
+     * @param EntityMapperInterface $mapper
      */
-    public function __construct(EntityManager $manager, EntityMapper $mapper)
+    public function __construct(DatabaseInterface $connection, EntityMapperInterface $mapper)
     {
-        parent::__construct($manager->getConnection());
-        $this->manager = $manager;
+        parent::__construct($connection);
         $this->mapper = $mapper;
-        $this->metadata = $mapper->getMetadata();
-        $this->uow = $manager->getUnitOfWork();
-        $this->table($this->metadata->getTableName());
+        $this->table($mapper->getTable());
     }
 
     /**
@@ -66,7 +51,7 @@ class QueryBuilder extends Builder
      */
     public function find($id): ?object
     {
-        return $this->manager->find($this->metadata->getEntityClass(), $id);
+        return $this->mapper->find($id);
     }
 
     /**
@@ -76,22 +61,9 @@ class QueryBuilder extends Builder
     {
         $result = parent::first();
 
-        if ($result) {
-            $result = $this->mapper->createEntity($result);
-            $this->uow->setManaged($result);
-
-            return $result;
-        }
-
-        return null;
-    }
-
-    /**
-     * @return EntityManager
-     */
-    public function getManager(): EntityManager
-    {
-        return $this->manager;
+        return $result
+            ? $this->mapper->createEntity($result)
+            : null;
     }
 
     /**
@@ -99,8 +71,8 @@ class QueryBuilder extends Builder
      */
     public function newQuery(?string $alias = null): Builder
     {
-        return (new static($this->manager, $this->mapper))
-            ->table($this->metadata->getTableName(), $alias);
+        return (new static($this->connection, $this->mapper))
+            ->table($this->mapper->getTable(), $alias);
     }
 
     /**
@@ -113,11 +85,7 @@ class QueryBuilder extends Builder
     {
         /** @var object $entity */
         if ($this->isSupported($entity)) {
-            $changes = $this->uow->getChangeSet($entity);
-            if (!empty($changes)) {
-                return $this->where($this->getId($entity))
-                    ->update($changes);
-            }
+            return $this->mapper->update($entity);
         } elseif (is_array($entity)) {
             /** @var array $entity */
             return parent::update($entity);
@@ -134,38 +102,6 @@ class QueryBuilder extends Builder
      */
     protected function isSupported($entity): bool
     {
-        return is_object($entity) && is_a($entity, $this->metadata->getEntityClass());
-    }
-
-    /**
-     * Gets primary key from an entity
-     *
-     * @param object $entity
-     * @return array
-     */
-    protected function getId(object $entity): array
-    {
-        $pk = $this->metadata->getIdentifier();
-        $value = $this->mapper->getField($entity, $pk);
-
-        return [$pk => $value];
-    }
-
-    /**
-     * Deletes an entity
-     *
-     * @param $entity
-     * @return int
-     */
-    public function delete(): int
-    {
-        $args = func_get_args();
-        $entity = reset($args);
-
-        if ($entity && $this->isSupported($entity)) {
-            return parent::where($this->getId($entity))->delete();
-        } else {
-            return parent::delete();
-        }
+        return is_object($entity);
     }
 }

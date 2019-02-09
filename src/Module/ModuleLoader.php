@@ -10,6 +10,10 @@ namespace Simplex\Module;
 
 
 use Psr\Container\ContainerInterface;
+use Simplex\Configuration\Configuration;
+use Simplex\DataMapper\EntityManager;
+use Simplex\DataMapper\Mapping\EntityMapperInterface;
+use Simplex\DataMapper\Mapping\MapperRegistry;
 
 class ModuleLoader
 {
@@ -42,6 +46,38 @@ class ModuleLoader
                 $module = $this->container->get($module);
                 $this->modules[$module->getName()] = $module;
             }
+        }
+
+        $this->bootstrap();
+    }
+
+    /**
+     * Bootstrap the modules
+     */
+    public function bootstrap()
+    {
+        /** @var Configuration $config */
+        $config = $this->container->get(Configuration::class);
+        $map = class_exists(EntityManager::class) && $this->container->has(EntityManager::class);
+        $mappings = [];
+        foreach ($this->modules as $module) {
+            $module->configure($config);
+            $mappings = array_merge($mappings, $module->getMappings());
+        }
+
+        if ($map) {
+            /** @var EntityManager $manager */
+            $manager = $this->container->get(EntityManager::class);
+            $registry = new MapperRegistry();
+            $registry->setResolver([$this->container, 'get']);
+
+            foreach ($mappings as $class => $mapper) {
+                if (is_subclass_of($mapper, EntityMapperInterface::class)) {
+                    $registry->register($class, $mapper);
+                }
+            }
+
+            $manager->setRegistry($registry);
         }
     }
 }
