@@ -10,8 +10,7 @@ namespace App\JobeetModule\Actions;
 
 
 use App\JobeetModule\Entity\Job;
-use Simplex\Database\Exceptions\ResourceNotFoundException;
-use Simplex\DataMapper\EntityManager;
+use App\JobeetModule\Repository\JobRepository;
 use Simplex\Http\Session\SessionFlash;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
@@ -36,34 +35,31 @@ class JobManageAction
 
     /**
      * @param string $token
-     * @param EntityManager $manager
+     * @param JobRepository $repository
      * @return string
-     * @throws ResourceNotFoundException
      */
-    public function preview(string $token, EntityManager $manager)
+    public function preview(string $token, JobRepository $repository)
     {
-        $job = $manager->getRepository(Job::class)
-            ->findByToken($token);
+        $job = $repository->findByToken($token);
 
         return $this->view->render('@jobeet/job/preview', compact('job'));
     }
 
     /**
      * @param string $token
-     * @param EntityManager $manager
+     * @param JobRepository $repository
      * @param RouterInterface $router
      * @param SessionFlash $flash
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function publish(string $token, EntityManager $manager, RouterInterface $router, SessionFlash $flash)
+    public function publish(string $token, JobRepository $repository, RouterInterface $router, SessionFlash $flash)
     {
         /** @var Job $job */
-        $job = $manager->getRepository(Job::class)
-            ->findByToken($token, false);
+        $job = $repository->findByToken($token, false);
 
         $job->setExpiresAt((new \DateTime())->add(new \DateInterval('P30D')));
-        $manager->flush();
+        $repository->getMapper()->update($job);
 
         $flash->success('Your job has been successfully published');
         return new RedirectResponse($router->generate('job_preview', ['token' => $job->getToken()]));

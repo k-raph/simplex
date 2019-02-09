@@ -34,9 +34,8 @@ abstract class EntityMapper implements EntityMapperInterface
      */
     protected $uow;
 
-    public function __construct(string $table, DatabaseInterface $database, UnitOfWork $uow)
+    public function __construct(DatabaseInterface $database, UnitOfWork $uow)
     {
-        $this->table = $table;
         $this->database = $database;
         $this->builder = new QueryBuilder($database, $this);
         $this->uow = $uow;
@@ -117,5 +116,36 @@ abstract class EntityMapper implements EntityMapperInterface
     public function query(?string $alias = null): QueryBuilder
     {
         return $this->builder->newQuery()->table($this->table, $alias);
+    }
+
+    /**
+     * @param object $entity
+     * @return mixed
+     */
+    public function update(object $entity)
+    {
+        if (method_exists($entity, 'getId')) {
+            $changes = $this->uow->getChangeSet($entity);
+            return $this->query()
+                ->where('id', $entity->getId())
+                ->update($changes);
+        };
+
+        throw new \RuntimeException('Method EntityMapperInterface::update needs to be implemented');
+    }
+
+    /**
+     * @param object $entity
+     * @return mixed
+     */
+    public function delete(object $entity)
+    {
+        if (method_exists($entity, 'getId')) {
+            return $this->query()
+                ->where('id', $entity->getId())
+                ->delete();
+        }
+
+        throw new \RuntimeException('Method EntityMapperInterface::delete needs to be implemented');
     }
 }

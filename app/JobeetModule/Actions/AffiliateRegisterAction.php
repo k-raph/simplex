@@ -73,7 +73,7 @@ class AffiliateRegisterAction
             $affiliate->addCategory($category);
         }
 
-        $manager->getRepository(Affiliate::class)->persist($affiliate);
+        $manager->getMapper(Affiliate::class)->insert($affiliate);
 
         return new RedirectResponse($router->generate('affiliate_wait'));
     }

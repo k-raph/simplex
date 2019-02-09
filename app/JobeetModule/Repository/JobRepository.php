@@ -9,10 +9,72 @@
 namespace App\JobeetModule\Repository;
 
 use App\JobeetModule\Entity\Job;
+use App\JobeetModule\Mapper\JobMapper;
+use Simplex\DataMapper\QueryBuilder;
 use Simplex\DataMapper\Repository\Repository;
 
 class JobRepository extends Repository
 {
+
+    /**
+     * @var JobMapper
+     */
+    private $mapper;
+
+    public function __construct(JobMapper $mapper)
+    {
+        $this->mapper = $mapper;
+    }
+
+    /**
+     * Gets active jobs filtered for given categories
+     *
+     * @param array $ids
+     * @return array
+     * @throws \Throwable
+     */
+    public function getActiveForCategories(array $ids)
+    {
+        return $this->activeQuery()
+            ->whereIn('category_id', $ids)
+            ->get();
+    }
+
+    /**
+     * Gets active jobs
+     *
+     * @return array
+     * @throws \Throwable
+     */
+    public function getActive()
+    {
+        return $this->activeQuery()->get();
+    }
+
+    /**
+     * Query for active jobs
+     *
+     * @param int|null $id
+     * @return QueryBuilder
+     * @throws \Exception
+     */
+    public function activeQuery(?int $id = null): QueryBuilder
+    {
+        $query = $this->query('j')
+            ->addSelect(['j.id', 'company', 'location', 'position'])
+            ->where('j.expires_at', '>', (new \DateTime())->format('Y-m-d H:i:s'))
+            ->orderBy('created_at', 'DESC');
+
+        if ($id) {
+            $query = $query->where('j.category_id', $id);
+        } else {
+            $query = $query
+                ->addSelect('c.name', 'category')
+                ->innerJoin(['categories', 'c'], 'j.category_id', 'c.id');
+        }
+
+        return $query;
+    }
 
     /**
      * @param mixed $id
@@ -38,10 +100,9 @@ class JobRepository extends Repository
      * Gets a job with provided token
      *
      * @param string $token
-     * @param bool $forView
      * @return Job
      */
-    public function findByToken(string $token, bool $forView = true): Job
+    public function findByToken(string $token): Job
     {
         /** @var Job $job */
         $job = $this->findOneBy(['token' => $token]);
@@ -50,15 +111,23 @@ class JobRepository extends Repository
             throw new ResourceNotFoundException();
         }
 
-        try {
-            $job->getExpiresAt();
-        } catch (\TypeError $e) {
-            $job->setExpiresAt(null);
-        }
-
-        if ($forView) {
-            $job->setType(Job::TYPES[$job->getType()]);
-        }
         return $job;
+    }
+
+    /**
+     * @param string|null $alias
+     * @return QueryBuilder
+     */
+    protected function query(?string $alias = null): QueryBuilder
+    {
+        return $this->mapper->query($alias);
+    }
+
+    /**
+     * @return JobMapper
+     */
+    public function getMapper(): JobMapper
+    {
+        return $this->mapper;
     }
 }

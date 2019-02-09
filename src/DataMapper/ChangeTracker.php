@@ -48,7 +48,7 @@ class ChangeTracker
 
             $changes = [];
             foreach ($data as $key => $value) {
-                if (!isset($originalData[$key]) || ($value !== $originalData[$key])) {
+                if (($value !== ($originalData[$key] ?? null))) {
                     $changes[$key] = $value;
                 }
             }

@@ -10,22 +10,15 @@ namespace App\Blog\Mapper;
 
 
 use App\Blog\Entity\Comment;
-use Simplex\Database\DatabaseInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;
-use Simplex\DataMapper\UnitOfWork;
 
 class CommentMapper extends EntityMapper
 {
 
     /**
-     * CommentMapper constructor.
-     * @param DatabaseInterface $database
-     * @param UnitOfWork $uow
+     * @var string
      */
-    public function __construct(DatabaseInterface $database, UnitOfWork $uow)
-    {
-        parent::__construct('comments', $database, $uow);
-    }
+    protected $table = 'comments';
 
     /**
      * Creates an entity from given input values

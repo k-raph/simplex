@@ -10,10 +10,28 @@ namespace App\JobeetModule\Repository;
 
 use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Entity\Job;
+use App\JobeetModule\Mapper\CategoryMapper;
+use Simplex\DataMapper\QueryBuilder;
 use Simplex\DataMapper\Repository\Repository;
 
 class CategoryRepository extends Repository
 {
+
+    /**
+     * @var CategoryMapper
+     */
+    private $mapper;
+
+    /**
+     * @var JobRepository
+     */
+    private $jobs;
+
+    public function __construct(CategoryMapper $mapper, JobRepository $jobs)
+    {
+        $this->mapper = $mapper;
+        $this->jobs = $jobs;
+    }
 
     /**
      * Gets categories with active jobs
@@ -23,23 +41,14 @@ class CategoryRepository extends Repository
      */
     public function getWithActiveJobs()
     {
-        $categories = $this->findAll();
+        $categories = $this->mapper->findAll();
 
         $ids = array_map(function (Category $category) {
             return $category->getId();
         }, $categories);
 
-        $manager = $this->query()->getManager();
 
-        $jobs = $manager->createQueryBuilder(Job::class)
-            ->newQuery('j')
-            ->addSelect(['j.id', 'company', 'location', 'position', 'category_id'])
-            ->addSelect('c.name', 'category_id')
-            ->whereIn('category_id', $ids)
-            ->where('j.expires_at', '>', (new \DateTime())->format('Y-m-d H:i:s'))
-            ->innerJoin(['categories', 'c'], 'j.category_id', 'c.id')
-            ->orderBy('created_at', 'DESC')
-            ->get();
+        $jobs = $this->jobs->getActiveForCategories($ids);
 
         foreach ($categories as $category) {
             $current = array_filter($jobs, function (Job $job) use ($category) {
@@ -52,4 +61,23 @@ class CategoryRepository extends Repository
         return $categories;
     }
 
+    /**
+     * @param string|null $alias
+     * @return QueryBuilder
+     */
+    protected function query(?string $alias = null): QueryBuilder
+    {
+        return $this->mapper->query($alias);
+    }
+
+    /**
+     * Gets an entry by its primary primary key
+     *
+     * @param mixed $id
+     * @return object|null
+     */
+    public function find($id): ?object
+    {
+        return $this->mapper->find($id);
+    }
 }

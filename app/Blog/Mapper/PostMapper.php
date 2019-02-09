@@ -10,24 +10,17 @@ namespace App\Blog\Mapper;
 
 
 use App\Blog\Entity\Post;
-use Simplex\Database\DatabaseInterface;
 use Simplex\Database\Exceptions\ResourceNotFoundException;
 use Simplex\DataMapper\Mapping\EntityMapper;
 use Simplex\DataMapper\QueryBuilder;
-use Simplex\DataMapper\UnitOfWork;
 
 class PostMapper extends EntityMapper
 {
 
     /**
-     * PostMapper constructor.
-     * @param DatabaseInterface $database
-     * @param UnitOfWork $uow
+     * @var string
      */
-    public function __construct(DatabaseInterface $database, UnitOfWork $uow)
-    {
-        parent::__construct('posts', $database, $uow);
-    }
+    protected $table = 'posts';
 
     /**
      * @return array

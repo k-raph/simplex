@@ -33,9 +33,20 @@ class Category
     private $jobs = [];
 
     /**
+     * Category constructor.
+     * @param string $name
+     * @param string|null $slug
+     */
+    public function __construct(string $name, ?string $slug = null)
+    {
+        $this->name = $name;
+        $this->slug = $slug;
+    }
+
+    /**
      * @return int
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -86,6 +97,14 @@ class Category
     public function setSlug(string $slug): void
     {
         $this->slug = $slug;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
 }

@@ -82,6 +82,14 @@ class Job
      */
     private $expiresAt;
 
+    public function __construct(string $company, string $position, string $location/*, string $category*/)
+    {
+        $this->company = $company;
+        $this->position = $position;
+        $this->location = $location;
+        //$this->category = $category;
+    }
+
     /**
      * @return int
      */
@@ -312,6 +320,14 @@ class Job
     public function setExpiresAt(?\DateTime $expiresAt): void
     {
         $this->expiresAt = $expiresAt;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
 }

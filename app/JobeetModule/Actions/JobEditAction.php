@@ -9,6 +9,7 @@
 namespace App\JobeetModule\Actions;
 
 use App\JobeetModule\Entity\Job;
+use App\JobeetModule\Repository\JobRepository;
 use Rakit\Validation\ErrorBag;
 use Simplex\Configuration\Configuration;
 use Simplex\Database\Query\Builder;
@@ -159,14 +160,12 @@ class JobEditAction
      * Render edition view
      *
      * @param string $token
-     * @param EntityManager $manager
+     * @param JobRepository $repository
      * @return string
      */
-    public function edit(string $token, EntityManager $manager)
+    public function edit(string $token, JobRepository $repository)
     {
-        /** @var Job $job */
-        $job = $manager->getRepository(Job::class)
-            ->findByToken($token);
+        $job = $repository->findByToken($token);
 
         $categories = $this->categories;
         $types = array_flip(Job::TYPES);

@@ -8,6 +8,12 @@
 
 namespace App\JobeetModule;
 
+use App\JobeetModule\Entity\Affiliate;
+use App\JobeetModule\Entity\Category;
+use App\JobeetModule\Entity\Job;
+use App\JobeetModule\Mapper\AffiliateMapper;
+use App\JobeetModule\Mapper\CategoryMapper;
+use App\JobeetModule\Mapper\JobMapper;
 use Simplex\Configuration\Configuration;
 use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;
@@ -49,5 +55,17 @@ class JobeetServiceProvider extends AbstractModule
     public function getName(): string
     {
         return 'jobeet';
+    }
+
+    /**
+     * @return array
+     */
+    public function getMappings(): array
+    {
+        return [
+            Job::class => JobMapper::class,
+            Category::class => CategoryMapper::class,
+            Affiliate::class => AffiliateMapper::class
+        ];
     }
 }

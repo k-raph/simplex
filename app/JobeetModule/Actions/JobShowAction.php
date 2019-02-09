@@ -34,15 +34,13 @@ class JobShowAction
     }
 
     /**
-     * @param EntityManager $entityManager
+     * @param CategoryRepository $repository
      * @return string
      */
-    public function all(EntityManager $entityManager)
+    public function all(CategoryRepository $repository)
     {
-        /** @var CategoryRepository $repo */
-        $repo = $entityManager->getRepository(Category::class);
         /** @var Category[] $categories */
-        $categories = $repo->getWithActiveJobs();
+        $categories = $repository->getWithActiveJobs();
 
         return $this->view->render('@jobeet/job/list', compact('categories'));
     }
@@ -55,7 +53,7 @@ class JobShowAction
      */
     public function show(int $id, EntityManager $manager)
     {
-        $job = $manager->getRepository(Job::class)->find($id);
+        $job = $manager->getMapper(Job::class)->find($id);
 
         if (!$job) {
             throw new ResourceNotFoundException();
