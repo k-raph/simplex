@@ -1,18 +1,18 @@
 <!-- Sidebar -->
-<nav class="px-2 text-light bg-darker">
-    <ul class="nav">
-        <li class="nav-item my-2 px-1 py-1">
-            <a href="#">
-                <i class="icon icon-apps"></i>
-                <span class="hide-sm">Dashboard</span>
-            </a>
-        </li>
-        <li class="nav-item my-2 px-1 py-1">
-            <a href="#">
-                <i class="icon icon-people"></i>
-                <span class="hide-sm">Users</span>
-            </a>
-        </li>
+<div class="admin-sidebar">
+    <div class="">
+        <div class="accordion">
+            <input type="hidden" name="sidebar-checkbox" id="dashboard-checkbox">
+            <label for="dashboard-checkbox" class="accordion-header">
+                Dashboard
+            </label>
+        </div>
+        <div class="accordion">
+            <input type="hidden" name="sidebar-checkbox" id="dashboard-users">
+            <label for="dashboard-users" class="accordion-header">
+                Users
+            </label>
+        </div>
         <li class="nav-item my-2 px-1 py-1">
             <a href="#">
                 <i class="icon icon-edit"></i>
@@ -62,6 +62,6 @@
                 </div>
             </div>
         </li>
-    </ul>
-</nav>
+    </div>
+</div>
 <!-- End Sidebar -->
