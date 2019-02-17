@@ -10,6 +10,7 @@ namespace App\JobeetModule\Mapper;
 
 
 use App\JobeetModule\Entity\Category;
+use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;
 
 class CategoryMapper extends EntityMapper
@@ -24,9 +25,9 @@ class CategoryMapper extends EntityMapper
      * Creates an entity from given input values
      *
      * @param array $input
-     * @return object
+     * @return IdentifiableInterface
      */
-    public function createEntity(array $input): object
+    public function createEntity(array $input): IdentifiableInterface
     {
         $category = new Category($input['name']);
         foreach (['id', 'slug'] as $field) {
@@ -53,10 +54,10 @@ class CategoryMapper extends EntityMapper
     /**
      * Performs an entity update
      *
-     * @param object $entity
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function update(object $entity)
+    public function update(IdentifiableInterface $entity)
     {
         // TODO: Implement update() method.
     }
@@ -64,10 +65,10 @@ class CategoryMapper extends EntityMapper
     /**
      * Performs an entity deletion
      *
-     * @param object $entity
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function delete(object $entity)
+    public function delete(IdentifiableInterface $entity)
     {
         // TODO: Implement delete() method.
     }

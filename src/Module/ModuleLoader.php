@@ -13,7 +13,6 @@ use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\DataMapper\EntityManager;
 use Simplex\DataMapper\Mapping\EntityMapperInterface;
-use Simplex\DataMapper\Mapping\MapperRegistry;
 
 class ModuleLoader
 {
@@ -68,7 +67,7 @@ class ModuleLoader
         if ($map) {
             /** @var EntityManager $manager */
             $manager = $this->container->get(EntityManager::class);
-            $registry = new MapperRegistry();
+            $registry = $manager->getMapperRegistry();
             $registry->setResolver([$this->container, 'get']);
 
             foreach ($mappings as $class => $mapper) {
@@ -76,8 +75,6 @@ class ModuleLoader
                     $registry->register($class, $mapper);
                 }
             }
-
-            $manager->setRegistry($registry);
         }
     }
 }

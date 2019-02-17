@@ -9,13 +9,13 @@
 namespace App\JobeetModule\Entity;
 
 
-class Affiliate
+use Simplex\DataMapper\IdentifiableInterface;
+use Simplex\DataMapper\IdentifiableTrait;
+
+class Affiliate implements IdentifiableInterface
 {
 
-    /**
-     * @var int
-     */
-    private $id;
+    use IdentifiableTrait;
 
     /**
      * @var string
@@ -46,22 +46,6 @@ class Affiliate
      * @var string[]
      */
     private $categories = [];
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
 
     /**
      * @return string
@@ -122,7 +106,7 @@ class Affiliate
     /**
      * @param string $token
      */
-    public function setToken(string $token): void
+    public function setToken(?string $token): void
     {
         $this->token = $token;
     }

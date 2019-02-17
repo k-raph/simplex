@@ -2,12 +2,13 @@
 
 namespace App\Blog\Entity;
 
-class Post
+use Simplex\DataMapper\IdentifiableInterface;
+use Simplex\DataMapper\IdentifiableTrait;
+
+class Post implements IdentifiableInterface
 {
-    /**
-     * @var int
-     */
-    private $id;
+
+    use IdentifiableTrait;
 
     /**
      * @var string
@@ -33,14 +34,6 @@ class Post
      * @var Comment[]
      */
     private $comments = [];
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
 
     /**
      * @return string
@@ -122,14 +115,5 @@ class Post
     {
         $this->comments = $comments;
     }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
 
 }

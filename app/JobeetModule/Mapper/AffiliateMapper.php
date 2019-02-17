@@ -10,6 +10,7 @@ namespace App\JobeetModule\Mapper;
 
 
 use App\JobeetModule\Entity\Affiliate;
+use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;
 
 class AffiliateMapper extends EntityMapper
@@ -26,16 +27,28 @@ class AffiliateMapper extends EntityMapper
      * @param array $input
      * @return object
      */
-    public function createEntity(array $input): object
+    public function createEntity(array $input): IdentifiableInterface
     {
-        // TODO: Implement createEntity() method.
+        $affiliate = new Affiliate();
+        $affiliate->setId($input['id']);
+        $affiliate->setEmail($input['email']);
+        $affiliate->setUrl($input['url']);
+        $affiliate->setActive((bool)$input['is_active']);
+        $affiliate->setName($input['name']);
+        if (isset($input['token'])) {
+            $affiliate->setToken($input['token']);
+        }
+
+        $this->uow->getIdentityMap()->add($affiliate, $affiliate->getId());
+
+        return $affiliate;
     }
 
     /**
      * @param Affiliate $affiliate
      * @return mixed|void
      */
-    public function insert(object $affiliate)
+    public function insert(IdentifiableInterface $affiliate)
     {
         $insert = $this->extract($affiliate);
 
@@ -75,5 +88,23 @@ class AffiliateMapper extends EntityMapper
             'is_active' => $affiliate->isActive(),
             'token' => $affiliate->getToken()
         ];
+    }
+
+    /**
+     * @param IdentifiableInterface $entity
+     * @return mixed
+     */
+    public function update(IdentifiableInterface $entity)
+    {
+        $changes = $this->uow->getChangeSet($entity);
+        if (isset($changes['active'])) {
+            $changes['is_active'] = $changes['active'];
+            unset($changes['active']);
+        }
+        if (!empty($changes)) {
+            return $this->query()
+                ->where('id', $entity->getId())
+                ->update($changes);
+        }
     }
 }

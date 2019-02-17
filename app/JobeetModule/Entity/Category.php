@@ -9,13 +9,13 @@
 namespace App\JobeetModule\Entity;
 
 
-class Category
+use Simplex\DataMapper\IdentifiableInterface;
+use Simplex\DataMapper\IdentifiableTrait;
+
+class Category implements IdentifiableInterface
 {
 
-    /**
-     * @var int
-     */
-    private $id;
+    use IdentifiableTrait;
 
     /**
      * @var string
@@ -41,14 +41,6 @@ class Category
     {
         $this->name = $name;
         $this->slug = $slug;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     /**
@@ -97,14 +89,6 @@ class Category
     public function setSlug(string $slug): void
     {
         $this->slug = $slug;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
     }
 
 }

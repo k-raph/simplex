@@ -8,6 +8,7 @@
 
 namespace Simplex\DataMapper\Mapping;
 
+use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\QueryBuilder;
 
 interface EntityMapperInterface
@@ -17,9 +18,9 @@ interface EntityMapperInterface
      * Creates an entity from given input values
      *
      * @param array $input
-     * @return object
+     * @return IdentifiableInterface
      */
-    public function createEntity(array $input): object;
+    public function createEntity(array $input): IdentifiableInterface;
 
     /**
      * Extract an entity to persistable state
@@ -47,26 +48,26 @@ interface EntityMapperInterface
     /**
      * Performs an entity insertion
      *
-     * @param object $entity
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function insert(object $entity);
+    public function insert(IdentifiableInterface $entity);
 
     /**
      * Performs an entity update
      *
-     * @param object $entity
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function update(object $entity);
+    public function update(IdentifiableInterface $entity);
 
     /**
      * Performs an entity deletion
      *
-     * @param object $entity
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function delete(object $entity);
+    public function delete(IdentifiableInterface $entity);
 
     /**
      * Queue an entity for insertion

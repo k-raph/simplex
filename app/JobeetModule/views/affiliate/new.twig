@@ -4,18 +4,5 @@
 
 {% block body %}
     <h3>Register as affiliate</h3>
-    {{ form_open({method: 'POST', action: route('affiliate_create'), class: 'col-6'}) }}
-    {{ csrf_field() }}
-    {{ form_widget('text', 'name', 'Your name : ') }}
-    {{ form_widget('email', 'email', 'Your email : ') }}
-    {{ form_widget('url', 'url', 'Your website URL : ') }}
-    <div class="form-group">
-        {{ form_error('categories') }}
-        {{ form_label('Categories : ', 'categories[]') }}
-        {% for category in categories %}
-            {{ form_field('checkbox', 'categories[]', category.slug, {label: category.name, checked: true}) }}
-        {% endfor %}
-    </div>
-    {{ form_submit('Register') }}
-    {{ form_close() }}
+    {% include '@jobeet/affiliate/form.twig' %}
 {% endblock %}

@@ -26,7 +26,7 @@ class AffiliateRegisterAction
     /**
      * @var array|array[]
      */
-    private $categories;
+    protected $categories;
 
     /**
      * AffiliateRegisterAction constructor.

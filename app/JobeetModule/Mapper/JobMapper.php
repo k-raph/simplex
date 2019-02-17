@@ -10,6 +10,7 @@ namespace App\JobeetModule\Mapper;
 
 
 use App\JobeetModule\Entity\Job;
+use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;
 
 class JobMapper extends EntityMapper
@@ -24,10 +25,14 @@ class JobMapper extends EntityMapper
      * Creates an entity from given input values
      *
      * @param array $input
-     * @return object
+     * @return Job
      */
-    public function createEntity(array $input): object
+    public function createEntity(array $input): IdentifiableInterface
     {
+        if ($this->uow->getIdentityMap()->has(Job::class, $input['id'])) {
+            return $this->uow->getIdentityMap()->get(Job::class, $input['id']);
+        }
+
         $job = new Job($input['company'], $input['position'], $input['location']);
 
         if (isset($input['category_id'])) {
@@ -104,18 +109,21 @@ class JobMapper extends EntityMapper
     /**
      * Performs an entity update
      *
-     * @param Job $job
+     * @param object $entity
      * @return mixed
      */
-    public function update(object $job)
+    public function update(IdentifiableInterface $entity)
     {
-        $job->setType(Job::TYPES[$job->getType()]);
-        $changes = $this->uow->getChangeSet($job);
+        $entity->setType(Job::TYPES[$entity->getType()]);
+        $changes = $this->uow->getChangeSet($entity);
         $changes = $this->map($changes);
 
-        return $this->query()
-            ->where('id', $job->getId())
-            ->update($changes);
+        if (!empty($changes)) {
+            return $this->query()
+                ->where('id', $entity->getId())
+                ->update($changes);
+        }
+
     }
 
     /**
@@ -152,7 +160,7 @@ class JobMapper extends EntityMapper
      * @param object $entity
      * @return mixed
      */
-    public function delete(object $entity)
+    public function delete(IdentifiableInterface $entity)
     {
         // TODO: Implement delete() method.
     }

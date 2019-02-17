@@ -13,5 +13,13 @@ use App\JobeetModule\Repository\AffiliateRepository as Repository;
 class AffiliateRepository extends Repository
 {
 
-
+    /**
+     * @inheritdoc
+     */
+    public function findAll(): array
+    {
+        return $this->query()
+            ->addSelect(['id', 'name', 'email', 'url', 'is_active'])
+            ->get();
+    }
 }

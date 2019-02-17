@@ -1,0 +1,54 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title %}Affiliates{% endblock %}
+
+{% block content %}
+    <div class="my-2">
+        <h3>Affiliates</h3>
+        <hr>
+        <table class="table table-striped table-hover text-center">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Url</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for affiliate in affiliates %}
+                <tr>
+                    <td>{{ affiliate.name }}</td>
+                    <td>{{ affiliate.email }}</td>
+                    <td>
+                        <a href="{{ affiliate.url }}">
+                            {{ affiliate.url }}
+                        </a>
+                    </td>
+                    <td class="columns">
+                        {% set active = affiliate.isActive %}
+                        <form class="column" action="{{ route('admin_jobeet_affiliate_activate', {id: affiliate.id}) }}"
+                              method="post">
+                            {{ csrf_field() }}
+                            <button class="btn tooltip" data-tooltip="{{ active ? 'Deactivate' : 'Activate' }}">
+                                <i class="icon {{ active ? 'icon-cross' : 'icon-check' }}"></i>
+                            </button>
+                        </form>
+                        <a class="btn" href="{{ route('admin_jobeet_affiliate_edit', {id: affiliate.id}) }}">
+                            <i class="icon icon-edit"></i>
+                        </a>
+                        <form class="column" action="{{ route('admin_jobeet_affiliate_delete', {id: affiliate.id}) }}"
+                              method="post">
+                            {{ csrf_field() }}
+                            <input type="hidden" value="DELETE" name="_method">
+                            <button class="btn btn-error">
+                                <i class="icon icon-delete"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

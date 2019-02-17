@@ -12,8 +12,6 @@ use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Tracy\Debugger;
 
 class Kernel
@@ -140,33 +138,9 @@ class Kernel
      */
     public function handle(Request $request)
     {
-        try {
-            $this->boot();
-            return $this->pipeline->handle($request);
-        } catch (\Exception $e) {
-            return $this->handleException($e);
-        }
-    }
-
-    /**
-     * Handle catched exception to return appropriate response
-     *
-     * @param \Exception $exception
-     * @return null|Response
-     */
-    private function handleException(\Exception $exception)
-    {
-        if ($exception instanceof ResourceNotFoundException) {
-            return new Response($exception->getMessage(), 404);
-        } elseif ($exception instanceof MethodNotAllowedException) {
-            return new Response(
-                $exception->getMessage(), 
-                405, 
-                ['Allow' => implode(', ', $exception->getAllowedMethods())]
-            );
-        } else {
-            throw $exception;
-        }
+        $this->boot();
+        $request::enableHttpMethodParameterOverride();
+        return $this->pipeline->handle($request);
     }
 
     /**

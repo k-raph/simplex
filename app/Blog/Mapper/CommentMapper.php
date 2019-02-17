@@ -10,6 +10,7 @@ namespace App\Blog\Mapper;
 
 
 use App\Blog\Entity\Comment;
+use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;
 
 class CommentMapper extends EntityMapper
@@ -24,9 +25,9 @@ class CommentMapper extends EntityMapper
      * Creates an entity from given input values
      *
      * @param array $input
-     * @return object
+     * @return IdentifiableInterface
      */
-    public function createEntity(array $input): object
+    public function createEntity(array $input): IdentifiableInterface
     {
         $comment = new Comment();
         $comment->setContent($input['content']);
@@ -52,7 +53,7 @@ class CommentMapper extends EntityMapper
      * @param object $entity
      * @return mixed
      */
-    public function update(object $entity)
+    public function update(IdentifiableInterface $entity)
     {
         // TODO: Implement update() method.
     }
@@ -63,7 +64,7 @@ class CommentMapper extends EntityMapper
      * @param object $entity
      * @return mixed
      */
-    public function delete(object $entity)
+    public function delete(IdentifiableInterface $entity)
     {
         // TODO: Implement delete() method.
     }

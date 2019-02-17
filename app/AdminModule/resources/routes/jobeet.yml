@@ -1,3 +1,24 @@
 home:
-  path: /
+  path: /affiliates
   controller: App\AdminModule\Actions\Jobeet\AffiliateManageAction:list
+
+affiliate_activate:
+  path: /affiliates/activate/{id}
+  controller: App\AdminModule\Actions\Jobeet\AffiliateManageAction:activate
+  methods: ['POST']
+  requirements:
+    id: '\d+'
+
+affiliate_edit:
+  path: /affiliates/edit/{id}
+  controller: App\AdminModule\Actions\Jobeet\AffiliateManageAction:edit
+  methods: ['GET', 'POST']
+  requirements:
+    id: '\d+'
+
+affiliate_delete:
+  path: /affiliates/delete/{id}
+  controller: App\AdminModule\Actions\Jobeet\AffiliateManageAction:delete
+  methods: ['DELETE']
+  requirements:
+    id: '\d+'

@@ -9,8 +9,14 @@
 namespace App\JobeetModule\Entity;
 
 
-class Job
+use Simplex\DataMapper\IdentifiableInterface;
+use Simplex\DataMapper\IdentifiableTrait;
+
+class Job implements IdentifiableInterface
 {
+
+    use IdentifiableTrait;
+
     /**
      * Job types
      *
@@ -21,62 +27,72 @@ class Job
         'part_time' => 'Part Time',
         'freelance' => 'Freelance'
     ];
-    /**
-     * @var int
-     */
-    private $id;
+
     /**
      * @var string
      */
     private $category;
+
     /**
      * @var string
      */
     private $type;
+
     /**
      * @var string
      */
     private $company;
+
     /**
      * @var mixed
      */
     private $logo;
+
     /**
      * @var string
      */
     private $url;
+
     /**
      * @var string
      */
     private $location;
+
     /**
      * @var string
      */
     private $position;
+
     /**
      * @var string
      */
     private $description;
+
     /**
      * @var string
      */
     private $application;
+
     /**
      * @var bool
      */
     private $public;
+
     /**
      * @var string
      */
     private $email;
+
     /**
      * @var string
      */
     private $token;
+
     /**
      * @var \DateTime
      */
     private $createdAt;
+
     /**
      * @var \DateTime
      */
@@ -87,14 +103,6 @@ class Job
         $this->company = $company;
         $this->position = $position;
         $this->location = $location;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
     }
 
     /**
@@ -319,14 +327,6 @@ class Job
     public function setExpiresAt(?\DateTime $expiresAt): void
     {
         $this->expiresAt = $expiresAt;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
     }
 
 }

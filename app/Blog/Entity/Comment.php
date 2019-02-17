@@ -8,9 +8,13 @@
 
 namespace App\Blog\Entity;
 
+use Simplex\DataMapper\IdentifiableInterface;
+use Simplex\DataMapper\IdentifiableTrait;
 
-class Comment
+class Comment implements IdentifiableInterface
 {
+
+    use IdentifiableTrait;
 
     /**
      * @var string

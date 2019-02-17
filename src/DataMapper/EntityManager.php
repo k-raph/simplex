@@ -119,12 +119,10 @@ class EntityManager
     }
 
     /**
-     * MapperRegistry setter
-     *
-     * @param MapperRegistry $registry
+     * @return MapperRegistry
      */
-    public function setRegistry(MapperRegistry $registry)
+    public function getMapperRegistry(): MapperRegistry
     {
-        $this->mapperRegistry = $registry;
+        return $this->mapperRegistry;
     }
 }

@@ -11,6 +11,7 @@ namespace App\Blog\Mapper;
 
 use App\Blog\Entity\Post;
 use Simplex\Database\Exceptions\ResourceNotFoundException;
+use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;
 use Simplex\DataMapper\QueryBuilder;
 
@@ -47,9 +48,9 @@ class PostMapper extends EntityMapper
      * Creates an entity from given input values
      *
      * @param array $input
-     * @return object
+     * @return IdentifiableInterface
      */
-    public function createEntity(array $input): object
+    public function createEntity(array $input): IdentifiableInterface
     {
         $post = new Post();
         foreach ($input as $field => $value) {
@@ -102,14 +103,14 @@ class PostMapper extends EntityMapper
     /**
      * Performs an entity update
      *
-     * @param Post $post
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function update(object $post)
+    public function update(IdentifiableInterface $entity)
     {
-        $changes = $this->uow->getChangeSet($post);
+        $changes = $this->uow->getChangeSet($entity);
         return $this->query()
-            ->where('id', $post->getId())
+            ->where('id', $entity->getId())
             ->update($changes);
     }
 
@@ -119,7 +120,7 @@ class PostMapper extends EntityMapper
      * @param Post $post
      * @return mixed
      */
-    public function delete(object $post)
+    public function delete(IdentifiableInterface $post)
     {
         return $this->query()
             ->where('id', $post->getId())

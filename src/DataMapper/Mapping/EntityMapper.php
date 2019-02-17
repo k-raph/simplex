@@ -3,6 +3,8 @@
 namespace Simplex\DataMapper\Mapping;
 
 use Simplex\Database\DatabaseInterface;
+use Simplex\DataMapper\Identifiable;
+use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\QueryBuilder;
 use Simplex\DataMapper\UnitOfWork;
 
@@ -65,10 +67,10 @@ abstract class EntityMapper implements EntityMapperInterface
     /**
      * Performs an entity insertion
      *
-     * @param object $entity
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function insert(object $entity)
+    public function insert(IdentifiableInterface $entity)
     {
         $this->queueInsert($entity);
         $this->executeInsert();
@@ -119,33 +121,30 @@ abstract class EntityMapper implements EntityMapperInterface
     }
 
     /**
-     * @param object $entity
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function update(object $entity)
+    public function update(IdentifiableInterface $entity)
     {
-        if (method_exists($entity, 'getId')) {
-            $changes = $this->uow->getChangeSet($entity);
+        $changes = $this->uow->getChangeSet($entity);
+        if (!empty($changes)) {
             return $this->query()
                 ->where('id', $entity->getId())
                 ->update($changes);
-        };
+        }
 
         throw new \RuntimeException('Method EntityMapperInterface::update needs to be implemented');
     }
 
     /**
-     * @param object $entity
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function delete(object $entity)
+    public function delete(IdentifiableInterface $entity)
     {
-        if (method_exists($entity, 'getId')) {
-            return $this->query()
-                ->where('id', $entity->getId())
-                ->delete();
-        }
+        return $this->query()
+            ->where('id', $entity->getId())
+            ->delete();
 
-        throw new \RuntimeException('Method EntityMapperInterface::delete needs to be implemented');
     }
 }
