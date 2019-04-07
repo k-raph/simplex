@@ -2,6 +2,11 @@ home:
   path: /affiliates
   controller: App\AdminModule\Actions\Jobeet\AffiliateManageAction:list
 
+affiliate_create:
+  path: /affiliates/new
+  controller: App\AdminModule\Actions\Jobeet\AffiliateManageAction:create
+  methods: ['GET', 'POST']
+
 affiliate_activate:
   path: /affiliates/activate/{id}
   controller: App\AdminModule\Actions\Jobeet\AffiliateManageAction:activate

@@ -1,0 +1,8 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title %}New Affiliate{% endblock %}
+
+{% block content %}
+    <h3>Create an affiliate</h3>
+    {% include '@jobeet/affiliate/form.twig' with {action: route('admin_jobeet_affiliate_create')} %}
+{% endblock %}

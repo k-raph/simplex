@@ -97,13 +97,24 @@ class AffiliateManageAction extends AffiliateRegisterAction
      * @param EntityManager $manager
      * @return string
      */
-    public function edit(Request $request, EntityManager $manager)
+    public function edit(Request $request, EntityManager $manager, RouterInterface $router, SessionFlash $flash)
     {
         $id = $request->attributes->get('_route_params')['id'];
+        /** @var Affiliate $affiliate */
         $affiliate = $manager->find(Affiliate::class, $id);
-
         if ('POST' === $request->getMethod()) {
             $data = $this->validate($request->request->all())->getValidData();
+
+            $affiliate->setName($data['name']);
+            $affiliate->setUrl($data['url']);
+            $affiliate->setEmail($data['email']);
+            $affiliate->setCategories($data['categories']);
+
+            $manager->persist($affiliate);
+            $manager->flush();
+
+            $flash->success('Affiliate successfully edited');
+            return new RedirectResponse($router->generate('admin_jobeet_home'));
         }
 
         return $this->view->render('@admin/jobeet/affiliate_edit', [
@@ -132,5 +143,30 @@ class AffiliateManageAction extends AffiliateRegisterAction
         }
 
         return new RedirectResponse($router->generate('admin_jobeet_home'));
+    }
+
+    /**
+     * Create an affiliate
+     *
+     * @param Request $request
+     * @param EntityManager $manager
+     * @param RouterInterface $router
+     * @param AffiliateRegisterAction $action
+     * @param SessionFlash $flash
+     * @return string|RedirectResponse
+     */
+    public function create(Request $request, EntityManager $manager, RouterInterface $router, AffiliateRegisterAction $action, SessionFlash $flash)
+    {
+        if ($request->isMethod('POST')) {
+            $response = $action->request($request, $manager, $router);
+            if ($response instanceof RedirectResponse) {
+                $flash->success('Affiliate successfully edited');
+                return new RedirectResponse($router->generate('admin_jobeet_home'));
+            }
+        }
+
+        return $this->view->render('@admin/jobeet/affiliate_new', [
+            'categories' => $this->categories
+        ]);
     }
 }

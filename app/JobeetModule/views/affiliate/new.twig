@@ -4,5 +4,5 @@
 
 {% block body %}
     <h3>Register as affiliate</h3>
-    {% include '@jobeet/affiliate/form.twig' %}
+    {% include '@jobeet/affiliate/form.twig' with {action: route('affiliate_create')} %}
 {% endblock %}

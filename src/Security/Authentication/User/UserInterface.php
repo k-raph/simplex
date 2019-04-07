@@ -43,7 +43,7 @@ interface UserInterface
      *
      * @return string The authentication token
      */
-    public function getToken(): string;
+    public function getToken(): ?string;
 
     /**
      * Returns the username used to authenticate the user.

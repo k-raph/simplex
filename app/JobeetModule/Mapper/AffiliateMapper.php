@@ -39,6 +39,16 @@ class AffiliateMapper extends EntityMapper
             $affiliate->setToken($input['token']);
         }
 
+        $categories = $this->query()
+            ->nativeQuery()
+            ->table('affiliate_category', 'p')
+            ->where('affiliate_id', $input['id'])
+            ->addSelect('p.category_id')
+            ->get();
+        foreach ($categories as $category) {
+            $affiliate->addCategory($category['category_id']);
+        }
+
         $this->uow->getIdentityMap()->add($affiliate, $affiliate->getId());
 
         return $affiliate;
@@ -96,15 +106,43 @@ class AffiliateMapper extends EntityMapper
      */
     public function update(IdentifiableInterface $entity)
     {
+        $result = null;
         $changes = $this->uow->getChangeSet($entity);
+        $id = $entity->getId();
         if (isset($changes['active'])) {
             $changes['is_active'] = $changes['active'];
             unset($changes['active']);
         }
+
+        $categories = $changes['categories'] ?? [];
+        unset($changes['categories']);
+
         if (!empty($changes)) {
-            return $this->query()
-                ->where('id', $entity->getId())
+
+            $result = $this->query()
+                ->where('id', $id)
                 ->update($changes);
+
+            return $result;
+        }
+
+        foreach ($categories as $category) {
+            $maps[] = [
+                'affiliate_id' => $id,
+                'category_id' => $category
+            ];
+        }
+
+        if (!empty($maps)) {
+            $this->query()
+                ->newQuery()
+                ->table('affiliate_category')
+                ->where('affiliate_id', $id)
+                ->delete();
+            $this->query()
+                ->newQuery()
+                ->table('affiliate_category')
+                ->insert($maps);
         }
     }
 }

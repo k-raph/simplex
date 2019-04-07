@@ -99,7 +99,7 @@ class Affiliate implements IdentifiableInterface, UserInterface
     /**
      * @return string
      */
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
@@ -141,7 +141,17 @@ class Affiliate implements IdentifiableInterface, UserInterface
      */
     public function addCategory($category): void
     {
-        $this->categories[] = $category;
+        if (!in_array($category, $this->categories)) {
+            $this->categories[] = $category;
+        }
+    }
+
+    /**
+     * @param string[] $categories
+     */
+    public function setCategories(array $categories): void
+    {
+        $this->categories = $categories;
     }
 
     /**

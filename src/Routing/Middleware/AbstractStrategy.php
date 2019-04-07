@@ -40,7 +40,12 @@ abstract class AbstractStrategy implements StrategyInterface
 
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
-        $this->pipeline->seed($this->middlewares, [$this->container, 'get']);
+        $this->pipeline->seed($this->middlewares, function ($middleware) {
+            if (is_string($middleware)) {
+                return $this->container->get($middleware);
+            } elseif (is_object($middleware) && $middleware instanceof MiddlewareInterface)
+                return $middleware;
+        });
 
         return $this->pipeline->process($request, $handler);
     }
@@ -66,7 +71,7 @@ abstract class AbstractStrategy implements StrategyInterface
      */
     public function add(MiddlewareInterface $middleware)
     {
-        $this->pipeline->pipe($middleware);
+        $this->middlewares[] = $middleware;
     }
 
     /**
