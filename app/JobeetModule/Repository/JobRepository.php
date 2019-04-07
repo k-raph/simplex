@@ -11,6 +11,7 @@ namespace App\JobeetModule\Repository;
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Mapper\JobMapper;
 use Simplex\Database\Exceptions\ResourceNotFoundException;
+use Simplex\Database\Query\Builder;
 use Simplex\DataMapper\QueryBuilder;
 use Simplex\DataMapper\Repository\Repository;
 
@@ -38,6 +39,53 @@ class JobRepository extends Repository
     {
         return $this->activeQuery()
             ->whereIn('category_id', $ids)
+            ->get();
+    }
+
+    /**
+     * Special query to retrieve jobs based on given affiliate id
+     *
+     * @param int $id
+     * @param array $categories
+     * @param int|null $limit
+     * @return array
+     * @throws \Throwable
+     */
+    public function getActiveForAffiliate(int $id, array $categories = [], ?int $limit = null): array
+    {
+        $query = $this->query()->nativeQuery();
+        $query = $query->newQuery()->table('categories', 'c')
+            ->addSelect('c.id')
+            ->whereIn('c.id', function (Builder $query) use ($id) {
+                $query->table('affiliate_category', 'p')
+                    ->addSelect('p.category_id')
+                    ->where('p.affiliate_id', $id);
+            });
+
+        if (!empty($categories)) {
+            $query = $query->whereIn('c.name', array_map('ucfirst', $categories));
+        }
+
+        $categories = $query->get();
+
+        $ids = array_map(function (array $row) {
+            return $row['id'];
+        }, $categories);
+
+        $query = $query->newQuery()->table('jobs', 'j')
+            ->addSelect(['j.id', 'j.company', 'j.type', 'j.position', 'j.location'])
+            ->addSelect('c.name', 'category')
+            ->whereIn('j.category_id', $ids)
+            ->innerJoin(['categories', 'c'], 'j.category_id', 'c.id');
+
+        if ($limit) {
+            $query = $query->offset(0)->limit($limit);
+        }
+
+        return $query
+            ->where('j.expires_at', '>', (new \DateTime())->format('Y-m-d H:i:s'))
+            ->where('is_public', true)
+            ->orderBy('j.id')
             ->get();
     }
 

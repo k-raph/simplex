@@ -48,6 +48,10 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (\Exception $exception) {
+            if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+                return (new JsonErrorHandler())->handle($exception);
+            }
+
             switch (true) {
                 case $exception instanceof \Symfony\Component\Routing\Exception\ResourceNotFoundException:
                 case $exception instanceof ResourceNotFoundException:

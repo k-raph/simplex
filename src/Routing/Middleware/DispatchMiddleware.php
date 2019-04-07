@@ -2,15 +2,14 @@
 
 namespace Simplex\Routing\Middleware;
 
+use League\Container\Argument\ArgumentResolverTrait;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
+use Psr\Container\ContainerInterface;
 use Simplex\Http\MiddlewareInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Simplex\Http\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Psr\Container\ContainerInterface;
-use League\Container\ContainerAwareInterface;
-use League\Container\Argument\ArgumentResolverTrait;
-use League\Container\ContainerAwareTrait;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class DispatchMiddleware implements MiddlewareInterface, ContainerAwareInterface
 {
@@ -30,10 +29,10 @@ class DispatchMiddleware implements MiddlewareInterface, ContainerAwareInterface
      */
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
-        /** @var \Simplex\Routing\Route */
+        /** @var \Simplex\Routing\Route $route */
         $route = $request->attributes->get('_route');
         $controller = $this->resolveController($route->getHandler());
-        
+
         $reflected = \is_array($controller)
             ? new \ReflectionMethod($controller[0], $controller[1])
             : new \ReflectionFunction($controller);
@@ -41,8 +40,9 @@ class DispatchMiddleware implements MiddlewareInterface, ContainerAwareInterface
         $args = $this->reflectArguments($reflected, array_merge($route->getParameters(), compact('request')));
 
         $result = call_user_func_array($controller, $args);
+        $response = $route->getStrategy()->handle($result);
 
-        return $this->validateResponse($result);
+        return $this->validateResponse($response);
     }
 
     /**
@@ -62,7 +62,7 @@ class DispatchMiddleware implements MiddlewareInterface, ContainerAwareInterface
                 $controller = [$this->container->get($controller), '__invoke'];
             }
         }
-        
+
         if (is_array($controller)) {
             $controller[0] = is_object($controller[0])
                 ? $controller[0]
@@ -81,18 +81,7 @@ class DispatchMiddleware implements MiddlewareInterface, ContainerAwareInterface
     private function validateResponse($response): Response
     {
         if (!$response instanceof Response) {
-            if (
-                is_string($response) || 
-                (is_object($response) && method_exists($response, '__toString'))
-            ) {
-                $response = new Response((string)$response);
-            } elseif (
-                is_array($response) ||
-                (is_object($response) && $response instanceof \ArrayAccess)
-            ) {
-                $response = new JsonResponse((array)$response);
-            } else 
-                throw new \LogicException(sprintf('Controller must return a string, an array or a Response object. "%s" given', gettype($response)));
+            throw new \LogicException(sprintf('Controller must return a string, an array or a Response object. "%s" given', gettype($response)));
         }
 
         return $response;

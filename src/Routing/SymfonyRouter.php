@@ -3,6 +3,7 @@
 namespace Simplex\Routing;
 
 use Simplex\Http\MiddlewareInterface;
+use Simplex\Routing\Middleware\StrategyInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
@@ -49,9 +50,10 @@ class SymfonyRouter implements RouterInterface
     private $host;
 
     /**
-     * Cnstructor
+     * Constructor
      *
      * @param LoaderInterface $loader
+     * @param string $host
      */
     public function __construct(LoaderInterface $loader, string $host)
     {
@@ -95,7 +97,7 @@ class SymfonyRouter implements RouterInterface
      */
     public function generate(string $name, array $parameters = []): string
     {
-        return (new UrlGenerator($this->getCollection(), $this->context ?? new RequestContext()))->generate($name, $parameters);
+        return (new UrlGenerator($this->getCollection(), $this->context ?? new RequestContext()))->generate($name, $parameters, UrlGenerator::ABSOLUTE_URL);
     }
 
     /**
@@ -114,14 +116,16 @@ class SymfonyRouter implements RouterInterface
                  */
                 public function redirect($path, $route, $scheme = null)
                 {
+                    $match = $this->match($path);
                     return [
-                        '_controller' => $this->match($path)['_controller'],
+                        '_controller' => $match['_controller'],
                         'path' => $path,
                         'permanent' => true,
                         'scheme' => $scheme,
                         'httpPort' => $this->context->getHttpPort(),
                         'httpsPort' => $this->context->getHttpsPort(),
                         '_route' => $route,
+                        '_strategy' => $match['_strategy'] ?? 'web'
                     ];
                 }
             };
@@ -130,12 +134,8 @@ class SymfonyRouter implements RouterInterface
 
             $route = new Route($parameters['_route'], $parameters['_controller']);
 
-            $middlewares = array_merge(
-                $this->getStrategy($parameters['_strategy'] ?? 'web'),
-                $parameters['_middlewares'] ?? []
-            );
-
-            $route->setMiddlewares($middlewares);
+            $route->setMiddlewares($parameters['_middlewares'] ?? []);
+            $route->setStrategy($this->getStrategy($parameters['_strategy'] ?? 'web'));
 
             $parameters = array_filter($parameters, function (string $key) {
                 return strpos($key, '_') !== 0;
@@ -186,14 +186,18 @@ class SymfonyRouter implements RouterInterface
     /**
      * Get middleware stack associated to current middleware group
      *
-     * @param string $strategy
-     * @return array
+     * @param string $name
+     * @return StrategyInterface
      */
-    private function getStrategy($strategy): array
+    private function getStrategy(string $name): StrategyInterface
     {
-        $strategy = $this->middlewares['groups'][$strategy] ?? null;
+        $strategy = $this->middlewares['groups'][$name] ?? null;
 
-        return $strategy ? [$strategy] : [];
+        if (is_null($strategy)) {
+            throw new \LogicException(sprintf('Unregistered strategy: "%s"', $name));
+        }
+
+        return $strategy;
     }
 
     /**
@@ -206,10 +210,10 @@ class SymfonyRouter implements RouterInterface
 
     /**
      * @param string $name
-     * @param MiddlewareInterface $middleware
+     * @param StrategyInterface $strategy
      */
-    public function addStrategy(string $name, MiddlewareInterface $middleware)
+    public function addStrategy(string $name, StrategyInterface $strategy)
     {
-        $this->middlewares['groups'][$name] = $middleware;
+        $this->middlewares['groups'][$name] = $strategy;
     }
 }

@@ -17,3 +17,11 @@ affiliate:
   resource: routes/affiliates.yml
   name_prefix: affiliate_
   prefix: /affiliate
+
+api:
+  resource: routes/api.yml
+  name_prefix: api_
+  prefix: /api
+  trailing_slash_on_root: false
+  defaults:
+    _strategy: api

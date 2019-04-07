@@ -1,0 +1,4 @@
+home:
+  path: /jobs
+  controller: App\JobeetModule\Actions\Api\JobListAction:all
+  methods: [GET, POST]

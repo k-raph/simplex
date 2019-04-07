@@ -4,7 +4,6 @@ namespace Simplex\Routing\Middleware;
 
 use Psr\Container\ContainerInterface;
 use Simplex\Http\MiddlewareInterface;
-use Simplex\Http\Pipeline;
 use Simplex\Http\RequestHandlerInterface;
 use Simplex\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,16 +42,15 @@ class RouteMiddleware implements MiddlewareInterface
         $route = $this->router->dispatch($request);
         $request->attributes->set('_route', $route);
 
-        $pipeline = new Pipeline();
-
+        $strategy = $route->getStrategy();
         foreach ($route->getMiddlewares() as $middleware) {
             if (is_string($middleware)) {
                 $middleware = $this->container->get($middleware);
             }
-            $pipeline->pipe($middleware);
+            $strategy->add($middleware);
         }
 
-        return $pipeline->process($request, $handler);
+        return $strategy->process($request, $handler);
     }
 
 }

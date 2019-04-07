@@ -73,7 +73,7 @@ class JobMapper extends EntityMapper
     public function find($id): object
     {
         return $this->query('j')
-            ->addSelect(['j.id', 'company', 'location', 'position', 'description', 'application', 'type'])
+            ->addSelect(['j.id', 'company', 'location', 'position', 'description', 'application', 'type', 'logo'])
             ->addSelect('c.name', 'category')
             ->where('j.id', $id)
             ->innerJoin(['categories', 'c'], 'j.category_id', 'c.id')

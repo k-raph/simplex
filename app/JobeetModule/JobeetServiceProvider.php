@@ -14,10 +14,13 @@ use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Mapper\AffiliateMapper;
 use App\JobeetModule\Mapper\CategoryMapper;
 use App\JobeetModule\Mapper\JobMapper;
+use App\JobeetModule\Repository\AffiliateRepository;
+use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
+use Simplex\Security\Authentication\StatelessAuthenticationManager;
 use Twig\TwigFilter;
 
 class JobeetServiceProvider extends AbstractModule
@@ -28,9 +31,9 @@ class JobeetServiceProvider extends AbstractModule
      * @param RouterInterface $router
      * @param TwigRenderer $renderer
      * @param Configuration $config
-     * @throws \Twig_Error_Loader
+     * @param ContainerInterface $container
      */
-    public function __construct(RouterInterface $router, TwigRenderer $renderer, Configuration $config)
+    public function __construct(RouterInterface $router, TwigRenderer $renderer, Configuration $config, ContainerInterface $container)
     {
         $renderer->addPath(__DIR__ . '/views', 'jobeet');
 
@@ -41,8 +44,10 @@ class JobeetServiceProvider extends AbstractModule
             return strtolower($string);
         }));
 
+        $container->add(StatelessAuthenticationManager::class)
+            ->addArgument(AffiliateRepository::class);
+
         $router->import(__DIR__ . '/resources/routes.yml', [
-            //'prefix' => 'jobeet',
             'host' => 'jobeet.' . $config->get('app_host', 'localhost')
         ]);
     }

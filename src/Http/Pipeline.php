@@ -2,10 +2,9 @@
 
 namespace Simplex\Http;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use SplQueue;
-use Simplex\Http\RequestHandlerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Pipeline implements RequestHandlerInterface, MiddlewareInterface
 {
@@ -22,6 +21,7 @@ class Pipeline implements RequestHandlerInterface, MiddlewareInterface
 
     /**
      * Constructor
+     * @param MiddlewareInterface|null $finalHandler
      */
     public function __construct(?MiddlewareInterface $finalHandler = null)
     {

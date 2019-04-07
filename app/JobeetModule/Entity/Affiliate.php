@@ -11,8 +11,9 @@ namespace App\JobeetModule\Entity;
 
 use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\IdentifiableTrait;
+use Simplex\Security\Authentication\User\UserInterface;
 
-class Affiliate implements IdentifiableInterface
+class Affiliate implements IdentifiableInterface, UserInterface
 {
 
     use IdentifiableTrait;
@@ -98,7 +99,7 @@ class Affiliate implements IdentifiableInterface
     /**
      * @return string
      */
-    public function getToken(): ?string
+    public function getToken(): string
     {
         return $this->token;
     }
@@ -143,4 +144,37 @@ class Affiliate implements IdentifiableInterface
         $this->categories[] = $category;
     }
 
+    /**
+     * Returns the password used to authenticate the user.
+     *
+     * This should be the encoded password. On authentication, a plain-text
+     * password will be salted, encoded, and then compared to this value.
+     *
+     * @return string The password
+     */
+    public function getPassword(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Returns the username used to authenticate the user.
+     *
+     * @return string The username
+     */
+    public function getUsername(): string
+    {
+        return null;
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
 }

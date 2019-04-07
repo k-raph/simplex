@@ -16,7 +16,7 @@ use Simplex\Http\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class StrategyMiddleware implements MiddlewareInterface
+abstract class AbstractStrategy implements StrategyInterface
 {
 
     /**
@@ -38,17 +38,43 @@ abstract class StrategyMiddleware implements MiddlewareInterface
         $this->pipeline = new Pipeline();
     }
 
-    /**
-     * Process an incoming HTTP Request and returns a Response
-     *
-     * @param Request $request
-     * @param RequestHandlerInterface $handler
-     * @return Response
-     */
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
         $this->pipeline->seed($this->middlewares, [$this->container, 'get']);
 
         return $this->pipeline->process($request, $handler);
     }
+
+    /**
+     * @param $response Response|mixed
+     * @return Response
+     */
+    public function handle($response): Response
+    {
+        $response = $response instanceof Response
+            ? $response
+            : $this->createResponse($response);
+
+        if (!$response)
+            throw new \Exception(sprintf('Unable to build a proper response. Got response of type: "%s"', gettype($response)));
+
+        return $response;
+    }
+
+    /**
+     * @param MiddlewareInterface|string $middleware
+     */
+    public function add(MiddlewareInterface $middleware)
+    {
+        $this->pipeline->pipe($middleware);
+    }
+
+    /**
+     * Create a valid response based on strategy
+     *
+     * @param $result Response|mixed
+     *
+     * @return Response|null
+     */
+    abstract protected function createResponse($result): ?Response;
 }

@@ -3,6 +3,7 @@
 namespace Simplex\Routing;
 
 use Simplex\Http\MiddlewareInterface;
+use Simplex\Routing\Middleware\StrategyInterface;
 
 class Route
 {
@@ -25,6 +26,11 @@ class Route
      * @var MiddlewareInterface[]
      */
     private $middlewares = [];
+
+    /**
+     * @var StrategyInterface
+     */
+    private $strategy;
 
     /**
      * Constructor
@@ -89,5 +95,21 @@ class Route
     public function setMiddlewares(array $middlewares)
     {
         $this->middlewares = $middlewares;
+    }
+
+    /**
+     * @param StrategyInterface $strategy
+     */
+    public function setStrategy(StrategyInterface $strategy)
+    {
+        $this->strategy = $strategy;
+    }
+
+    /**
+     * @return StrategyInterface
+     */
+    public function getStrategy(): StrategyInterface
+    {
+        return $this->strategy;
     }
 }
