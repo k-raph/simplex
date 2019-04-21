@@ -94,7 +94,7 @@ class AuthenticationManager
     {
         $user = $this->provider->loadUserByUsername($credentials['login']);
 
-        if ($user && ($user->getPassword() === $credentials['password'])) {
+        if ($user && (password_verify($credentials['password'], $user->getPassword()))) {
             $this->user = $user;
             $this->session->set('auth.user', $user->getToken());
             $this->session->migrate();
