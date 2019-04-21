@@ -70,7 +70,7 @@ class PostMapper extends EntityMapper
      * @param Post $post
      * @return array
      */
-    public function extract(object $post): array
+    public function extract(IdentifiableInterface $post): array
     {
         return [
             'id' => $post->getId(),
@@ -85,9 +85,9 @@ class PostMapper extends EntityMapper
      * Gets an entity by its primary key
      *
      * @param $id
-     * @return object
+     * @return IdentifiableInterface
      */
-    public function find($id): object
+    public function find($id): IdentifiableInterface
     {
         $post = $this->buildSelect()
             ->where('p.id', $id)

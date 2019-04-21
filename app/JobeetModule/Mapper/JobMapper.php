@@ -68,9 +68,9 @@ class JobMapper extends EntityMapper
 
     /**
      * @param $id
-     * @return object
+     * @return IdentifiableInterface
      */
-    public function find($id): object
+    public function find($id): IdentifiableInterface
     {
         return $this->query('j')
             ->addSelect(['j.id', 'company', 'location', 'position', 'description', 'application', 'type', 'logo'])
@@ -86,7 +86,7 @@ class JobMapper extends EntityMapper
      * @param Job $job
      * @return array
      */
-    public function extract(object $job): array
+    public function extract(IdentifiableInterface $job): array
     {
         return [
             'company' => $job->getCompany(),

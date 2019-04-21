@@ -75,7 +75,7 @@ class CommentMapper extends EntityMapper
      * @param Comment $entity
      * @return array
      */
-    public function extract(object $entity): array
+    public function extract(IdentifiableInterface $entity): array
     {
         return [
             'content' => $entity->getContent(),

@@ -28,7 +28,7 @@ interface EntityMapperInterface
      * @param object $entity
      * @return array
      */
-    public function extract(object $entity): array;
+    public function extract(IdentifiableInterface $entity): array;
 
     /**
      * Gets an entity by its primary key
@@ -36,12 +36,12 @@ interface EntityMapperInterface
      * @param $id
      * @return object
      */
-    public function find($id): object;
+    public function find($id): IdentifiableInterface;
 
     /**
      * Retrieves all data
      *
-     * @return array
+     * @return IdentifiableInterface[]
      */
     public function findAll(): array;
 
@@ -73,10 +73,10 @@ interface EntityMapperInterface
      * Queue an entity for insertion
      *
      * @internal
-     * @param object $entity
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function queueInsert(object $entity);
+    public function queueInsert(IdentifiableInterface $entity);
 
     /**
      * Performs batch insert

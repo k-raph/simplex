@@ -43,10 +43,10 @@ class CategoryMapper extends EntityMapper
     /**
      * Extract an entity to persistable state
      *
-     * @param object $entity
+     * @param Category $entity
      * @return array
      */
-    public function extract(object $entity): array
+    public function extract(IdentifiableInterface $entity): array
     {
         // TODO: Implement extract() method.
     }

@@ -89,7 +89,7 @@ class AffiliateMapper extends EntityMapper
      * @param Affiliate $entity
      * @return array
      */
-    public function extract(object $affiliate): array
+    public function extract(IdentifiableInterface $affiliate): array
     {
         return [
             'name' => $affiliate->getName(),

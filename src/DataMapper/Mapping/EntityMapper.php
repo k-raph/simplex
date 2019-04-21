@@ -55,9 +55,9 @@ abstract class EntityMapper implements EntityMapperInterface
 
     /**
      * @param $id
-     * @return object
+     * @return IdentifiableInterface
      */
-    public function find($id): object
+    public function find($id): IdentifiableInterface
     {
         return $this->query()
             ->where('id', $id)
@@ -80,10 +80,10 @@ abstract class EntityMapper implements EntityMapperInterface
      * Queue an entity for insertion
      *
      * @internal
-     * @param object $entity
+     * @param IdentifiableInterface $entity
      * @return mixed
      */
-    public function queueInsert(object $entity)
+    public function queueInsert(IdentifiableInterface $entity)
     {
         $this->queued[] = $this->extract($entity);
     }
