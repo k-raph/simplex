@@ -28,9 +28,9 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      * ErrorHandlerMiddleware constructor.
      * @param TwigRenderer $view
      */
-    public function __construct(TwigRenderer $view)
+    public function __construct(/*TwigRenderer $view*/)
     {
-        $this->view = $view;
+        //$this->view = $view;
     }
 
     /**
@@ -56,9 +56,9 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
                 case $exception instanceof \Symfony\Component\Routing\Exception\ResourceNotFoundException:
                 case $exception instanceof ResourceNotFoundException:
                     $response = new Response();
-                    $response->setContent($this->view->render('errors/4xx'));
-                    $response->setStatusCode(404);
-
+                    //$response->setContent($this->view->render('errors/4xx'));
+                    $response->setContent("<title>404 Not Found</title> <h1>Not Found</h1>" . $exception->getMessage());
+                    $response->setStatusCode($exception->getCode());
                     return $response;
                 case $exception instanceof MethodNotAllowedException:
                     return new Response(

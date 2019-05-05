@@ -7,7 +7,6 @@ use League\Container\ReflectionContainer;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\Http\Pipeline;
-use Simplex\Module\ModuleLoader;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,13 +25,6 @@ class Kernel
      * @var Pipeline
      */
     protected $pipeline;
-
-    /**
-     * Registered modules
-     *
-     * @var ModuleLoader
-     */
-    protected $modules;
 
     /**
      * Kernel is booted?
@@ -91,6 +83,7 @@ class Kernel
         $providers = $this->container
             ->get(Configuration::class)
             ->get('providers', []);
+
         foreach ($providers as $provider) {
             $this->container->addServiceProvider($provider);
         }
@@ -120,12 +113,6 @@ class Kernel
             }
             $this->pipeline->pipe($this->container->get($middleware));
         }
-
-        // Load modules
-        $modules = $config->get('modules', []);
-        $loader = new ModuleLoader($this->container);
-        $loader->load($modules);
-        $this->modules = $loader;
 
         $this->booted = true;
     }

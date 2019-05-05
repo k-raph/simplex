@@ -11,6 +11,7 @@ namespace Simplex\Module;
 
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
+use Simplex\DataMapper\DataMapperServiceProvider;
 use Simplex\DataMapper\EntityManager;
 use Simplex\DataMapper\Mapping\EntityMapperInterface;
 
@@ -57,7 +58,8 @@ class ModuleLoader
     {
         /** @var Configuration $config */
         $config = $this->container->get(Configuration::class);
-        $map = class_exists(EntityManager::class) && $this->container->has(EntityManager::class);
+        $map = class_exists(EntityManager::class) && in_array(DataMapperServiceProvider::class, $config->get('providers', []));
+
         $mappings = [];
         foreach ($this->modules as $module) {
             $module->configure($config);
