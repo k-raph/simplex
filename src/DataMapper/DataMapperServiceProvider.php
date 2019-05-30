@@ -3,7 +3,7 @@
 namespace Simplex\DataMapper;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
-use Simplex\Database\DatabaseInterface;
+use Simplex\Database\DatabaseManager;
 
 class DataMapperServiceProvider extends AbstractServiceProvider
 {
@@ -20,9 +20,12 @@ class DataMapperServiceProvider extends AbstractServiceProvider
      */
     public function register()
     {
-        $db = $this->container->get(DatabaseInterface::class);
+        $db = $this->container->get(DatabaseManager::class);
 
-        $em = new EntityManager($db);
+        $dataMapper = new DataMapper($db);
+        $em = $dataMapper->getManager();
+
+        $this->container->add(DataMapper::class, $dataMapper);
         $this->container->add(EntityManager::class, $em);
         $this->container->add(UnitOfWork::class, $em->getUnitOfWork());
     }

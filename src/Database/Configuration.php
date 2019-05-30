@@ -39,16 +39,18 @@ class Configuration
     /**
      * Get used driver
      *
+     * @param string $name
      * @return DriverInterface
      */
-    public function getDriver(): DriverInterface
+    public function getDriver(?string $name = null): DriverInterface
     {
-        $driver = $this->drivers[$this->default['type']] ?? null;
+        $options = $this->options['connections'][$name ?? $this->options['default']];
+        $driver = $this->drivers[$options['type']] ?? null;
         if (!$driver) {
             throw new \UnexpectedValueException(sprintf('Provided database type is incorrect or is not supported %s', (string)$driver));
         }
 
-        switch (strtolower($this->default['type'] ?? '')) {
+        switch (strtolower($options['type'] ?? '')) {
             case 'mysql':
                 $grammar = new MySQLGrammar();
                 break;
@@ -59,7 +61,7 @@ class Configuration
                 $grammar = new CommonGrammar();
         }
 
-        return new $driver($this->default, $grammar);
+        return new $driver($options, $grammar);
     }
 
     /**

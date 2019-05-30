@@ -38,6 +38,15 @@ class AffiliateManageAction extends AffiliateRegisterAction
         $this->view = $view;
     }
 
+    /**
+     * Show all affiliates
+     *
+     * @param AffiliateRepository $repository
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
     public function list(AffiliateRepository $repository)
     {
         return $this->view->render('@admin/jobeet/affiliates', [
@@ -95,7 +104,12 @@ class AffiliateManageAction extends AffiliateRegisterAction
     /**
      * @param Request $request
      * @param EntityManager $manager
+     * @param RouterInterface $router
+     * @param SessionFlash $flash
      * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function edit(Request $request, EntityManager $manager, RouterInterface $router, SessionFlash $flash)
     {
@@ -151,14 +165,14 @@ class AffiliateManageAction extends AffiliateRegisterAction
      * @param Request $request
      * @param EntityManager $manager
      * @param RouterInterface $router
-     * @param AffiliateRegisterAction $action
      * @param SessionFlash $flash
      * @return string|RedirectResponse
      */
-    public function create(Request $request, EntityManager $manager, RouterInterface $router, AffiliateRegisterAction $action, SessionFlash $flash)
+    public function create(Request $request, EntityManager $manager, RouterInterface $router, SessionFlash $flash)
     {
         if ($request->isMethod('POST')) {
-            $response = $action->request($request, $manager, $router);
+            // Call register controller and process response
+            $response = $this->request($request, $manager, $router);
             if ($response instanceof RedirectResponse) {
                 $flash->success('Affiliate successfully edited');
                 return new RedirectResponse($router->generate('admin_jobeet_home'));

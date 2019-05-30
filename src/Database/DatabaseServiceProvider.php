@@ -24,7 +24,9 @@ class DatabaseServiceProvider extends AbstractServiceProvider
             ->get(Configuration::class)
             ->get('database', []);
         $config = new DatabaseConfiguration($options);
+        $manager = new DatabaseManager($config);
 
-        $this->container->add(DatabaseInterface::class, new Database($config));
+        $this->container->add(DatabaseManager::class, $manager);
+        $this->container->add(DatabaseInterface::class, $manager->getDatabase('default'));
     }
 }

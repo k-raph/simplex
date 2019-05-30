@@ -26,9 +26,9 @@ class Database implements DatabaseInterface
      */
     protected $statement;
 
-    public function __construct(Configuration $config)
+    public function __construct(DriverInterface $driver)
     {
-        $this->driver = $config->getDriver();
+        $this->driver = $driver;
         
         if (!($pdo = $this->driver->getPdo())) {
             $this->driver->connect();

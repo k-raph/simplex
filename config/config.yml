@@ -46,11 +46,14 @@ routing:
       - Simplex\Middleware\ParseJsonRequestBodyMiddleware
 
 database:
-  default: sqlite
+  default: simplex
   connections:
-    sqlite:
+    simplex:
       type: sqlite
       database: '%resources%/db/database.db'
+    social:
+      type: sqlite
+      database: '%resources%/db/social.db'
 
 auth:
   login_field: email
