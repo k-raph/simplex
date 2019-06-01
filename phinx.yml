@@ -1,6 +1,6 @@
 paths:
-    migrations: '%%PHINX_CONFIG_DIR%%/resources/db/migrations'
-    seeds: '%%PHINX_CONFIG_DIR%%/resources/db/seeds'
+  migrations: '%%PHINX_CONFIG_DIR%%/resources/db/simplex/migrations'
+  seeds: '%%PHINX_CONFIG_DIR%%/resources/db/simplex/seeds'
 
 environments:
     default_migration_table: phinxlog
@@ -17,7 +17,7 @@ environments:
     development:
         adapter: sqlite
         host: localhost
-        name: ./resources/db/database.db
+        name: ./resources/db/simplex/database.db
         user: root
         pass: ''
         port: 3306

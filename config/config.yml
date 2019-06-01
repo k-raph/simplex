@@ -50,10 +50,10 @@ database:
   connections:
     simplex:
       type: sqlite
-      database: '%resources%/db/database.db'
+      database: '%resources%/db/simplex/database.db'
     social:
       type: sqlite
-      database: '%resources%/db/social.db'
+      database: '%resources%/db/social/database.db'
 
 auth:
   login_field: email
