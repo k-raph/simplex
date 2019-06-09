@@ -18,6 +18,7 @@ class DispatchMiddleware implements MiddlewareInterface, ContainerAwareInterface
 
     /**
      * Constructor
+     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {

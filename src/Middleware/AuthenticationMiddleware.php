@@ -50,6 +50,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $request->getSession()->set('auth.referer', $request->getUri());
         }
 
-        return new RedirectResponse('/login');
+        return new RedirectResponse(sprintf('%s://%s',
+                $request->getScheme(),
+                $this->authenticationManager->getLoginPath())
+        );
     }
 }

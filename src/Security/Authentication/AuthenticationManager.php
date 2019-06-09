@@ -41,6 +41,11 @@ class AuthenticationManager
     private $cookieKey;
 
     /**
+     * @var string
+     */
+    private $loginPath = '/login';
+
+    /**
      * AuthManager constructor.
      * @param UserProviderInterface $provider
      * @param SessionInterface $session
@@ -139,7 +144,7 @@ class AuthenticationManager
     }
 
     /**
-     * Generate a cookie for authentified user
+     * Generate a cookie for authenticated user
      *
      * @param UserInterface $user
      * @return string
@@ -186,5 +191,21 @@ class AuthenticationManager
         }
 
         return null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLoginPath(): string
+    {
+        return $this->loginPath;
+    }
+
+    /**
+     * @param string $loginPath
+     */
+    public function setLoginPath(string $loginPath): void
+    {
+        $this->loginPath = $loginPath;
     }
 }

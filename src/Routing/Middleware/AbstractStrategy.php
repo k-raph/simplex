@@ -32,12 +32,21 @@ abstract class AbstractStrategy implements StrategyInterface
      */
     private $pipeline;
 
+    /**
+     * AbstractStrategy constructor.
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->pipeline = new Pipeline();
+        $this->pipeline = $container->get(Pipeline::class);
     }
 
+    /**
+     * @param Request $request
+     * @param RequestHandlerInterface $handler
+     * @return Response
+     */
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
         $this->pipeline->seed($this->middlewares, function ($middleware) {

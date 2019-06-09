@@ -45,6 +45,7 @@ class Kernel
         
         $this->container = $container;
         $this->pipeline = new Pipeline();
+        $this->container->add(Pipeline::class, $this->pipeline);
         $this->bootstrap();
     }
 

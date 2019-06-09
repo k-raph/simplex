@@ -8,7 +8,6 @@
 
 namespace App\Auth;
 
-
 use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;

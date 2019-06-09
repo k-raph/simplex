@@ -4,6 +4,7 @@ modules:
   - App\Auth\AuthModule
   - App\Blog\BlogModule
   - App\JobeetModule\JobeetServiceProvider
+  - App\SocialNetwork\SocialNetworkProvider
   - App\AdminModule\AdminModuleProvider
 
 providers:
@@ -57,3 +58,4 @@ database:
 
 auth:
   login_field: email
+  login_path: '/login'

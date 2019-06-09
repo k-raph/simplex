@@ -39,16 +39,18 @@ class AuthenticationServiceProvider extends AbstractServiceProvider
         /** @var DatabaseUserProvider $provider */
         $provider = $this->container->get(DatabaseUserProvider::class);
 
-        $field = $this->container
-            ->get(Configuration::class)
-            ->get('auth.login_field', 'email');
+        /** @var Configuration $config */
+        $config = $this->container->get(Configuration::class);
+        $field = $config->get('auth.login_field', 'email');
 
         $provider->setFieldName($field);
+        $loginPath = $config->get('app_host', 'localhost') . $config->get('auth.login_path', '/login');
 
         $this->container->add(UserProviderInterface::class, $provider);
         $this->container->add(AuthenticationManager::class)
             ->addArgument(UserProviderInterface::class)
             ->addArgument(SessionInterface::class)
-            ->addArgument(CookieStorage::class);
+            ->addArgument(CookieStorage::class)
+            ->addMethodCall('setLoginPath', [$loginPath]);
     }
 }
