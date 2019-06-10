@@ -1,0 +1,19 @@
+env: debug
+app_host: simplex.io
+
+modules:
+  - App\Auth\AuthModule
+  - App\Blog\BlogModule
+  - App\JobeetModule\JobeetServiceProvider
+  - App\SocialNetwork\SocialNetworkProvider
+  - App\AdminModule\AdminModuleProvider
+
+providers:
+  - Simplex\Routing\RoutingServiceProvider
+  - Simplex\Database\DatabaseServiceProvider
+  - Simplex\Http\Session\SessionServiceProvider
+  - Simplex\Renderer\TwigServiceProvider
+  - Simplex\Validation\ValidationServiceProvider
+  - Simplex\DataMapper\DataMapperServiceProvider
+  - Simplex\Security\Authentication\AuthenticationServiceProvider
+  - Simplex\Module\ModuleServiceProvider

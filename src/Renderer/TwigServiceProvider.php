@@ -30,7 +30,7 @@ class TwigServiceProvider extends AbstractServiceProvider
 
                 $config = $this->container
                     ->get(Configuration::class)
-                    ->get('twig');
+                    ->get('view.twig');
 
                 $loader->addPath($config['path']);
 

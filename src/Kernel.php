@@ -6,6 +6,8 @@ use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
+use Simplex\Event\EventManager;
+use Simplex\Event\EventManagerInterface;
 use Simplex\Http\Pipeline;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
@@ -34,6 +36,11 @@ class Kernel
     protected $booted = false;
 
     /**
+     * @var EventManagerInterface
+     */
+    private $eventManager;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -42,10 +49,14 @@ class Kernel
         $container->defaultToShared();
         $container->delegate((new ReflectionContainer)->cacheResolutions(true));
         $container->add(ContainerInterface::class, $container);
-        
-        $this->container = $container;
+
         $this->pipeline = new Pipeline();
-        $this->container->add(Pipeline::class, $this->pipeline);
+        $this->eventManager = new EventManager();
+
+        $container->add(Pipeline::class, $this->pipeline);
+        $container->add(EventManagerInterface::class, $this->eventManager);
+
+        $this->container = $container;
         $this->bootstrap();
     }
 
@@ -58,13 +69,25 @@ class Kernel
     {
         try {
             $root = dirname(__DIR__);
-            $locator = new FileLocator("$root/config");
+            $path = "$root/config";
+            $locator = new FileLocator($path);
+
             $config = new Configuration([
                 'root' => $root,
                 'resources' => "$root/resources"
             ]);
 
-            $config->load($locator->locate('config.yml'));
+            foreach (glob("$path/*") as $file) {
+                $info = pathinfo($file);
+                $namespace = $info['filename'];
+
+                $config->load(
+                    $locator->locate($info['basename']),
+                    ('config' === $namespace || 'bootstrap' === $namespace)
+                        ? null
+                        : $namespace
+                );
+            }
             $this->container->add(Configuration::class, $config);
         } catch (FileLocatorFileNotFoundException $e) {
             throw new \RuntimeException('Config files not found!');
@@ -128,7 +151,10 @@ class Kernel
     {
         $this->boot();
         $request::enableHttpMethodParameterOverride();
-        return $this->pipeline->handle($request);
+        $this->eventManager->emit('kernel.request', [$request]);
+        $response = $this->pipeline->handle($request);
+        $this->eventManager->emit('kernel.response', [$response]);
+        return $response;
     }
 
     /**

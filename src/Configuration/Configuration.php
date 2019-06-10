@@ -118,7 +118,7 @@ class Configuration
                 $values = json_decode(file_get_contents($file), true);
                 break;
             case 'php':
-                $values = require($file);
+                $values = require $file;
                 break;
             default:
                 $values = [];

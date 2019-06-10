@@ -14,7 +14,9 @@
         "symfony/yaml": "^4.0",
         "twig/twig": "^2",
       "finesse/query-scribe": "*",
-      "rakit/validation": "*"
+      "rakit/validation": "*",
+      "nette/mail": "*",
+      "evenement/evenement": "*"
     },
     "require-dev": {
         "robmorgan/phinx": "^0.9",
