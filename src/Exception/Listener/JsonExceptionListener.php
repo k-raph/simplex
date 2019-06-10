@@ -6,11 +6,11 @@
  * Time: 12:36
  */
 
-namespace Simplex\Strategy\Listener;
+namespace Simplex\Exception\Listener;
 
 
 use Simplex\Database\Exceptions\ResourceNotFoundException;
-use Simplex\Strategy\Event\ExceptionEvent;
+use Simplex\Exception\Event\ExceptionEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 

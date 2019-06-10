@@ -28,8 +28,11 @@ class RoutingServiceProvider extends AbstractServiceProvider
         $router = new SymfonyRouter($loader, $config->get('app_host', 'localhost'));
 
         // Register strategies on router
+        // By registering strategy resolver instead of strategy themselves we remove unnecessary classes' call
         foreach ($config->get('routing.strategies') as $name => $strategy) {
-            $router->addStrategy($name, $this->container->get($strategy));
+            $router->addStrategy($name, function () use ($strategy) {
+                return $this->container->get($strategy);
+            });
         }
         $router->setStrategy('web');
 

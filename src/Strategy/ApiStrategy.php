@@ -11,9 +11,7 @@ namespace Simplex\Strategy;
 
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\Event\EventManagerInterface;
 use Simplex\Routing\Middleware\AbstractStrategy;
-use Simplex\Strategy\Listener\JsonExceptionListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,9 +28,6 @@ class ApiStrategy extends AbstractStrategy
         parent::__construct($container);
         $this->middlewares = $container->get(Configuration::class)
             ->get('routing.middlewares.api', []);
-
-        $container->get(EventManagerInterface::class)
-            ->on('kernel.exception', new JsonExceptionListener(), 100);
     }
 
     /**
@@ -40,9 +35,9 @@ class ApiStrategy extends AbstractStrategy
      *
      * @param $response Response|mixed
      *
-     * @return mixed
+     * @return Response|null
      */
-    protected function createResponse($response): Response
+    protected function createResponse($response): ?Response
     {
         if (
             is_array($response) ||
@@ -50,5 +45,7 @@ class ApiStrategy extends AbstractStrategy
         ) {
             return new JsonResponse((array)$response);
         }
+
+        return null;
     }
 }

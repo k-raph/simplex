@@ -5,7 +5,7 @@ namespace Simplex\Renderer;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Simplex\Configuration\Configuration;
 use Simplex\Event\EventManagerInterface;
-use Simplex\Strategy\Event\ExceptionEvent;
+use Simplex\Exception\Event\ExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;

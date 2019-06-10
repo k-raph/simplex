@@ -9,6 +9,7 @@ modules:
   - App\AdminModule\AdminModuleProvider
 
 providers:
+  - Simplex\Exception\ExceptionHandlerProvider
   - Simplex\Routing\RoutingServiceProvider
   - Simplex\Database\DatabaseServiceProvider
   - Simplex\Http\Session\SessionServiceProvider

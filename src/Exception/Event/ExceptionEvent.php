@@ -6,7 +6,7 @@
  * Time: 17:58
  */
 
-namespace Simplex\Strategy\Event;
+namespace Simplex\Exception\Event;
 
 
 use Symfony\Component\HttpFoundation\Request;

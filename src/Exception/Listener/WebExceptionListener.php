@@ -6,12 +6,13 @@
  * Time: 18:14
  */
 
-namespace Simplex\Strategy\Listener;
+namespace Simplex\Exception\Listener;
 
 
 use Simplex\Event\EventManagerInterface;
-use Simplex\Strategy\Event\ExceptionEvent;
+use Simplex\Exception\Event\ExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException as DatabaseResourceNotFoundException;
 
@@ -50,7 +51,7 @@ class WebExceptionListener
                 }
                 break;
             case $exception instanceof MethodNotAllowedException:
-                $response = Response(
+                $response = new Response(
                     $exception->getMessage(),
                     405,
                     ['Allow' => implode(', ', $exception->getAllowedMethods())]

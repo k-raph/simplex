@@ -191,7 +191,10 @@ class SymfonyRouter implements RouterInterface
      */
     private function getStrategy(string $name): StrategyInterface
     {
-        $strategy = $this->middlewares['groups'][$name] ?? null;
+        $resolver = $this->middlewares['groups'][$name] ?? function () {
+                return null;
+            };
+        $strategy = $resolver();
 
         if (is_null($strategy)) {
             throw new \LogicException(sprintf('Unregistered strategy: "%s"', $name));
@@ -210,10 +213,10 @@ class SymfonyRouter implements RouterInterface
 
     /**
      * @param string $name
-     * @param StrategyInterface $strategy
+     * @param callable $resolver
      */
-    public function addStrategy(string $name, StrategyInterface $strategy)
+    public function addStrategy(string $name, callable $resolver)
     {
-        $this->middlewares['groups'][$name] = $strategy;
+        $this->middlewares['groups'][$name] = $resolver;
     }
 }

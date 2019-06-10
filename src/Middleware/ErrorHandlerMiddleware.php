@@ -10,9 +10,9 @@ namespace Simplex\Middleware;
 
 
 use Simplex\Event\EventManagerInterface;
+use Simplex\Exception\Event\ExceptionEvent;
 use Simplex\Http\MiddlewareInterface;
 use Simplex\Http\RequestHandlerInterface;
-use Simplex\Strategy\Event\ExceptionEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
