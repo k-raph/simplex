@@ -8,12 +8,17 @@
 
 namespace Simplex\Event;
 
+use Sabre\Event\EventEmitter;
 
-use Evenement\EventEmitterTrait;
-
-class EventManager implements EventManagerInterface
+class EventManager extends EventEmitter implements EventManagerInterface
 {
 
-    use EventEmitterTrait;
+    /**
+     * @inheritdoc
+     */
+    public function on($eventName, callable $callBack, $priority = 0)
+    {
+        parent::on($eventName, $callBack, $priority);
+    }
 
 }

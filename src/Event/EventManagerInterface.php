@@ -8,8 +8,7 @@
 
 namespace Simplex\Event;
 
-
-use Evenement\EventEmitterInterface;
+use Sabre\Event\EventEmitterInterface;
 
 interface EventManagerInterface extends EventEmitterInterface
 {

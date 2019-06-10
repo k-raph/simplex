@@ -16,7 +16,7 @@
       "finesse/query-scribe": "*",
       "rakit/validation": "*",
       "nette/mail": "*",
-      "evenement/evenement": "*"
+      "sabre/event": "*"
     },
     "require-dev": {
         "robmorgan/phinx": "^0.9",

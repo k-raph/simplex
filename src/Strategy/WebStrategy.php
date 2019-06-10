@@ -11,8 +11,10 @@ namespace Simplex\Strategy;
 
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
+use Simplex\Event\EventManagerInterface;
 use Simplex\Routing\Middleware\AbstractStrategy;
 use Simplex\Routing\Middleware\StrategyMiddleware;
+use Simplex\Strategy\Listener\WebExceptionListener;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebStrategy extends AbstractStrategy
@@ -27,6 +29,10 @@ class WebStrategy extends AbstractStrategy
         parent::__construct($container);
         $this->middlewares = $container->get(Configuration::class)
             ->get('routing.middlewares.web', []);
+
+        /** @var EventManagerInterface $eventManager */
+        $eventManager = $container->get(EventManagerInterface::class);
+        $eventManager->on('kernel.exception', new WebExceptionListener($eventManager));
     }
 
     /**

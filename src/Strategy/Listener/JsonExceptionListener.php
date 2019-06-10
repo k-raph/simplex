@@ -6,44 +6,56 @@
  * Time: 12:36
  */
 
-namespace Simplex\Middleware;
+namespace Simplex\Strategy\Listener;
 
 
 use Simplex\Database\Exceptions\ResourceNotFoundException;
+use Simplex\Strategy\Event\ExceptionEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
-class JsonErrorHandler
+class JsonExceptionListener
 {
 
     /**
      * Process an incoming HTTP Request and returns a Response
      *
-     * @param \Exception $exception
-     * @return JsonResponse
+     * @param ExceptionEvent $event
+     * @return void
      */
-    public function handle(\Exception $exception): JsonResponse
+    public function __invoke(ExceptionEvent $event): void
     {
+
+        if (0 !== strpos($event->getRequest()->headers->get('Content-Type'), 'application/json')) {
+            return;
+        }
+
+        $exception = $event->getException();
+
         switch (true) {
             case $exception instanceof \Symfony\Component\Routing\Exception\ResourceNotFoundException:
             case $exception instanceof ResourceNotFoundException:
-                return new JsonResponse([
+                $response = new JsonResponse([
                     'code' => 404,
                     'message' => 'Resource not found.'
                 ], 404);
+                break;
             case $exception instanceof MethodNotAllowedException:
-                return new JsonResponse([
+                $response = new JsonResponse([
                     'code' => 405,
                     'message' => $exception->getMessage()
                 ],
                     405,
                     ['Allow' => implode(', ', $exception->getAllowedMethods())]
                 );
+                break;
             default:
-                return new JsonResponse([
+                $response = new JsonResponse([
                     'code' => 500,
                     'message' => 'Sorry! An unexpected error where encountered.'
                 ], 500);
         }
+
+        $event->setResponse($response);
     }
 }
