@@ -6,12 +6,11 @@
  * Time: 16:47
  */
 
-namespace Simplex;
+namespace Simplex\Plugin;
 
 
 use Psr\Container\ContainerInterface;
 use Simplex\Event\EventManagerInterface;
-use Simplex\Plugin\PluginInterface;
 
 class PluginManager
 {

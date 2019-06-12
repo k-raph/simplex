@@ -10,6 +10,8 @@ namespace Simplex\Module;
 
 
 use Simplex\Configuration\Configuration;
+use Simplex\Renderer\TwigRenderer;
+use Symfony\Component\Routing\RouteCollectionBuilder;
 
 interface ModuleInterface
 {
@@ -34,4 +36,27 @@ interface ModuleInterface
      * @return array
      */
     public function getMappings(): array;
+
+    /**
+     * Register backend routes
+     *
+     * @param RouteCollectionBuilder $builder
+     * @return void
+     */
+    public function getAdminRoutes(RouteCollectionBuilder $builder): void;
+
+    /**
+     * Register frontend routes
+     *
+     * @param RouteCollectionBuilder $builder
+     */
+    public function getSiteRoutes(RouteCollectionBuilder $builder): void;
+
+    /**
+     * Register view templates
+     *
+     * @param TwigRenderer $renderer
+     * @return void
+     */
+    public function registerTemplates(TwigRenderer $renderer);
 }

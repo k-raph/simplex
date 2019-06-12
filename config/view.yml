@@ -1,5 +1,6 @@
 twig:
   path: '%resources%/views'
+  cache: '%resources%/cache/views'
   file_ext: twig
   extensions:
     - Simplex\Routing\Extensions\TwigRouterExtension

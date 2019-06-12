@@ -29,13 +29,13 @@ class TwigServiceProvider extends AbstractServiceProvider
             TwigRenderer::class,
             function () {
                 $loader = new FilesystemLoader();
-                $twig = new Environment($loader);
 
                 $config = $this->container
                     ->get(Configuration::class)
                     ->get('view.twig');
 
                 $loader->addPath($config['path']);
+                $twig = new Environment($loader, ['cache' => $config['cache'] ?? false]);
 
                 foreach ($config['extensions'] ?? [] as $extension) {
                     $twig->addExtension($this->container->get($extension));

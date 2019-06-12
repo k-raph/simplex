@@ -14,6 +14,11 @@ use Simplex\Configuration\Configuration;
 use Simplex\DataMapper\DataMapperServiceProvider;
 use Simplex\DataMapper\EntityManager;
 use Simplex\DataMapper\Mapping\EntityMapperInterface;
+use Simplex\Middleware\AuthenticationMiddleware;
+use Simplex\Renderer\TwigRenderer;
+use Simplex\Renderer\TwigServiceProvider;
+use Simplex\Routing\RouterInterface;
+use Simplex\Routing\SymfonyRouter;
 
 class ModuleLoader
 {
@@ -58,15 +63,50 @@ class ModuleLoader
     {
         /** @var Configuration $config */
         $config = $this->container->get(Configuration::class);
-        $map = class_exists(EntityManager::class) && in_array(DataMapperServiceProvider::class, $config->get('providers', []));
+
+        /** @var TwigRenderer $twig */
+        $twig = in_array(TwigServiceProvider::class, $config->get('providers', []))
+            ? $this->container->get(TwigRenderer::class)
+            : null;
+
+        /** @var SymfonyRouter $router */
+        $router = $this->container->get(RouterInterface::class);
+        $adminBuilder = $router->newBuilder();
+        $adminBuilder->setDefault('_middlewares', [AuthenticationMiddleware::class]);
 
         $mappings = [];
         foreach ($this->modules as $module) {
+            // Register configuration data
             $module->configure($config);
+
+            // Register routes for front end back end
+            $builder = $router->newBuilder();
+            $module->getAdminRoutes($adminBuilder);
+            $module->getSiteRoutes($builder);
+            $router->mount('/', $builder);
+
+            //Register view bindings
+            if ($twig) {
+                $module->registerTemplates($twig);
+            }
+
+            // Register mappings
             $mappings = array_merge($mappings, $module->getMappings());
         }
+        $router->mount('/admin', $adminBuilder);
 
-        if ($map) {
+        $map = class_exists(EntityManager::class) &&
+            in_array(DataMapperServiceProvider::class, $config->get('providers', []));
+        $this->loadMappings($map, $mappings);
+    }
+
+    /**
+     * @param bool $registered
+     * @param array $mappings
+     */
+    public function loadMappings(bool $registered, array $mappings)
+    {
+        if ($registered) {
             /** @var EntityManager $manager */
             $manager = $this->container->get(EntityManager::class);
             $registry = $manager->getMapperRegistry();

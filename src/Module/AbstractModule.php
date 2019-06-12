@@ -9,6 +9,8 @@
 namespace Simplex\Module;
 
 use Simplex\Configuration\Configuration;
+use Simplex\Renderer\TwigRenderer;
+use Symfony\Component\Routing\RouteCollectionBuilder;
 
 abstract class AbstractModule implements ModuleInterface
 {
@@ -29,4 +31,29 @@ abstract class AbstractModule implements ModuleInterface
     {
         return [];
     }
+
+    /**
+     * @param RouteCollectionBuilder $builder
+     */
+    public function getAdminRoutes(RouteCollectionBuilder $builder): void
+    {
+        // TODO: Implement getAdminRoutes() method.
+    }
+
+    /**
+     * @param RouteCollectionBuilder $builder
+     */
+    public function getSiteRoutes(RouteCollectionBuilder $builder): void
+    {
+        // TODO: Implement getSiteRoutes() method.
+    }
+
+    /**
+     * @param TwigRenderer $renderer
+     */
+    public function registerTemplates(TwigRenderer $renderer)
+    {
+        // TODO: Implement registerTemplates() method.
+    }
+
 }

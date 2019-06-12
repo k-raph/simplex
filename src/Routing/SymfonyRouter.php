@@ -50,6 +50,11 @@ class SymfonyRouter implements RouterInterface
     private $host;
 
     /**
+     * @var LoaderInterface
+     */
+    private $loader;
+
+    /**
      * Constructor
      *
      * @param LoaderInterface $loader
@@ -60,6 +65,7 @@ class SymfonyRouter implements RouterInterface
         $this->host = $host;
         $this->builder =  new RouteCollectionBuilder($loader);
         $this->builder->setHost($host);
+        $this->loader = $loader;
     }
 
     /**
@@ -218,5 +224,24 @@ class SymfonyRouter implements RouterInterface
     public function addStrategy(string $name, callable $resolver)
     {
         $this->middlewares['groups'][$name] = $resolver;
+    }
+
+    /**
+     * Creates a new route collection builder
+     *
+     * @return RouteCollectionBuilder
+     */
+    public function newBuilder(): RouteCollectionBuilder
+    {
+        return new RouteCollectionBuilder($this->loader);
+    }
+
+    /**
+     * @param string $prefix
+     * @param RouteCollectionBuilder $builder
+     */
+    public function mount(string $prefix, RouteCollectionBuilder $builder)
+    {
+        $this->builder->mount($prefix, $builder);
     }
 }
