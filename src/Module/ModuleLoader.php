@@ -71,8 +71,8 @@ class ModuleLoader
 
         /** @var SymfonyRouter $router */
         $router = $this->container->get(RouterInterface::class);
-        $adminBuilder = $router->newBuilder();
-        $adminBuilder->setDefault('_middlewares', [AuthenticationMiddleware::class]);
+        $admin = $router->createCollection();
+        $admin->setDefault('_middlewares', [AuthenticationMiddleware::class]);
 
         $mappings = [];
         foreach ($this->modules as $module) {
@@ -80,8 +80,8 @@ class ModuleLoader
             $module->configure($config);
 
             // Register routes for front end back end
-            $builder = $router->newBuilder();
-            $module->getAdminRoutes($adminBuilder);
+            $builder = $router->createCollection();
+            $module->getAdminRoutes($admin);
             $module->getSiteRoutes($builder);
             $router->mount('/', $builder);
 
@@ -93,7 +93,7 @@ class ModuleLoader
             // Register mappings
             $mappings = array_merge($mappings, $module->getMappings());
         }
-        $router->mount('/admin', $adminBuilder);
+        $router->mount('/admin', $admin);
 
         $map = class_exists(EntityManager::class) &&
             in_array(DataMapperServiceProvider::class, $config->get('providers', []));

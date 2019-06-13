@@ -11,20 +11,12 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Matcher\RedirectableUrlMatcher;
 use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\RouteCollectionBuilder;
+use Symfony\Component\Routing\RouteCollection as SymfonyRouteCollection;
 
 class SymfonyRouter implements RouterInterface
 {
 
     use RouteBuilderTrait;
-
-    /**
-     * Route collection builder
-     *
-     * @var RouteCollectionBuilder
-     */
-    private $builder;
 
     /**
      * @var RouteCollection
@@ -55,6 +47,11 @@ class SymfonyRouter implements RouterInterface
     private $loader;
 
     /**
+     * @var \Symfony\Component\Routing\RouteCollection
+     */
+    private $routes;
+
+    /**
      * Constructor
      *
      * @param LoaderInterface $loader
@@ -63,9 +60,8 @@ class SymfonyRouter implements RouterInterface
     public function __construct(LoaderInterface $loader, string $host)
     {
         $this->host = $host;
-        $this->builder =  new RouteCollectionBuilder($loader);
-        $this->builder->setHost($host);
         $this->loader = $loader;
+        $this->collection = new RouteCollection($this, $host);
     }
 
     /**
@@ -73,19 +69,7 @@ class SymfonyRouter implements RouterInterface
      */
     public function import(string $from, array $options = [])
     {
-        $options = array_merge([
-            'prefix' => '/',
-            'format' => 'yaml',
-            'host' => $this->host
-        ], $options);
-
-        $builder = $this->builder->import($from, $options['prefix'], $options['format']);
-        $builder = $builder->setHost($options['host']);
-        unset($options['prefix'], $options['format'], $options['host']);
-
-        foreach ($options as $key => $value) {
-            $builder->setDefault("$key", $value);
-        }
+        $this->collection->import($from, $options);
     }
 
     /**
@@ -93,9 +77,7 @@ class SymfonyRouter implements RouterInterface
      */
     public function match(string $methods, string $path, $controller, ?string $name = null)
     {
-        $this->builder
-            ->add($path, $controller, $name)
-            ->setMethods(explode('|', $methods));
+        $this->collection->match($methods, $path, $controller, $name);
     }
 
     /**
@@ -103,7 +85,10 @@ class SymfonyRouter implements RouterInterface
      */
     public function generate(string $name, array $parameters = []): string
     {
-        return (new UrlGenerator($this->getCollection(), $this->context ?? new RequestContext()))->generate($name, $parameters, UrlGenerator::ABSOLUTE_URL);
+        return (new UrlGenerator(
+            $this->getCollection(),
+            $this->context ?? new RequestContext())
+        )->generate($name, $parameters, UrlGenerator::ABSOLUTE_URL);
     }
 
     /**
@@ -169,22 +154,22 @@ class SymfonyRouter implements RouterInterface
     /**
      * Build route collection
      *
-     * @return RouteCollection
+     * @return SymfonyRouteCollection
      */
-    protected function getCollection()
+    protected function getCollection(): SymfonyRouteCollection
     {
-        if ($this->collection) {
-            return $this->collection;
+        if ($this->routes) {
+            return $this->routes;
         }
 
-        $this->builder->setDefault('_middlewares', $this->middlewares['routes']);
-        return $this->collection = $this->builder->build();
+        $this->collection->setDefault('_middlewares', $this->middlewares['routes']);
+        return $this->routes = $this->collection->getBuilder()->build();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function middleware(MiddlewareInterface $middleware)
+    /*public function middleware(MiddlewareInterface $middleware)
     {
         $this->middlewares['routes'] = $middleware;
     }
@@ -214,7 +199,7 @@ class SymfonyRouter implements RouterInterface
      */
     public function setStrategy(string $strategy)
     {
-        $this->builder->setDefault('_strategy', $strategy);
+        $this->collection->getBuilder()->setDefault('_strategy', $strategy);
     }
 
     /**
@@ -227,21 +212,29 @@ class SymfonyRouter implements RouterInterface
     }
 
     /**
-     * Creates a new route collection builder
+     * Creates a new route collection
      *
-     * @return RouteCollectionBuilder
+     * @return RouteCollection
      */
-    public function newBuilder(): RouteCollectionBuilder
+    public function createCollection(): RouteCollection
     {
-        return new RouteCollectionBuilder($this->loader);
+        return new RouteCollection($this, $this->host);
     }
 
     /**
      * @param string $prefix
-     * @param RouteCollectionBuilder $builder
+     * @param RouteCollection $collection
      */
-    public function mount(string $prefix, RouteCollectionBuilder $builder)
+    public function mount(string $prefix, RouteCollection $collection)
     {
-        $this->builder->mount($prefix, $builder);
+        $this->collection->mount($prefix, $collection);
+    }
+
+    /**
+     * @return LoaderInterface
+     */
+    public function getLoader(): LoaderInterface
+    {
+        return $this->loader;
     }
 }

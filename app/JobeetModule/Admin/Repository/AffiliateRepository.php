@@ -6,7 +6,7 @@
  * Time: 19:29
  */
 
-namespace App\AdminModule\Repository\Jobeet;
+namespace App\JobeetModule\Admin\Repository;
 
 use App\JobeetModule\Repository\AffiliateRepository as Repository;
 

@@ -60,7 +60,7 @@ interface RouterInterface
      * @param MiddlewareInterface $middleware
      * @return void
      */
-    public function middleware(MiddlewareInterface $middleware);
+    /*public function middleware(MiddlewareInterface $middleware);*/
 
     /**
      * Set middleware group
@@ -69,4 +69,20 @@ interface RouterInterface
      * @return void
      */
     public function setStrategy(string $strategy);
+
+    /**
+     * Mount a route collection under a common prefix
+     *
+     * @param string $prefix
+     * @param RouteCollection $collection
+     * @return mixed
+     */
+    public function mount(string $prefix, RouteCollection $collection);
+
+    /**
+     * Creates a route collection
+     *
+     * @return RouteCollection
+     */
+    public function createCollection(): RouteCollection;
 }

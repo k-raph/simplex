@@ -10,7 +10,7 @@ use App\Blog\Mapper\PostMapper;
 use Simplex\Configuration\Configuration;
 use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;
-use Symfony\Component\Routing\RouteCollectionBuilder;
+use Simplex\Routing\RouteCollection;
 
 class BlogModule extends AbstractModule
 {
@@ -54,12 +54,11 @@ class BlogModule extends AbstractModule
     }
 
     /**
-     * @param RouteCollectionBuilder $builder
-     * @throws \Symfony\Component\Config\Exception\FileLoaderLoadException
+     * @param RouteCollection $collection
      */
-    public function getSiteRoutes(RouteCollectionBuilder $builder): void
+    public function getSiteRoutes(RouteCollection $collection): void
     {
-        $builder->import(__DIR__ . '/config/routes.yml', '/blog');
+        $collection->import(__DIR__ . '/config/routes.yml', ['prefix' => 'blog']);
     }
 
 }

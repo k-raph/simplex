@@ -6,11 +6,11 @@
  * Time: 15:43
  */
 
-namespace App\AdminModule\Actions\Jobeet;
+namespace App\JobeetModule\Admin\Actions;
 
 
-use App\AdminModule\Repository\Jobeet\AffiliateRepository;
 use App\JobeetModule\Actions\AffiliateRegisterAction;
+use App\JobeetModule\Admin\Repository\AffiliateRepository;
 use App\JobeetModule\Entity\Affiliate;
 use App\JobeetModule\Mapper\AffiliateMapper;
 use Nette\Mail\Message;
@@ -49,7 +49,7 @@ class AffiliateManageAction extends AffiliateRegisterAction
      */
     public function list(AffiliateRepository $repository)
     {
-        return $this->view->render('@admin/jobeet/affiliates', [
+        return $this->view->render('@jobeet/admin/affiliates', [
             'affiliates' => $repository->findAll()
         ]);
     }
@@ -131,7 +131,7 @@ class AffiliateManageAction extends AffiliateRegisterAction
             return new RedirectResponse($router->generate('admin_jobeet_home'));
         }
 
-        return $this->view->render('@admin/jobeet/affiliate_edit', [
+        return $this->view->render('@jobeet/admin/affiliate_edit', [
             'affiliate' => $affiliate,
             'categories' => $this->categories
         ]);
@@ -179,7 +179,7 @@ class AffiliateManageAction extends AffiliateRegisterAction
             }
         }
 
-        return $this->view->render('@admin/jobeet/affiliate_new', [
+        return $this->view->render('@jobeet/admin/affiliate_new', [
             'categories' => $this->categories
         ]);
     }
