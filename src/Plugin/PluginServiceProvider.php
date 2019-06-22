@@ -12,7 +12,6 @@ namespace Simplex\Plugin;
 use Composer\Autoload\ClassLoader;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Psr\Container\ContainerInterface;
-use Simplex\Configuration\Configuration;
 use Simplex\EventManager\EventManagerInterface;
 use Simplex\Events\KernelBootEvent;
 use Symfony\Component\Finder\Finder;
@@ -54,10 +53,13 @@ class PluginServiceProvider extends AbstractServiceProvider
     }
 
     /**
-     * @param Configuration $configuration
+     * @param KernelBootEvent $event
+     * @return KernelBootEvent
+     * @throws \Exception
      */
-    public function bootstrap(Configuration $configuration)
+    public function bootstrap(KernelBootEvent $event): KernelBootEvent
     {
+        $configuration = $event->getConfiguration();
         try {
             $config = $configuration->get('plugins.enabled', []);
             $root = $configuration->get('root');
@@ -96,5 +98,7 @@ class PluginServiceProvider extends AbstractServiceProvider
         } catch (\Exception $e) {
             throw $e;
         }
+
+        return $event;
     }
 }
