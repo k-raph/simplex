@@ -2,19 +2,17 @@
 /**
  * Created by PhpStorm.
  * User: User
- * Date: 10/06/2019
- * Time: 17:58
+ * Date: 22/06/2019
+ * Time: 20:50
  */
 
 namespace Simplex\Exception\Event;
 
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ExceptionEvent
+class HttpExceptionEvent
 {
-
     /**
      * @var \Exception
      */
@@ -26,14 +24,14 @@ class ExceptionEvent
     private $response;
 
     /**
-     * @var Request
+     * @var int
      */
-    private $request;
+    private $statusCode;
 
-    public function __construct(\Exception $exception, Request $request)
+    public function __construct(\Exception $exception, int $statusCode)
     {
         $this->exception = $exception;
-        $this->request = $request;
+        $this->statusCode = $statusCode;
     }
 
     /**
@@ -71,10 +69,11 @@ class ExceptionEvent
     }
 
     /**
-     * @return Request
+     * @return int
      */
-    public function getRequest(): Request
+    public function getStatusCode(): int
     {
-        return $this->request;
+        return $this->statusCode;
     }
+
 }

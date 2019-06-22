@@ -4,7 +4,7 @@
     "type": "project",
     "license": "MIT",
     "require": {
-        "php": ">=7.1",
+      "php": ">=7.2.0",
         "ext-pdo": "*",
       "ext-json": "*",
         "league/container": "^3",
@@ -16,7 +16,9 @@
       "finesse/query-scribe": "*",
       "rakit/validation": "*",
       "nette/mail": "*",
-      "sabre/event": "*"
+      "psr/event-dispatcher": "*",
+      "sabre/event": "*",
+      "symfony/finder": "^4.0"
     },
     "require-dev": {
         "robmorgan/phinx": "^0.9",

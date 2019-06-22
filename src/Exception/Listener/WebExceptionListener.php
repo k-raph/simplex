@@ -9,12 +9,13 @@
 namespace Simplex\Exception\Listener;
 
 
-use Simplex\Event\EventManagerInterface;
-use Simplex\Exception\Event\ExceptionEvent;
+use Simplex\Database\Exceptions\ResourceNotFoundException as DatabaseResourceNotFoundException;
+use Simplex\EventManager\EventManagerInterface;
+use Simplex\Exception\Event\HttpExceptionEvent;
+use Simplex\Exception\Event\KernelExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException as DatabaseResourceNotFoundException;
 
 class WebExceptionListener
 {
@@ -30,18 +31,18 @@ class WebExceptionListener
     }
 
     /**
-     * @param ExceptionEvent $event
+     * @param KernelExceptionEvent $event
+     * @return KernelExceptionEvent
      * @throws \Exception
      */
-    public function __invoke(ExceptionEvent $event)
+    public function __invoke(KernelExceptionEvent $event): KernelExceptionEvent
     {
         $exception = $event->getException();
 
         switch (true) {
             case $exception instanceof DatabaseResourceNotFoundException:
             case $exception instanceof ResourceNotFoundException:
-                $httpEvent = new ExceptionEvent($exception, $event->getRequest());
-                $this->eventManager->emit('kernel.http_exception', [$httpEvent]);
+                $httpEvent = $this->eventManager->dispatch(new HttpExceptionEvent($exception, 404));
                 if ($httpEvent->hasResponse()) {
                     $response = $httpEvent->getResponse();
                 } else {
@@ -62,6 +63,7 @@ class WebExceptionListener
         }
 
         $event->setResponse($response);
+        return $event;
     }
 
 }

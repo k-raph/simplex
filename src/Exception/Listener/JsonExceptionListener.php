@@ -10,7 +10,7 @@ namespace Simplex\Exception\Listener;
 
 
 use Simplex\Database\Exceptions\ResourceNotFoundException;
-use Simplex\Exception\Event\ExceptionEvent;
+use Simplex\Exception\Event\KernelExceptionEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
@@ -20,14 +20,13 @@ class JsonExceptionListener
     /**
      * Process an incoming HTTP Request and returns a Response
      *
-     * @param ExceptionEvent $event
-     * @return void
+     * @param KernelExceptionEvent $event
+     * @return KernelExceptionEvent
      */
-    public function __invoke(ExceptionEvent $event): void
+    public function __invoke(KernelExceptionEvent $event): KernelExceptionEvent
     {
-
         if (0 !== strpos($event->getRequest()->headers->get('Content-Type'), 'application/json')) {
-            return;
+            return $event;
         }
 
         $exception = $event->getException();
@@ -57,5 +56,6 @@ class JsonExceptionListener
         }
 
         $event->setResponse($response);
+        return $event;
     }
 }

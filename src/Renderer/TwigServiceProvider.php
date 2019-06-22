@@ -4,8 +4,8 @@ namespace Simplex\Renderer;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Simplex\Configuration\Configuration;
-use Simplex\Event\EventManagerInterface;
-use Simplex\Exception\Event\ExceptionEvent;
+use Simplex\EventManager\EventManagerInterface;
+use Simplex\Exception\Event\HttpExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -45,13 +45,14 @@ class TwigServiceProvider extends AbstractServiceProvider
         });
 
         $this->container->get(EventManagerInterface::class)
-            ->on('kernel.http_exception', function (ExceptionEvent $event) {
+            ->on(HttpExceptionEvent::class, function (HttpExceptionEvent $event) {
                 $response = new Response();
                 $twig = $this->container->get(TwigRenderer::class);
                 $response->setContent($twig->render('errors/4xx'));
-                $response->setStatusCode($event->getException()->getCode());
+                $response->setStatusCode($event->getStatusCode());
 
                 $event->setResponse($response);
+                return $event;
             });
     }
 

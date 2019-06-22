@@ -6,8 +6,11 @@ use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\Event\EventManager;
-use Simplex\Event\EventManagerInterface;
+use Simplex\EventManager\EventManager;
+use Simplex\EventManager\EventManagerInterface;
+use Simplex\Events\KernelBootEvent;
+use Simplex\Events\KernelRequestEvent;
+use Simplex\Events\KernelResponseEvent;
 use Simplex\Http\Pipeline;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
@@ -124,6 +127,8 @@ class Kernel
             return;
 
         $config = $this->container->get(Configuration::class);
+        /** @var Configuration $config */
+        $config = $this->eventManager->dispatch(new KernelBootEvent($config))->getConfiguration();
 
         if ('debug' === $config->get('env')) {
             Debugger::enable();
@@ -151,10 +156,16 @@ class Kernel
     {
         $this->boot();
         $request::enableHttpMethodParameterOverride();
-        $this->eventManager->emit('kernel.request', [$request]);
-        $response = $this->pipeline->handle($request);
-        $this->eventManager->emit('kernel.response', [$response]);
-        return $response;
+
+        $event = $this->eventManager->dispatch(new KernelRequestEvent($request));
+
+        $response = $event->isPropagationStopped()
+            ? $event->getResponse()
+            : $this->pipeline->handle($request);
+
+        /** @var KernelResponseEvent $event */
+        $event = $this->eventManager->dispatch(new KernelResponseEvent($response));
+        return $event->getResponse();
     }
 
     /**

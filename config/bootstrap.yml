@@ -18,3 +18,4 @@ providers:
   - Simplex\DataMapper\DataMapperServiceProvider
   - Simplex\Security\Authentication\AuthenticationServiceProvider
   - Simplex\Module\ModuleServiceProvider
+  - Simplex\Plugin\PluginServiceProvider

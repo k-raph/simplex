@@ -9,7 +9,7 @@
 namespace Simplex\Plugin;
 
 
-use Simplex\Event\EventManagerInterface;
+use Simplex\EventManager\EventManagerInterface;
 
 interface PluginInterface
 {

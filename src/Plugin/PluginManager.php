@@ -10,7 +10,7 @@ namespace Simplex\Plugin;
 
 
 use Psr\Container\ContainerInterface;
-use Simplex\Event\EventManagerInterface;
+use Simplex\EventManager\EventManagerInterface;
 
 class PluginManager
 {
@@ -29,6 +29,11 @@ class PluginManager
      * @var EventManagerInterface
      */
     private $eventManager;
+
+    /**
+     * @var array
+     */
+    private $plugins = [];
 
     /**
      * PluginManager constructor.
@@ -79,5 +84,34 @@ class PluginManager
     {
         $plugin->subscribe($this->eventManager);
         $this->loaded[$plugin->getName()] = $plugin;
+    }
+
+    /**
+     * Register an available plugin
+     *
+     * @param string $name
+     * @param array $metadata
+     */
+    public function register(string $name, array $metadata)
+    {
+        $this->plugins[$name] = $metadata;
+    }
+
+    /**
+     * Get all registered plugins
+     *
+     * @return array
+     */
+    public function all(): array
+    {
+        return array_values($this->plugins);
+    }
+
+    /**
+     * @return PluginInterface[]
+     */
+    public function getLoaded(): array
+    {
+        return $this->loaded;
     }
 }

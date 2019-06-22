@@ -11,7 +11,8 @@ namespace Simplex\Exception;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
-use Simplex\Event\EventManagerInterface;
+use Simplex\EventManager\EventManagerInterface;
+use Simplex\Exception\Event\KernelExceptionEvent;
 use Simplex\Exception\Listener\JsonExceptionListener;
 use Simplex\Exception\Listener\WebExceptionListener;
 
@@ -26,8 +27,8 @@ class ExceptionHandlerProvider extends AbstractServiceProvider implements Bootab
         /** @var EventManagerInterface $eventManager */
         $eventManager = $this->container->get(EventManagerInterface::class);
 
-        $eventManager->on('kernel.exception', new JsonExceptionListener(), 100);
-        $eventManager->on('kernel.exception', new WebExceptionListener($eventManager));
+        $eventManager->on(KernelExceptionEvent::class, new JsonExceptionListener(), 100);
+        $eventManager->on(KernelExceptionEvent::class, new WebExceptionListener($eventManager));
     }
 
     /**
