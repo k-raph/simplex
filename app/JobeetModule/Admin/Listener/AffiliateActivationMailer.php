@@ -10,46 +10,25 @@ namespace App\JobeetModule\Admin\Listener;
 
 
 use App\JobeetModule\Admin\Events\AffiliateActivationEvent;
-use App\JobeetModule\Entity\Affiliate;
-use Nette\Mail\Message;
-use Nette\Mail\SendmailMailer;
+use App\JobeetModule\Admin\Jobs\ProcessSendEmail;
+use Simplex\Queue\Contracts\QueueInterface;
 
 class AffiliateActivationMailer
 {
 
     /**
      * @param AffiliateActivationEvent $event
+     * @param QueueInterface $queue
      * @return AffiliateActivationEvent
      */
-    public function handle(AffiliateActivationEvent $event): AffiliateActivationEvent
+    public function handle(AffiliateActivationEvent $event, QueueInterface $queue): AffiliateActivationEvent
     {
         $affiliate = $event->getAffiliate();
-        $mail = new Message();
-        $mail->setFrom('admin@admin.fr')
-            ->addTo($affiliate->getEmail())
-            ->addReplyTo('admin@admin.fr')
-            ->setSubject('Jobeet account activation')
-            ->setHtmlBody($this->getBody($affiliate));
-
-        $mailer = new SendmailMailer();
-        $mailer->send($mail);
+        $job = new ProcessSendEmail($affiliate);
+        $queue->push($job, 'default');
 
         return $event;
     }
 
-    /**
-     * Gets email body
-     *
-     * @param Affiliate $affiliate
-     * @return string
-     */
-    protected function getBody(Affiliate $affiliate): string
-    {
-        return <<<HTML
-Hello {$affiliate->getName()}.<br>
-Here is your account activation token: <strong>{$affiliate->getToken()}</strong>. <br>
-Please keep it in a secure place as it's for personal use only.<br>
-Regards. Jobeet administrator
-HTML;
-    }
+
 }

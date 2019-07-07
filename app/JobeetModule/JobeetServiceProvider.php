@@ -21,6 +21,7 @@ use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\EventManager\EventManagerInterface;
 use Simplex\Module\AbstractModule;
+use Simplex\Queue\Contracts\QueueInterface;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouteCollection;
 use Simplex\Security\Authentication\StatelessAuthenticationManager;
@@ -46,8 +47,15 @@ class JobeetServiceProvider extends AbstractModule
             ->get('app_host', 'localhost');
 
         $container->get(EventManagerInterface::class)
-            ->on(AffiliateActivationEvent::class, function (AffiliateActivationEvent $event) {
-                return (new AffiliateActivationMailer())->handle($event);
+            ->on(
+                AffiliateActivationEvent::class,
+                function (AffiliateActivationEvent $event) use ($container) {
+                    return (new AffiliateActivationMailer())
+                        ->handle(
+                            $event,
+                            $container->get(QueueInterface::class
+                            )
+                        );
             });
     }
 

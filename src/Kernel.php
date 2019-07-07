@@ -121,7 +121,7 @@ class Kernel
      *
      * @return void
      */
-    private function boot(): void
+    public function boot(): void
     {
         if ($this->booted)
             return;

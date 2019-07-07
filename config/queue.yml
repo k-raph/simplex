@@ -1,0 +1,8 @@
+default: kached
+connections:
+  kached:
+    driver: kached
+    host: '127.0.0.1'
+    port: 1397
+  sync:
+    driver: sync
