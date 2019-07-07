@@ -8,6 +8,11 @@ publish:
   controller: App\JobeetModule\Actions\JobManageAction:publish
   methods: ['GET']
 
+extend:
+  path: /extend
+  controller: App\JobeetModule\Actions\JobManageAction:extend
+  methods: ['GET']
+
 edit:
   path: /edit
   controller: App\JobeetModule\Actions\JobEditAction:edit

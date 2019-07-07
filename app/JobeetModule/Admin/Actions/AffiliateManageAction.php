@@ -10,13 +10,13 @@ namespace App\JobeetModule\Admin\Actions;
 
 
 use App\JobeetModule\Actions\AffiliateRegisterAction;
+use App\JobeetModule\Admin\Events\AffiliateActivationEvent;
 use App\JobeetModule\Admin\Repository\AffiliateRepository;
 use App\JobeetModule\Entity\Affiliate;
 use App\JobeetModule\Mapper\AffiliateMapper;
-use Nette\Mail\Message;
-use Nette\Mail\SendmailMailer;
 use Simplex\Database\Query\Builder;
 use Simplex\DataMapper\EntityManager;
+use Simplex\EventManager\EventManagerInterface;
 use Simplex\Http\Session\SessionFlash;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
@@ -59,12 +59,13 @@ class AffiliateManageAction extends AffiliateRegisterAction
      *
      * @param int $id
      * @param EntityManager $manager
+     * @param EventManagerInterface $events
      * @param RouterInterface $router
      * @param SessionFlash $flash
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function activate(int $id, EntityManager $manager, RouterInterface $router, SessionFlash $flash)
+    public function activate(int $id, EntityManager $manager, EventManagerInterface $events, RouterInterface $router, SessionFlash $flash)
     {
         /** @var Affiliate $affiliate */
         $affiliate = $manager->find(Affiliate::class, $id);
@@ -74,19 +75,7 @@ class AffiliateManageAction extends AffiliateRegisterAction
             $token = (new CsrfTokenManager())->generateToken();
             $affiliate->setToken($token);
 
-            $mail = new Message();
-            $mail->setFrom('admin@admin.fr')
-                ->addTo($affiliate->getEmail())
-                ->addReplyTo('admin@admin.fr')
-                ->setSubject('Jobeet account activation')
-                ->setHtmlBody("Hello {$affiliate->getName()}.<br>
-                    Here is your account activation token: <strong>$token</strong>. <br>
-                    Please keep it in a secure place as it's for personal use only.<br>
-                    Regards. Jobeet administrator
-                    ");
-
-            $mailer = new SendmailMailer();
-            $mailer->send($mail);
+            $events->dispatch(new AffiliateActivationEvent($affiliate));
         }
 
         $manager->persist($affiliate);

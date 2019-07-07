@@ -23,7 +23,7 @@ class JsonExceptionListener
      * @param KernelExceptionEvent $event
      * @return KernelExceptionEvent
      */
-    public function __invoke(KernelExceptionEvent $event): KernelExceptionEvent
+    public function handle(KernelExceptionEvent $event): KernelExceptionEvent
     {
         if (0 !== strpos($event->getRequest()->headers->get('Content-Type'), 'application/json')) {
             return $event;

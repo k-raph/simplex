@@ -55,14 +55,45 @@ class JobManageAction
      */
     public function publish(string $token, JobRepository $repository, RouterInterface $router, SessionFlash $flash)
     {
-        /** @var Job $job */
-        $job = $repository->findByToken($token, false);
-
-        $job->setExpiresAt((new \DateTime())->add(new \DateInterval('P30D')));
-        $repository->getMapper()->update($job);
-
+        $job = $this->update($token, $repository);
         $flash->success('Your job has been successfully published');
         return new RedirectResponse($router->generate('job_preview', ['token' => $job->getToken()]));
     }
 
+    /**
+     * Extend the job
+     *
+     * @param string $token
+     * @param JobRepository $repository
+     * @param RouterInterface $router
+     * @param SessionFlash $flash
+     * @return RedirectResponse
+     * @throws \Simplex\Database\Exceptions\ResourceNotFoundException
+     */
+    public function extend(string $token, JobRepository $repository, RouterInterface $router, SessionFlash $flash)
+    {
+        $job = $this->update($token, $repository);
+        $flash->success('Your job has been successfully extended');
+        return new RedirectResponse($router->generate('job_preview', ['token' => $job->getToken()]));
+    }
+
+    /**
+     * Perform job update
+     *
+     * @param string $token
+     * @param JobRepository $repository
+     * @return Job
+     * @throws \Simplex\Database\Exceptions\ResourceNotFoundException
+     */
+    protected function update(string $token, JobRepository $repository): Job
+    {
+        /** @var Job $job */
+        $job = $repository->findByToken($token);
+
+        $job->setExpiresAt((new \DateTime())->add(new \DateInterval('P30D')));
+        $job->setType(array_search($job->getType(), Job::TYPES));
+        $repository->getMapper()->update($job);
+
+        return $job;
+    }
 }

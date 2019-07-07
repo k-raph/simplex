@@ -35,7 +35,7 @@ class WebExceptionListener
      * @return KernelExceptionEvent
      * @throws \Exception
      */
-    public function __invoke(KernelExceptionEvent $event): KernelExceptionEvent
+    public function handle(KernelExceptionEvent $event): KernelExceptionEvent
     {
         $exception = $event->getException();
 

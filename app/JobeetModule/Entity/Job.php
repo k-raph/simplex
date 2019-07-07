@@ -329,4 +329,12 @@ class Job implements IdentifiableInterface
         $this->expiresAt = $expiresAt;
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function hasExpired(): bool
+    {
+        return $this->expiresAt < (new \DateTime());
+    }
 }

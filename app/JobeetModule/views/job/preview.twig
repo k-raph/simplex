@@ -13,7 +13,7 @@
         </section>
         <section class="navbar-section">
             {% if job.expiresAt %}
-                {% if job.expiresAt < date() %}
+                {% if job.hasExpired %}
                     <strong>Expired</strong>
                 {% else %}
                     <div class="nav-item mr-2">
@@ -21,7 +21,8 @@
                         Expires in <strong>{{ expire }}</strong> day{{ expire > 1 ? 's' : '' }}
                     </div>
                     {% if expire < 5 %}
-                        <a href="#" class="btn btn-success ml-2">Extend (for another 30 days)</a>
+                        <a href="{{ route('job_extend', {'token': job.token}) }}" class="btn btn-success ml-2">Extend
+                            (for another 30 days)</a>
                     {% endif %}
                 {% endif %}
             {% else %}

@@ -8,6 +8,8 @@
 
 namespace App\JobeetModule;
 
+use App\JobeetModule\Admin\Events\AffiliateActivationEvent;
+use App\JobeetModule\Admin\Listener\AffiliateActivationMailer;
 use App\JobeetModule\Entity\Affiliate;
 use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Entity\Job;
@@ -17,6 +19,7 @@ use App\JobeetModule\Mapper\JobMapper;
 use App\JobeetModule\Repository\AffiliateRepository;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
+use Simplex\EventManager\EventManagerInterface;
 use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouteCollection;
@@ -41,6 +44,11 @@ class JobeetServiceProvider extends AbstractModule
 
         $this->host = $container->get(Configuration::class)
             ->get('app_host', 'localhost');
+
+        $container->get(EventManagerInterface::class)
+            ->on(AffiliateActivationEvent::class, function (AffiliateActivationEvent $event) {
+                return (new AffiliateActivationMailer())->handle($event);
+            });
     }
 
     /**

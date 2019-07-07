@@ -2,6 +2,7 @@
 
 namespace App\Blog\Action;
 
+use App\Blog\Entity\Post;
 use App\Blog\Repository\PostRepository;
 use Simplex\Configuration\Configuration;
 use Simplex\Database\Exceptions\ResourceNotFoundException;
@@ -45,6 +46,7 @@ class PostShowAction
      */
     public function single(int $id, PostRepository $repository)
     {
+        /** @var Post $post */
         $post = $repository->find($id);
 
         return $this->view->render('@blog/show', compact('post'));

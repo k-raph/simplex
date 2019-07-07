@@ -27,8 +27,12 @@ class ExceptionHandlerProvider extends AbstractServiceProvider implements Bootab
         /** @var EventManagerInterface $eventManager */
         $eventManager = $this->container->get(EventManagerInterface::class);
 
-        $eventManager->on(KernelExceptionEvent::class, new JsonExceptionListener(), 100);
-        $eventManager->on(KernelExceptionEvent::class, new WebExceptionListener($eventManager));
+        $eventManager->on(KernelExceptionEvent::class, function (KernelExceptionEvent $event) {
+            return (new JsonExceptionListener())->handle($event);
+        }, 100);
+        $eventManager->on(KernelExceptionEvent::class, function (KernelExceptionEvent $event) use ($eventManager) {
+            return (new WebExceptionListener($eventManager))->handle($event);
+        });
     }
 
     /**
