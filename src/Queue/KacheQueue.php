@@ -75,8 +75,13 @@ class KacheQueue extends AbstractQueue
         $payload = $this->kache->format($response);
 
         if ($payload) {
+            $data = $payload['job'];
+            echo $data['class'] . "\n";
+            if (!class_exists($data['class'])) {
+                return null;
+            }
             /** @var JobInterface $job */
-            $job = unserialize($payload['job']);
+            $job = unserialize($data['body']);
             $job->setId($payload['id']);
 
             return $job;

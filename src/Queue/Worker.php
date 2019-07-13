@@ -8,6 +8,8 @@
 
 namespace Simplex\Queue;
 
+use Simplex\Queue\Contracts\JobInterface;
+use Simplex\Queue\Contracts\QueueInterface;
 
 class Worker
 {
@@ -27,13 +29,42 @@ class Worker
     }
 
     /**
+     * Listens to a queue for new jobs to run
      *
+     * @param string $queue
      */
-    public function listen()
+    public function listen(string $queue = 'default')
     {
-        $queue = $this->manager->connection();
-        while ($job = $queue->pop('default')) {
-            $job->fire();
+        $connection = $this->manager->connection();
+        while (true) {
+            $job = $connection->pop($queue);
+            if (null !== $job) {
+                $this->runJob($job, $connection);
+            } else {
+                $this->sleep(5);
+            }
         }
+    }
+
+    /**
+     * @param JobInterface $job
+     * @param QueueInterface $queue
+     */
+    protected function runJob(JobInterface $job, QueueInterface $queue)
+    {
+        try {
+            $job->fire();
+        } catch (\Exception $exception) {
+            //$queue->bury($job);
+            echo $exception->getMessage() . "\n";
+        }
+    }
+
+    /**
+     * @param int $seconds
+     */
+    protected function sleep(int $seconds)
+    {
+        sleep($seconds);
     }
 }
