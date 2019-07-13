@@ -167,6 +167,27 @@ class SymfonyRouter implements RouterInterface
     }
 
     /**
+     * @return Route[]
+     */
+    public function all(): array
+    {
+        $routes = [];
+        foreach ($this->getCollection()->all() as $name => $sroute) {
+            $methods = $sroute->getMethods();
+            $methods = empty($methods) ? ['ANY'] : $methods;
+
+            $route = new Route($name, $sroute->getDefault('_controller'));
+            $route->setPath($sroute->getPath());
+            $route->setMiddlewares($sroute->getDefault('_middlewares') ?? []);
+            $route->setMethod(join('|', $methods));
+            $route->setHost($sroute->getHost());
+            $routes[$name] = $route;
+        }
+
+        return $routes;
+    }
+
+    /**
      * {@inheritDoc}
      */
     /*public function middleware(MiddlewareInterface $middleware)

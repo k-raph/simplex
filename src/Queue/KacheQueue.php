@@ -76,7 +76,6 @@ class KacheQueue extends AbstractQueue
 
         if ($payload) {
             $data = $payload['job'];
-            echo $data['class'] . "\n";
             if (!class_exists($data['class'])) {
                 return null;
             }

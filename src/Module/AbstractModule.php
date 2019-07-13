@@ -56,4 +56,11 @@ abstract class AbstractModule implements ModuleInterface
         // TODO: Implement registerTemplates() method.
     }
 
+    /**
+     * @return array
+     */
+    public function getCommands(): array
+    {
+        return [];
+    }
 }

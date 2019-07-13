@@ -33,6 +33,21 @@ class Route
     private $strategy;
 
     /**
+     * @var string
+     */
+    private $path;
+
+    /**
+     * @var string
+     */
+    private $method;
+
+    /**
+     * @var string
+     */
+    private $host;
+
+    /**
      * Constructor
      *
      * @param string $name
@@ -45,7 +60,12 @@ class Route
         $this->handler = $handler;
         $this->parameters = $parameters;
     }
-     
+
+    public function setMethod(string $method)
+    {
+        $this->method = $method;
+    }
+
     /**
      * Gets the callback
      *
@@ -111,5 +131,53 @@ class Route
     public function getStrategy(): StrategyInterface
     {
         return $this->strategy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param string $host
+     */
+    public function setHost(string $host): void
+    {
+        $this->host = $host;
+    }
+
+    /**
+     * @param string $path
+     */
+    public function setPath(string $path): void
+    {
+        $this->path = $path;
     }
 }

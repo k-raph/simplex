@@ -9,14 +9,8 @@ use Simplex\Configuration\Configuration;
 use Simplex\EventManager\EventManager;
 use Simplex\EventManager\EventManagerInterface;
 use Simplex\Events\KernelBootEvent;
-use Simplex\Events\KernelRequestEvent;
-use Simplex\Events\KernelResponseEvent;
-use Simplex\Http\Pipeline;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Tracy\Debugger;
 
 class Kernel
 {
@@ -25,11 +19,6 @@ class Kernel
      * @var Container
      */
     protected $container;
-
-    /**
-     * @var Pipeline
-     */
-    protected $pipeline;
 
     /**
      * Kernel is booted?
@@ -53,10 +42,7 @@ class Kernel
         $container->delegate((new ReflectionContainer)->cacheResolutions(true));
         $container->add(ContainerInterface::class, $container);
 
-        $this->pipeline = new Pipeline();
         $this->eventManager = new EventManager();
-
-        $container->add(Pipeline::class, $this->pipeline);
         $container->add(EventManagerInterface::class, $this->eventManager);
 
         $this->container = $container;
@@ -127,56 +113,16 @@ class Kernel
             return;
 
         $config = $this->container->get(Configuration::class);
-        /** @var Configuration $config */
-        $config = $this->eventManager->dispatch(new KernelBootEvent($config))->getConfiguration();
-
-        if ('debug' === $config->get('env')) {
-            Debugger::enable();
-        }
-
-        // Register middlewares
-        $pipes = $config->get('routing.middlewares.global', []);
-        foreach ($pipes as $key => $middleware) {
-            if (is_array($middleware)) {
-                continue;
-            }
-            $this->pipeline->pipe($this->container->get($middleware));
-        }
+        $this->eventManager->dispatch(new KernelBootEvent($config))->getConfiguration();
 
         $this->booted = true;
     }
 
     /**
-     * Handle the request
-     *
-     * @param Request $request
-     * @return Response
+     * @return ContainerInterface
      */
-    public function handle(Request $request)
+    public function getContainer(): ContainerInterface
     {
-        $this->boot();
-        $request::enableHttpMethodParameterOverride();
-
-        $event = $this->eventManager->dispatch(new KernelRequestEvent($request));
-
-        $response = $event->isPropagationStopped()
-            ? $event->getResponse()
-            : $this->pipeline->handle($request);
-
-        /** @var KernelResponseEvent $event */
-        $event = $this->eventManager->dispatch(new KernelResponseEvent($response));
-        return $event->getResponse();
-    }
-
-    /**
-     * Terminate request handling
-     *
-     * @param Response $response
-     * @param Request $request
-     * @return void
-     */
-    public function terminate(Response $response, Request $request)
-    {
-        $response->prepare($request)->send();
+        return $this->container;
     }
 }

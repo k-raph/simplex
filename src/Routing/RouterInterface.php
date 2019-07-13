@@ -28,14 +28,13 @@ interface RouterInterface
      */
     public function match(string $methods, string $path, $controller, ?string $name = null);
 
+
     /**
-     * Mount a set of routes under a common prefix
+     * Gets all registered routes
      *
-     * @param string $prefix
-     * @param \Closure $factory
-     * @return void
+     * @return array
      */
-    // public function group($prefix, \Closure $factory);
+    public function all(): array;
 
     /**
      * Dispatches a request

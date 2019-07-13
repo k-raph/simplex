@@ -119,4 +119,12 @@ class ModuleLoader
             }
         }
     }
+
+    /**
+     * @return ModuleInterface[]
+     */
+    public function getModules(): array
+    {
+        return $this->modules;
+    }
 }

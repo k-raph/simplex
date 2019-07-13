@@ -59,4 +59,11 @@ interface ModuleInterface
      * @return void
      */
     public function registerTemplates(TwigRenderer $renderer);
+
+    /**
+     * Get provided commands to add to console
+     *
+     * @return array
+     */
+    public function getCommands(): array;
 }

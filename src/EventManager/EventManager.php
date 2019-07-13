@@ -58,10 +58,10 @@ class EventManager implements EventManagerInterface
             }
             $resultingEvent = call_user_func($listener, $event);
 
-            if ($resultingEvent !== $event) {
+            if ($resultingEvent && $resultingEvent !== $event) {
                 throw new \RuntimeException('Hey, the listener did not return the same event object!', 1534141128);
             }
-            $event = $resultingEvent;
+            $event = $resultingEvent ?? $event;
         }
 
         return $event;

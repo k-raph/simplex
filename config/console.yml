@@ -1,0 +1,4 @@
+commands:
+  - Simplex\Console\Command\YamlLintCommand
+  - Simplex\Console\Command\RouterDebugCommand
+  - Simplex\Console\Command\WorkerRunCommand

@@ -8,8 +8,12 @@
 
 namespace Simplex\Queue;
 
+use Simplex\EventManager\EventManagerInterface;
 use Simplex\Queue\Contracts\JobInterface;
 use Simplex\Queue\Contracts\QueueInterface;
+use Simplex\Queue\Event\JobFailedEvent;
+use Simplex\Queue\Event\JobStartingEvent;
+use Simplex\Queue\Event\JobSuccessEvent;
 
 class Worker
 {
@@ -20,28 +24,41 @@ class Worker
     private $manager;
 
     /**
+     * @var EventManagerInterface
+     */
+    private $eventManager;
+
+    /**
+     * @var int
+     */
+    private $sleep = 5;
+
+    /**
      * Worker constructor.
      * @param QueueManager $manager
+     * @param EventManagerInterface $eventManager
      */
-    public function __construct(QueueManager $manager)
+    public function __construct(QueueManager $manager, EventManagerInterface $eventManager)
     {
         $this->manager = $manager;
+        $this->eventManager = $eventManager;
     }
 
     /**
      * Listens to a queue for new jobs to run
      *
      * @param string $queue
+     * @param string|null $connection
      */
-    public function listen(string $queue = 'default')
+    public function listen(string $queue = 'default', ?string $connection = null)
     {
-        $connection = $this->manager->connection();
+        $connection = $this->manager->connection($connection);
         while (true) {
             $job = $connection->pop($queue);
             if (null !== $job) {
                 $this->runJob($job, $connection);
             } else {
-                $this->sleep(5);
+                $this->sleep($this->sleep);
             }
         }
     }
@@ -53,10 +70,12 @@ class Worker
     protected function runJob(JobInterface $job, QueueInterface $queue)
     {
         try {
+            $this->eventManager->dispatch(new JobStartingEvent($job));
             $job->fire();
+            $this->eventManager->dispatch(new JobSuccessEvent($job));
         } catch (\Exception $exception) {
-            //$queue->bury($job);
-            echo $exception->getMessage() . "\n";
+            $this->eventManager->dispatch(new JobFailedEvent($job));
+            //echo $exception->getMessage() . "\n";
         }
     }
 
@@ -66,5 +85,21 @@ class Worker
     protected function sleep(int $seconds)
     {
         sleep($seconds);
+    }
+
+    /**
+     * @return EventManagerInterface
+     */
+    public function getEventManager(): EventManagerInterface
+    {
+        return $this->eventManager;
+    }
+
+    /**
+     * @param int $sleep
+     */
+    public function setSleep(int $sleep): void
+    {
+        $this->sleep = $sleep;
     }
 }
