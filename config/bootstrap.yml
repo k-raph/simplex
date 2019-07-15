@@ -2,7 +2,7 @@ env: debug
 app_host: simplex.io
 
 modules:
-  - App\Auth\AuthModule
+  - App\AuthModule\AuthModuleProvider
   - App\Blog\BlogModule
   - App\JobeetModule\JobeetServiceProvider
   - App\SocialNetwork\SocialNetworkProvider

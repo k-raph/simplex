@@ -6,7 +6,7 @@
  * Time: 04:52
  */
 
-namespace App\Auth\Actions;
+namespace App\AuthModule\Actions;
 
 
 use Simplex\Http\Session\SessionFlash;
@@ -70,21 +70,19 @@ class AccessAction
      */
     public function attemptLogin(Request $request, SessionFlash $flash, RouterInterface $router)
     {
-        if ('POST' === $request->getMethod()) {
-            $credentials = $this->validate($request->request->all())->getValidData();
-            $remember = in_array($credentials['remember'], ['on', 1]);
+        $credentials = $this->validate($request->request->all())->getValidData();
+        $remember = in_array($credentials['remember'], ['on', 1]);
 
-            if ($this->auth->login($credentials, $remember)) {
-                $flash->info("You've been successfully logged on");
-                $path = $request->getSession()->get('auth.referer', '/');
-                $request->getSession()->remove('auth.referer');
+        if ($this->auth->login($credentials, $remember)) {
+            $flash->info("You've been successfully logged on");
+            $path = $request->getSession()->get('auth.referer', '/');
+            $request->getSession()->remove('auth.referer');
 
-                return new RedirectResponse($path, 301);
-            }
-
-            $flash->error("Invalid credentials");
-            return new RedirectResponse($router->generate('auth_login'));
+            return new RedirectResponse($path, 301);
         }
+
+        $flash->error("Invalid credentials");
+        return new RedirectResponse($router->generate('auth_login'));
     }
 
     /**

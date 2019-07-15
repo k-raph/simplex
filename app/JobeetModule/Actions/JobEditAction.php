@@ -14,11 +14,11 @@ use Rakit\Validation\ErrorBag;
 use Simplex\Configuration\Configuration;
 use Simplex\Database\Query\Builder;
 use Simplex\DataMapper\EntityManager;
+use Simplex\Helper\Str;
 use Simplex\Helper\ValidatorTrait;
 use Simplex\Http\Session\SessionFlash;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
-use Simplex\Security\Csrf\CsrfTokenManager;
 use Simplex\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -89,7 +89,7 @@ class JobEditAction
 
         $job->setCreatedAt(new \DateTime());
         $job->setLogo($input['logo']);
-        $job->setToken((new CsrfTokenManager)->generateToken());
+        $job->setToken(Str::random(20));
 
         $manager->persist($job);
         $manager->flush();

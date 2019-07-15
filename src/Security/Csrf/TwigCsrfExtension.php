@@ -22,6 +22,11 @@ class TwigCsrfExtension extends AbstractExtension
     private $session;
 
     /**
+     * @var string
+     */
+    private $token;
+
+    /**
      * TwigCsrfExtension constructor.
      * @param SessionInterface $session
      */
@@ -45,7 +50,6 @@ class TwigCsrfExtension extends AbstractExtension
      * Gets a form input field for CSRF token
      *
      * @param string $name
-     * @return string
      */
     public function csrfField(string $name = '_token')
     {
@@ -60,6 +64,10 @@ class TwigCsrfExtension extends AbstractExtension
      */
     public function csrfToken(): ?string
     {
-        return $this->session->get(CsrfTokenManager::TOKEN_NAME, null);
+        if (!$this->token) {
+            $this->token = $this->session->get(CsrfTokenManager::TOKEN_NAME, null);
+        }
+
+        return $this->token;
     }
 }

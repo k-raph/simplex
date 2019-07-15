@@ -8,6 +8,8 @@
 
 namespace App\JobeetModule;
 
+use App\JobeetModule\Admin\Command\AffiliatesListCommand;
+use App\JobeetModule\Admin\Command\CategoryCreateCommand;
 use App\JobeetModule\Admin\Events\AffiliateActivationEvent;
 use App\JobeetModule\Admin\Listener\AffiliateActivationMailer;
 use App\JobeetModule\Entity\Affiliate;
@@ -20,6 +22,7 @@ use App\JobeetModule\Repository\AffiliateRepository;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\EventManager\EventManagerInterface;
+use Simplex\Helper\Str;
 use Simplex\Module\AbstractModule;
 use Simplex\Queue\Contracts\QueueInterface;
 use Simplex\Renderer\TwigRenderer;
@@ -53,10 +56,9 @@ class JobeetServiceProvider extends AbstractModule
                     return (new AffiliateActivationMailer())
                         ->handle(
                             $event,
-                            $container->get(QueueInterface::class
-                            )
+                            $container->get(QueueInterface::class)
                         );
-            });
+                });
     }
 
     /**
@@ -89,10 +91,7 @@ class JobeetServiceProvider extends AbstractModule
         $renderer->addPath(__DIR__ . '/views', 'jobeet');
 
         $renderer->getEnv()->addFilter(new TwigFilter('slug', function (string $string) {
-            $string = preg_replace('~\W+~', '-', $string);
-            $string = trim($string, '-');
-
-            return strtolower($string);
+            return Str::slugify($string);
         }));
     }
 
@@ -117,5 +116,16 @@ class JobeetServiceProvider extends AbstractModule
             'prefix' => 'jobeet',
             'name_prefix' => 'admin_jobeet_'
         ]);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCommands(): array
+    {
+        return [
+            CategoryCreateCommand::class,
+            AffiliatesListCommand::class
+        ];
     }
 }

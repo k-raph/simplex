@@ -20,26 +20,29 @@ class DatabaseUserProvider implements UserProviderInterface
     /**
      * @var DatabaseInterface
      */
-    private $database;
+    protected $database;
 
     /**
      * @var Builder
      */
-    private $builder;
+    protected $builder;
 
     /**
      * @var string
      */
-    private $field = 'email';
+    protected $field;
 
     /**
      * DatabaseUserProvider constructor.
      * @param DatabaseInterface $database
+     * @param string $table
+     * @param string $field
      */
-    public function __construct(DatabaseInterface $database)
+    public function __construct(DatabaseInterface $database, string $table, string $field)
     {
         $this->database = $database;
-        $this->builder = $database->getQueryBuilder()->table('users');
+        $this->builder = $database->getQueryBuilder()->table($table);
+        $this->field = $field;
     }
 
     /**
@@ -99,7 +102,7 @@ class DatabaseUserProvider implements UserProviderInterface
     }
 
     /**
-     * Whether this provider supports the given user class.
+     * Forgets user
      *
      * @param UserInterface $user
      */

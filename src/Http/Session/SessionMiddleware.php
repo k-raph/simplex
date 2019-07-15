@@ -2,6 +2,7 @@
 
 namespace Simplex\Http\Session;
 
+use Simplex\Http\CookieStorage;
 use Simplex\Http\MiddlewareInterface;
 use Simplex\Http\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +18,20 @@ class SessionMiddleware implements MiddlewareInterface
     private $session;
 
     /**
+     * @var CookieStorage
+     */
+    private $cookieStorage;
+
+    /**
      * Constructor
      *
      * @param SessionInterface $session
+     * @param CookieStorage $cookieStorage
      */
-    public function __construct(SessionInterface $session)
+    public function __construct(SessionInterface $session, CookieStorage $cookieStorage)
     {
         $this->session = $session;
+        $this->cookieStorage = $cookieStorage;
     }
 
     /**
@@ -33,6 +41,7 @@ class SessionMiddleware implements MiddlewareInterface
     {
         $this->session->start();
         $request->setSession($this->session);
+        $this->cookieStorage->setCookie($this->session->getName(), $this->session->getId());
         return $handler->handle($request);
     }
 

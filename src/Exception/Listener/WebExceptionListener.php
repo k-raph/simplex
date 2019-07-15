@@ -13,6 +13,7 @@ use Simplex\Database\Exceptions\ResourceNotFoundException as DatabaseResourceNot
 use Simplex\EventManager\EventManagerInterface;
 use Simplex\Exception\Event\HttpExceptionEvent;
 use Simplex\Exception\Event\KernelExceptionEvent;
+use Simplex\Security\Csrf\TokenMismatchException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -25,6 +26,10 @@ class WebExceptionListener
      */
     private $eventManager;
 
+    /**
+     * WebExceptionListener constructor.
+     * @param EventManagerInterface $eventManager
+     */
     public function __construct(EventManagerInterface $eventManager)
     {
         $this->eventManager = $eventManager;
@@ -42,12 +47,28 @@ class WebExceptionListener
         switch (true) {
             case $exception instanceof DatabaseResourceNotFoundException:
             case $exception instanceof ResourceNotFoundException:
-                $httpEvent = $this->eventManager->dispatch(new HttpExceptionEvent($exception, 404));
+                $httpEvent = $this->eventManager->dispatch(new HttpExceptionEvent($exception, 404, [
+                    'title' => 'Page Not Found',
+                    'content' => 'Sorry, the page you are looking for could not be found.'
+                ]));
                 if ($httpEvent->hasResponse()) {
                     $response = $httpEvent->getResponse();
                 } else {
                     $response = new Response();
                     $response->setContent("<title>404 Not Found</title> <h1>Not Found</h1>" . $exception->getMessage());
+                    $response->setStatusCode($exception->getCode());
+                }
+                break;
+            case $exception instanceof TokenMismatchException:
+                $httpEvent = $this->eventManager->dispatch(new HttpExceptionEvent($exception, 419, [
+                    'title' => 'Session expired',
+                    'content' => 'Sorry, your session has expired. Please refresh and try again.'
+                ]));
+                if ($httpEvent->hasResponse()) {
+                    $response = $httpEvent->getResponse();
+                } else {
+                    $response = new Response();
+                    $response->setContent("<title>419 Session Expired</title> <h1>Sorry, your session has expired.</h1>" . $exception->getMessage());
                     $response->setStatusCode($exception->getCode());
                 }
                 break;

@@ -9,6 +9,7 @@
 namespace Simplex\Security\Csrf;
 
 
+use Simplex\Helper\Str;
 use Symfony\Component\HttpFoundation\Request;
 
 class CsrfTokenManager
@@ -75,9 +76,6 @@ class CsrfTokenManager
      */
     public function generateToken(): string
     {
-        // From Symfony\Security\Csrf\CsrfTokenManager
-        $bytes = random_bytes($this->entropy / 8);
-
-        return rtrim(strtr(base64_encode($bytes), '+/', '-_'), '=');
+        return Str::random(32);
     }
 }

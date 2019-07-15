@@ -48,7 +48,7 @@ class TwigServiceProvider extends AbstractServiceProvider
             ->on(HttpExceptionEvent::class, function (HttpExceptionEvent $event) {
                 $response = new Response();
                 $twig = $this->container->get(TwigRenderer::class);
-                $response->setContent($twig->render('errors/4xx'));
+                $response->setContent($twig->render('errors/4xx', $event->getViewData()));
                 $response->setStatusCode($event->getStatusCode());
 
                 $event->setResponse($response);

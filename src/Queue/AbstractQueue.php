@@ -9,6 +9,7 @@
 namespace Simplex\Queue;
 
 
+use Simplex\Helper\Str;
 use Simplex\Queue\Contracts\JobInterface;
 use Simplex\Queue\Contracts\QueueInterface;
 
@@ -43,16 +44,7 @@ abstract class AbstractQueue implements QueueInterface
      */
     protected function getId(): string
     {
-        $string = '';
-        $length = 10;
-
-        while (($len = strlen($string)) < $length) {
-            $size = $length - $len;
-            $bytes = random_bytes($size);
-            $string .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $size);
-        }
-
-        return $string;
+        return Str::random(10);
     }
 
 }

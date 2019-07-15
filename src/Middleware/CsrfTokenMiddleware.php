@@ -11,6 +11,7 @@ namespace Simplex\Middleware;
 use Simplex\Http\MiddlewareInterface;
 use Simplex\Http\RequestHandlerInterface;
 use Simplex\Security\Csrf\CsrfTokenManager;
+use Simplex\Security\Csrf\TokenMismatchException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -50,9 +51,7 @@ class CsrfTokenMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        return new Response('Failed CSRF check', 400, [
-            'Content-Type' => 'text/plain'
-        ]);
+        throw new TokenMismatchException('Sorry, your session has expired. Please refresh and try again.', 419);
     }
 
     /**

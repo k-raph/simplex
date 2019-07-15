@@ -43,23 +43,32 @@ class CategoryMapper extends EntityMapper
     /**
      * Extract an entity to persistable state
      *
-     * @param Category $entity
+     * @param IdentifiableInterface|Category $entity
      * @return array
      */
     public function extract(IdentifiableInterface $entity): array
     {
-        // TODO: Implement extract() method.
+        return [
+            'name' => $entity->getName(),
+            'slug' => $entity->getSlug()
+        ];
     }
 
     /**
      * Performs an entity update
      *
-     * @param IdentifiableInterface $entity
+     * @param IdentifiableInterface|Category $entity
      * @return mixed
      */
     public function update(IdentifiableInterface $entity)
     {
-        // TODO: Implement update() method.
+        $changes = $this->uow->getChangeSet($entity);
+
+        if (!empty($changes)) {
+            return $this->query()
+                ->where('id', $entity->getId())
+                ->update($changes);
+        }
     }
 
     /**

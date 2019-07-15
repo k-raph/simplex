@@ -17,10 +17,10 @@ use App\JobeetModule\Mapper\AffiliateMapper;
 use Simplex\Database\Query\Builder;
 use Simplex\DataMapper\EntityManager;
 use Simplex\EventManager\EventManagerInterface;
+use Simplex\Helper\Str;
 use Simplex\Http\Session\SessionFlash;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
-use Simplex\Security\Csrf\CsrfTokenManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -72,7 +72,7 @@ class AffiliateManageAction extends AffiliateRegisterAction
         $affiliate->setActive(!$affiliate->isActive());
 
         if ($affiliate->isActive() && !$affiliate->getToken()) {
-            $token = (new CsrfTokenManager())->generateToken();
+            $token = Str::random(32);
             $affiliate->setToken($token);
 
             $events->dispatch(new AffiliateActivationEvent($affiliate));

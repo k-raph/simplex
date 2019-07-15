@@ -28,10 +28,16 @@ class HttpExceptionEvent
      */
     private $statusCode;
 
-    public function __construct(\Exception $exception, int $statusCode)
+    /**
+     * @var array
+     */
+    private $viewData;
+
+    public function __construct(\Exception $exception, int $statusCode, array $viewData = [])
     {
         $this->exception = $exception;
         $this->statusCode = $statusCode;
+        $this->viewData = $viewData;
     }
 
     /**
@@ -74,6 +80,14 @@ class HttpExceptionEvent
     public function getStatusCode(): int
     {
         return $this->statusCode;
+    }
+
+    /**
+     * @return array
+     */
+    public function getViewData(): array
+    {
+        return $this->viewData;
     }
 
 }

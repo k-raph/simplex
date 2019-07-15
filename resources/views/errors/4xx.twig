@@ -1,9 +1,9 @@
 {% extends 'layout.twig' %}
 
-{% block title %}Page Not Found{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
     <div class="center">
-        <h1>Sorry, the page you are looking for could not be found.</h1>
+        <h1>{{ content }}</h1>
     </div>
 {% endblock %}

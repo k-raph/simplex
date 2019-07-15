@@ -42,7 +42,7 @@ class Pipeline implements RequestHandlerInterface, MiddlewareInterface
             throw new \RuntimeException('There is no middleware registered in the pipeline.');
         }
 
-        $middleware = $this->stack->dequeue();       
+        $middleware = $this->stack->dequeue();
         return $middleware->process($request, $this);
     }
 
