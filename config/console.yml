@@ -2,3 +2,6 @@ commands:
   - Simplex\Console\Command\YamlLintCommand
   - Simplex\Console\Command\RouterDebugCommand
   - Simplex\Console\Command\WorkerRunCommand
+  - Simplex\Module\Command\ModuleListCommand
+  - Simplex\Plugin\Command\PluginListCommand
+  - Simplex\Plugin\Command\PluginLoadedListCommand
