@@ -83,7 +83,7 @@ class QueryBuilder extends Builder
     /**
      * Update an entity
      *
-     * @param object $entity
+     * @param array|IdentifiableInterface $entity
      * @return int
      */
     public function update($entity): int
