@@ -30,8 +30,6 @@ class User
      */
     private $joinedAt;
 
-    private $comments;
-
     public function setId(int $id)
     {
         $this->id = $id;

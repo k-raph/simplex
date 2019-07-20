@@ -90,7 +90,6 @@ class EventManager implements EventManagerInterface
                 }
             }
         }
-
     }
 
     /**
@@ -141,6 +140,5 @@ class EventManager implements EventManagerInterface
         } else {
             $this->listeners = [];
         }
-
     }
 }

@@ -48,6 +48,5 @@ class RoutingServiceProvider extends AbstractServiceProvider
     <h1>Welcome to Simplex default home</h1>
 </div>
 HTML;
-
     }
 }

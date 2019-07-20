@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Admin\Command;
 
-
 use App\JobeetModule\Admin\Repository\AffiliateRepository;
 use App\JobeetModule\Entity\Affiliate;
 use Symfony\Component\Console\Command\Command;

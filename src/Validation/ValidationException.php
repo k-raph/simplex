@@ -8,7 +8,6 @@
 
 namespace Simplex\Validation;
 
-
 use Rakit\Validation\ErrorBag;
 use Throwable;
 

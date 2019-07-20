@@ -58,7 +58,8 @@ class JobeetServiceProvider extends AbstractModule
                             $event,
                             $container->get(QueueInterface::class)
                         );
-                });
+                }
+            );
     }
 
     /**

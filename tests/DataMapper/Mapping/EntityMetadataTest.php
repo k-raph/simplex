@@ -29,5 +29,4 @@ class EntityMetadataTest extends TestCase
         $this->assertEquals('username', $metadata->getSQLName('name'));
         $this->assertEquals('email', $metadata->getSQLName('email'));
     }
-
 }

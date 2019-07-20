@@ -8,7 +8,6 @@
 
 namespace Simplex\Events;
 
-
 use Psr\EventDispatcher\StoppableEventInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,6 +55,4 @@ class KernelRequestEvent implements StoppableEventInterface
         $this->response = $response;
         $this->stopPropagation();
     }
-
-
 }

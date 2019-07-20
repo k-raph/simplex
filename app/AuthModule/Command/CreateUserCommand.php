@@ -8,7 +8,6 @@
 
 namespace App\AuthModule\Command;
 
-
 use App\AuthModule\Entity\User;
 use App\AuthModule\Provider\DatabaseUserProvider;
 use Simplex\Helper\Str;
@@ -85,15 +84,13 @@ class CreateUserCommand extends Command
                 return $validation->passes()
                     ? $validation->getValidData()['password']
                     : null;
-            })
-        );
+            }));
 
         $helper->ask($input, $output, (new Question('Confirm password'))
             ->setHidden(true)
             ->setValidator(function (string $confirm) use ($password) {
                 return $password === $confirm ? true : null;
-            })
-        );
+            }));
 
         $input->setArgument('username', $username);
         $input->setArgument('email', $email);

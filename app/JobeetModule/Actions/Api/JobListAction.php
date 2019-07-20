@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Actions\Api;
 
-
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Repository\JobRepository;
 use Simplex\Routing\RouterInterface;

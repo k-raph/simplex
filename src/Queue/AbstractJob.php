@@ -8,7 +8,6 @@
 
 namespace Simplex\Queue;
 
-
 use Simplex\Queue\Contracts\JobInterface;
 
 abstract class AbstractJob implements JobInterface
@@ -34,5 +33,4 @@ abstract class AbstractJob implements JobInterface
     {
         $this->id = $id;
     }
-
 }

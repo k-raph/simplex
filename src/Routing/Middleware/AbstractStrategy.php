@@ -8,7 +8,6 @@
 
 namespace Simplex\Routing\Middleware;
 
-
 use Psr\Container\ContainerInterface;
 use Simplex\Http\MiddlewareInterface;
 use Simplex\Http\Pipeline;
@@ -52,8 +51,9 @@ abstract class AbstractStrategy implements StrategyInterface
         $this->pipeline->seed($this->middlewares, function ($middleware) {
             if (is_string($middleware)) {
                 return $this->container->get($middleware);
-            } elseif (is_object($middleware) && $middleware instanceof MiddlewareInterface)
+            } elseif (is_object($middleware) && $middleware instanceof MiddlewareInterface) {
                 return $middleware;
+            }
         });
 
         return $this->pipeline->process($request, $handler);
@@ -69,8 +69,12 @@ abstract class AbstractStrategy implements StrategyInterface
             ? $response
             : $this->createResponse($response);
 
-        if (!$response)
-            throw new \Exception(sprintf('Unable to build a proper response. Got response of type: "%s"', gettype($response)));
+        if (!$response) {
+            throw new \Exception(sprintf(
+                'Unable to build a proper response. Got response of type: "%s"',
+                gettype($response)
+            ));
+        }
 
         return $response;
     }

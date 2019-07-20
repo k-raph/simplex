@@ -61,7 +61,6 @@ class Paginator
             $this->items = $items->limit($perPage)
                 ->offset($page)
                 ->get();
-
         } elseif (is_array($items)) {
             $this->total = count($items);
 

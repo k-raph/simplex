@@ -8,7 +8,6 @@
 
 namespace Simplex\Security\Csrf;
 
-
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

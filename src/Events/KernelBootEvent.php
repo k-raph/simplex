@@ -8,7 +8,6 @@
 
 namespace Simplex\Events;
 
-
 use Simplex\Configuration\Configuration;
 
 class KernelBootEvent
@@ -31,5 +30,4 @@ class KernelBootEvent
     {
         return $this->configuration;
     }
-
 }

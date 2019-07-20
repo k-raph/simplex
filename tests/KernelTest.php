@@ -3,10 +3,9 @@
 namespace Simplex\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Simplex\Kernel;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class KernelTest extends TestCase
 {

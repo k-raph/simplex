@@ -8,7 +8,6 @@
 
 namespace App\AuthModule\Actions;
 
-
 use Simplex\Http\Session\SessionFlash;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;

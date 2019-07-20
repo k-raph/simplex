@@ -52,5 +52,4 @@ class RouteMiddleware implements MiddlewareInterface
 
         return $strategy->process($request, $handler);
     }
-
 }

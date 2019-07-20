@@ -8,7 +8,6 @@
 
 namespace Simplex\DataMapper;
 
-
 use Simplex\Database\DatabaseManager;
 
 class DataMapper
@@ -48,5 +47,4 @@ class DataMapper
 
         return $this->managers[$name];
     }
-
 }

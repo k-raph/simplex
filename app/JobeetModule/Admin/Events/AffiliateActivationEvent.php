@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Admin\Events;
 
-
 use App\JobeetModule\Entity\Affiliate;
 
 class AffiliateActivationEvent
@@ -31,5 +30,4 @@ class AffiliateActivationEvent
     {
         return $this->affiliate;
     }
-
 }

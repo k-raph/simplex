@@ -8,7 +8,6 @@
 
 namespace App\SocialNetwork\Actions;
 
-
 class HomeAction
 {
 
@@ -16,5 +15,4 @@ class HomeAction
     {
         return 'Hello <strong>Family Book</strong>';
     }
-
 }

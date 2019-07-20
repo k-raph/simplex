@@ -8,7 +8,6 @@
 
 namespace Simplex\Exception;
 
-
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 use Simplex\EventManager\EventManagerInterface;

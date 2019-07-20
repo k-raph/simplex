@@ -95,7 +95,8 @@ class Post implements IdentifiableInterface
      * @param User $author
      */
     public function setAuthor(/*User*/
-        $author): void
+        $author
+    ): void
     {
         $this->author = $author;
     }
@@ -115,5 +116,4 @@ class Post implements IdentifiableInterface
     {
         $this->comments = $comments;
     }
-
 }

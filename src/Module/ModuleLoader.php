@@ -8,7 +8,6 @@
 
 namespace Simplex\Module;
 
-
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\DataMapper\DataMapperServiceProvider;

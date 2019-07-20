@@ -8,7 +8,6 @@
 
 namespace Simplex\Security\Authentication\User;
 
-
 class User implements UserInterface
 {
 

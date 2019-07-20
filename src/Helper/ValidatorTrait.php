@@ -8,7 +8,6 @@
 
 namespace Simplex\Helper;
 
-
 use Rakit\Validation\Validation;
 use Simplex\Validation\Validator;
 

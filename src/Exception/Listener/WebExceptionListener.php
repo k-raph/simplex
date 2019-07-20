@@ -8,7 +8,6 @@
 
 namespace Simplex\Exception\Listener;
 
-
 use Simplex\Database\Exceptions\ResourceNotFoundException as DatabaseResourceNotFoundException;
 use Simplex\EventManager\EventManagerInterface;
 use Simplex\Exception\Event\HttpExceptionEvent;
@@ -86,5 +85,4 @@ class WebExceptionListener
         $event->setResponse($response);
         return $event;
     }
-
 }

@@ -71,5 +71,4 @@ class RoutingMiddleware implements MiddlewareInterface, ContainerAwareInterface
 
         $request->attributes->set('_route', $route);
     }
-
 }

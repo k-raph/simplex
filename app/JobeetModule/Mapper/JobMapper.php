@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Mapper;
 
-
 use App\JobeetModule\Entity\Job;
 use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;
@@ -55,7 +54,9 @@ class JobMapper extends EntityMapper
             $job->setExpiresAt(\DateTime::createFromFormat('Y-m-d H:i:s', $input['expires_at']));
         }
 
-        foreach (['id', 'category', 'logo', 'url', 'application', 'description', 'public', 'token', 'email'] as $field) {
+        foreach ([
+                     'id', 'category', 'logo', 'url', 'application',
+                     'description', 'public', 'token', 'email'] as $field) {
             if (isset($input[$field])) {
                 $method = 'set' . ucfirst($field);
                 $job->{$method}($input[$field]);
@@ -123,7 +124,6 @@ class JobMapper extends EntityMapper
                 ->where('id', $entity->getId())
                 ->update($changes);
         }
-
     }
 
     /**

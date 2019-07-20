@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Actions;
 
-
 use App\JobeetModule\Entity\Affiliate;
 use Simplex\Database\Query\Builder;
 use Simplex\DataMapper\EntityManager;

@@ -3,7 +3,6 @@
 namespace App\Blog\Action;
 
 use App\Blog\Entity\Post;
-use App\Blog\Table\PostTable;
 use Simplex\DataMapper\EntityManager;
 use Simplex\Renderer\TwigRenderer;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,12 +19,9 @@ class PostEditAction
     private $view;
 
     /**
-     * Post table
-     *
-     * @var PostTable
+     * PostEditAction constructor.
+     * @param TwigRenderer $renderer
      */
-    private $posts;
-
     public function __construct(TwigRenderer $renderer)
     {
         $this->view = $renderer;
@@ -86,12 +82,12 @@ class PostEditAction
 
     private function isValid(array $data): bool
     {
-        foreach($data as $key => $value) {
-            if (!preg_match('#\w+#', $value))
+        foreach ($data as $key => $value) {
+            if (!preg_match('#\w+#', $value)) {
                 return false;
+            }
         }
 
         return true;
     }
-
 }

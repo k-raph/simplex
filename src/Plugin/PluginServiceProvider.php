@@ -8,7 +8,6 @@
 
 namespace Simplex\Plugin;
 
-
 use Composer\Autoload\ClassLoader;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Psr\Container\ContainerInterface;

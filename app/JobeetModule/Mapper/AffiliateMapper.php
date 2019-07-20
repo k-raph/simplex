@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Mapper;
 
-
 use App\JobeetModule\Entity\Affiliate;
 use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;

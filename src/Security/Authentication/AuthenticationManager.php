@@ -8,7 +8,6 @@
 
 namespace Simplex\Security\Authentication;
 
-
 use Simplex\Http\CookieStorage;
 use Simplex\Security\Authentication\Provider\UserProviderInterface;
 use Simplex\Security\Authentication\User\UserInterface;

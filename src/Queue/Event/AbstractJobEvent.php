@@ -8,7 +8,6 @@
 
 namespace Simplex\Queue\Event;
 
-
 use Simplex\Queue\Contracts\JobInterface;
 
 abstract class AbstractJobEvent
@@ -31,5 +30,4 @@ abstract class AbstractJobEvent
     {
         return $this->job;
     }
-
 }

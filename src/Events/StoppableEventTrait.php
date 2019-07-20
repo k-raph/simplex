@@ -8,7 +8,6 @@
 
 namespace Simplex\Events;
 
-
 trait StoppableEventTrait
 {
 

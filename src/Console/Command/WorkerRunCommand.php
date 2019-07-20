@@ -8,7 +8,6 @@
 
 namespace Simplex\Console\Command;
 
-
 use Simplex\Queue\Event\JobFailedEvent;
 use Simplex\Queue\Event\JobStartingEvent;
 use Simplex\Queue\Event\JobSuccessEvent;
@@ -75,7 +74,6 @@ class WorkerRunCommand extends Command
             $now = (new \DateTime())->format('m-d-Y H:i:s');
             $output->writeln("$now : Job $job '$id' failed");
         });
-
     }
 
     /**

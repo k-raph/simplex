@@ -8,7 +8,6 @@
 
 namespace Simplex\Validation;
 
-
 use Rakit\Validation\Validation;
 use Rakit\Validation\Validator as BaseValidator;
 

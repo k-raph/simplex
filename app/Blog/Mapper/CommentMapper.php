@@ -8,7 +8,6 @@
 
 namespace App\Blog\Mapper;
 
-
 use App\Blog\Entity\Comment;
 use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;

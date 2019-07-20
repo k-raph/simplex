@@ -44,5 +44,4 @@ class SessionMiddleware implements MiddlewareInterface
         $this->cookieStorage->setCookie($this->session->getName(), $this->session->getId());
         return $handler->handle($request);
     }
-
 }

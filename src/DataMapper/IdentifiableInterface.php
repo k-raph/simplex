@@ -8,7 +8,6 @@
 
 namespace Simplex\DataMapper;
 
-
 interface IdentifiableInterface
 {
 
@@ -25,5 +24,4 @@ interface IdentifiableInterface
      * @param int $id
      */
     public function setId(int $id): void;
-
 }

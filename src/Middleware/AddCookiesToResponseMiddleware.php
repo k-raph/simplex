@@ -8,7 +8,6 @@
 
 namespace Simplex\Middleware;
 
-
 use Simplex\Http\CookieStorage;
 use Simplex\Http\MiddlewareInterface;
 use Simplex\Http\RequestHandlerInterface;

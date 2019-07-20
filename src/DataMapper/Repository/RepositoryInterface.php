@@ -37,5 +37,4 @@ interface RepositoryInterface
      * @return object|null
      */
     public function findOneBy(array $criteria): ?object;
-
 }

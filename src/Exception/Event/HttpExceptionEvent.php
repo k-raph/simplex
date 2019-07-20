@@ -8,7 +8,6 @@
 
 namespace Simplex\Exception\Event;
 
-
 use Symfony\Component\HttpFoundation\Response;
 
 class HttpExceptionEvent
@@ -89,5 +88,4 @@ class HttpExceptionEvent
     {
         return $this->viewData;
     }
-
 }

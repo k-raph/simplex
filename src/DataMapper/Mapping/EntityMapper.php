@@ -3,7 +3,6 @@
 namespace Simplex\DataMapper\Mapping;
 
 use Simplex\Database\DatabaseInterface;
-use Simplex\DataMapper\Identifiable;
 use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\QueryBuilder;
 use Simplex\DataMapper\UnitOfWork;
@@ -73,7 +72,7 @@ abstract class EntityMapper implements EntityMapperInterface
     public function insert(IdentifiableInterface $entity)
     {
         $this->queueInsert($entity);
-        $this->executeInsert();
+        return $this->executeInsert();
     }
 
     /**
@@ -81,7 +80,6 @@ abstract class EntityMapper implements EntityMapperInterface
      *
      * @internal
      * @param IdentifiableInterface $entity
-     * @return mixed
      */
     public function queueInsert(IdentifiableInterface $entity)
     {
@@ -145,6 +143,5 @@ abstract class EntityMapper implements EntityMapperInterface
         return $this->query()
             ->where('id', $entity->getId())
             ->delete();
-
     }
 }

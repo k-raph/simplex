@@ -8,7 +8,6 @@
 
 namespace App\AdminModule;
 
-
 use Simplex\Middleware\AuthenticationMiddleware;
 use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;

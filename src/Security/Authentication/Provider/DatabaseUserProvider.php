@@ -8,7 +8,6 @@
 
 namespace Simplex\Security\Authentication\Provider;
 
-
 use Simplex\Database\DatabaseInterface;
 use Simplex\Database\Query\Builder;
 use Simplex\Security\Authentication\User\User;

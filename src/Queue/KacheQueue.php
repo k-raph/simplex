@@ -8,7 +8,6 @@
 
 namespace Simplex\Queue;
 
-
 use Kached\Kache;
 use Simplex\Queue\Contracts\JobInterface;
 
@@ -100,6 +99,4 @@ class KacheQueue extends AbstractQueue
         $response = $this->kache->getConnection()->sendCommand('qdel', sprintf('%s %d', $queue, $id));
         $this->kache->format($response);
     }
-
-
 }

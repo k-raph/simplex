@@ -8,7 +8,6 @@
 
 namespace App\Blog\Mapper;
 
-
 use App\Blog\Entity\Post;
 use Simplex\Database\Exceptions\ResourceNotFoundException;
 use Simplex\DataMapper\IdentifiableInterface;

@@ -8,7 +8,6 @@
 
 namespace Simplex\Plugin\Command;
 
-
 use Simplex\Plugin\PluginInterface;
 use Simplex\Plugin\PluginManager;
 use Symfony\Component\Console\Command\Command;

@@ -8,7 +8,6 @@
 
 namespace Simplex\Strategy;
 
-
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\Routing\Middleware\AbstractStrategy;
@@ -37,8 +36,7 @@ class WebStrategy extends AbstractStrategy
      */
     protected function createResponse($response): ?Response
     {
-        if (
-            is_string($response) ||
+        if (is_string($response) ||
             (is_object($response) && method_exists($response, '__toString'))
         ) {
             return new Response((string)$response);

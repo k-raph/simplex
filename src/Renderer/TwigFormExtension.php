@@ -105,7 +105,8 @@ HTML;
         string $name,
         string $label,
         $value = null,
-        array $attributes = [])
+        array $attributes = []
+    )
     {
         switch ($type) {
             case 'checkbox':

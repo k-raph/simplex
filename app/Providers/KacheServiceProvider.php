@@ -8,7 +8,6 @@
 
 namespace App\Providers;
 
-
 use Kached\Connection;
 use Kached\Kache;
 use Kached\Socket\SocketInterface;

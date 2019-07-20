@@ -2,7 +2,7 @@
 
 /**
  * Http Server Request Handler Interface inspired from Psr\Http\ServerRequestHandlerInterface
- * 
+ *
  * @author K. Raphael <raphalogou@gmail.com>
  */
 
@@ -10,7 +10,6 @@ namespace Simplex\Http;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 
 interface RequestHandlerInterface
 {
@@ -22,5 +21,4 @@ interface RequestHandlerInterface
      * @return Response
      */
     public function handle(Request $request): Response;
-
 }

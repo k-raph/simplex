@@ -8,7 +8,6 @@
 
 namespace Simplex\Module;
 
-
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 use Simplex\Configuration\Configuration;

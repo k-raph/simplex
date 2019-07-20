@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Admin\Actions;
 
-
 use App\JobeetModule\Actions\AffiliateRegisterAction;
 use App\JobeetModule\Admin\Events\AffiliateActivationEvent;
 use App\JobeetModule\Admin\Repository\AffiliateRepository;
@@ -65,7 +64,12 @@ class AffiliateManageAction extends AffiliateRegisterAction
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function activate(int $id, EntityManager $manager, EventManagerInterface $events, RouterInterface $router, SessionFlash $flash)
+    public function activate(
+        int $id,
+        EntityManager $manager,
+        EventManagerInterface $events,
+        RouterInterface $router,
+        SessionFlash $flash)
     {
         /** @var Affiliate $affiliate */
         $affiliate = $manager->find(Affiliate::class, $id);

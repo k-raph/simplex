@@ -8,7 +8,6 @@
 
 namespace Simplex\Security\Csrf;
 
-
 use Simplex\Helper\Str;
 use Symfony\Component\HttpFoundation\Request;
 

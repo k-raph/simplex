@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Actions;
 
-
 use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Repository\CategoryRepository;
 use App\JobeetModule\Repository\JobRepository;
@@ -30,7 +29,11 @@ class CategoryShowAction
         $this->view = $view;
     }
 
-    public function single(Request $request, CategoryRepository $repository, JobRepository $jobRepository, RouterInterface $router)
+    public function single(
+        Request $request,
+        CategoryRepository $repository,
+        JobRepository $jobRepository,
+        RouterInterface $router)
     {
         $slug = $request->attributes->get('_route_params')['slug'];
         $page = $request->query->get('page', 1);
@@ -50,5 +53,4 @@ class CategoryShowAction
             'pages' => $paginator
         ]);
     }
-
 }

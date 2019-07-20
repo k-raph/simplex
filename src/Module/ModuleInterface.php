@@ -8,7 +8,6 @@
 
 namespace Simplex\Module;
 
-
 use Simplex\Configuration\Configuration;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouteCollection;

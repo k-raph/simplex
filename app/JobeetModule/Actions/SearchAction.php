@@ -18,10 +18,10 @@ class SearchAction
     {
         //TODO : Implement search algorithm based on sqlite database
         /*$filter = $request->request->get('search', '');
-        $result = $manager->getConnection()->query("SELECT * FROM temp_jobs WHERE temp_jobs MATCH 'location:West'")//, [':search' => $filter])
+        $result = $manager->getConnection()
+            ->query("SELECT * FROM temp_jobs WHERE temp_jobs MATCH 'location:West'")//, [':search' => $filter])
             ->fetchAll();
 
         return new JsonResponse($result);*/
     }
-
 }

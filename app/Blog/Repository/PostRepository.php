@@ -8,7 +8,6 @@
 
 namespace App\Blog\Repository;
 
-
 use App\Blog\Entity\Post;
 use App\Blog\Mapper\PostMapper;
 use Simplex\Database\Query\Builder;

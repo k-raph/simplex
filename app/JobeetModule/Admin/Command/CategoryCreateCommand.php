@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Admin\Command;
 
-
 use App\JobeetModule\Entity\Category;
 use Simplex\DataMapper\EntityManager;
 use Simplex\Helper\Str;

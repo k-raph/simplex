@@ -8,7 +8,6 @@
 
 namespace Simplex\Security\Authentication;
 
-
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Simplex\Configuration\Configuration;
 use Simplex\Database\DatabaseInterface;

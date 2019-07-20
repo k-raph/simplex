@@ -3,14 +3,14 @@
 namespace Simplex\Tests\DataMapper;
 
 use PHPUnit\Framework\TestCase;
-use Simplex\DataMapper\Configuration;
-use Simplex\DataMapper\Mapping\MetadataFactory;
-use Simplex\Tests\DataMapper\Fixtures\Entity\User;
-use Simplex\DataMapper\Mapping\EntityMetadata;
+use Prophecy\Argument;
 use Simplex\Database\DatabaseInterface;
 use Simplex\Database\Query\Builder;
+use Simplex\DataMapper\Configuration;
 use Simplex\DataMapper\EntityManager;
-use Prophecy\Argument;
+use Simplex\DataMapper\Mapping\EntityMetadata;
+use Simplex\DataMapper\Mapping\MetadataFactory;
+use Simplex\Tests\DataMapper\Fixtures\Entity\User;
 
 class ConfigurationTest extends TestCase
 {

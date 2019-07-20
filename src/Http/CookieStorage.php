@@ -35,7 +35,8 @@ class CookieStorage
         bool $httpOnly = true,
         bool $secure = true,
         ?string $path = '/',
-        ?string $domain = null)
+        ?string $domain = null
+    )
     {
         $this->cookies[] = new Cookie(
             $name,
@@ -55,5 +56,4 @@ class CookieStorage
     {
         return $this->cookies;
     }
-
 }

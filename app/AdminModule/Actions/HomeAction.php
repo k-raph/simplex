@@ -8,7 +8,6 @@
 
 namespace App\AdminModule\Actions;
 
-
 use Simplex\Renderer\TwigRenderer;
 
 class HomeAction
@@ -18,5 +17,4 @@ class HomeAction
     {
         return $renderer->render('@admin/panel');
     }
-
 }

@@ -8,7 +8,6 @@
 
 namespace Simplex\Security\Csrf;
 
-
 class TokenMismatchException extends \Exception
 {
 

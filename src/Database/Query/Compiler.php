@@ -65,8 +65,9 @@ class Compiler
     {
         $allowedTypes = ['select', 'insert', 'insertignore', 'replace', 'delete', 'update', 'criteriaonly'];
 
-        if (in_array(strtolower($type), $allowedTypes) === false)
+        if (in_array(strtolower($type), $allowedTypes) === false) {
             throw new Exception($type . ' is not a known type.');
+        }
 
         return $this->{$type}($querySegments, 'criteriaOnly' === $type ? $data['bind'] : $data);
     }
@@ -77,15 +78,18 @@ class Compiler
      */
     public function select(array $querySegments): array
     {
-        if (isset($querySegments['selects']) === false)
+        if (isset($querySegments['selects']) === false) {
             $querySegments['selects'][] = '*';
+        }
 
         list($wheres, $whereBindings) = $this->buildCriteriaOfType($querySegments, 'wheres', 'WHERE');
 
-        if (isset($querySegments['groupBy']) && $groupBy = $this->arrayToString($querySegments['groupBy'], ', ', 'column'))
+        if (isset($querySegments['groupBy'])
+            && $groupBy = $this->arrayToString($querySegments['groupBy'], ', ', 'column')) {
             $groupBy = 'GROUP BY ' . $groupBy;
-        else
+        } else {
             $groupBy = '';
+        }
 
         if (isset($querySegments['orderBy']) && is_array($querySegments['orderBy'])) {
             $orderBy = '';
@@ -93,8 +97,9 @@ class Compiler
                 $orderBy .= $this->quoteTable($order['field']) . ' ' . $order['type'] . ', ';
             }
 
-            if ($orderBy = trim($orderBy, ', '))
+            if ($orderBy = trim($orderBy, ', ')) {
                 $orderBy = 'ORDER BY ' . $orderBy;
+            }
         } else {
             $orderBy = '';
         }
@@ -139,7 +144,12 @@ class Compiler
      * @param bool $bindValues
      * @return array
      */
-    protected function buildCriteriaOfType(array $querySegments, string $key, string $type, bool $bindValues = true): array
+    protected function buildCriteriaOfType(
+        array $querySegments,
+        string $key,
+        string $type,
+        bool $bindValues = true
+    ): array
     {
         $criteria = '';
         $bindings = [];
@@ -148,8 +158,9 @@ class Compiler
             // Get the generic/adapter agnostic criteria string from parent
             list($criteria, $bindings) = $this->buildCriteria($querySegments[$key], $bindValues);
 
-            if ($criteria)
+            if ($criteria) {
                 $criteria = $type . ' ' . $criteria;
+            }
         }
 
         return [$criteria, $bindings];
@@ -235,10 +246,11 @@ class Compiler
      */
     public function quoteTable($value)
     {
-        if ($value instanceof Raw)
+        if ($value instanceof Raw) {
             return (string)$value;
-        elseif ($value instanceof \Closure)
+        } elseif ($value instanceof \Closure) {
             return $value;
+        }
 
         if (strpos($value, '.')) {
             $segments = explode('.', $value, 2);
@@ -279,16 +291,18 @@ class Compiler
      */
     public function quote($value)
     {
-        if ($value instanceof Raw)
+        if ($value instanceof Raw) {
             return (string)$value;
-        elseif ($value instanceof \Closure)
+        } elseif ($value instanceof \Closure) {
             return $value;
+        }
 
         if (strpos($value, '.')) {
             $segments = [];
 
-            foreach (explode('.', $value, 2) as $val)
+            foreach (explode('.', $value, 2) as $val) {
                 $segments[] = $this->quoteSingle($val);
+            }
 
             return implode('.', $segments);
         } else {
@@ -317,10 +331,11 @@ class Compiler
 
         foreach ($data as $key => $val) {
             if (is_int($val) === false) {
-                if ($quote === 'table' || $quote === 'column')
+                if ($quote === 'table' || $quote === 'column') {
                     $val = $this->quoteTable($val);
-                else if ($quote === 'value')
+                } elseif ($quote === 'value') {
                     $val = $this->quote($val);
+                }
             }
 
             $elements[] = $val;
@@ -337,14 +352,16 @@ class Compiler
     {
         $sql = '';
 
-        if (isset($querySegments['joins']) === false || is_array($querySegments['joins']) === false)
+        if (isset($querySegments['joins']) === false || is_array($querySegments['joins']) === false) {
             return $sql;
+        }
 
         foreach ($querySegments['joins'] as $joinArr) {
-            if (is_array($joinArr['table']))
+            if (is_array($joinArr['table'])) {
                 $table = $this->quoteTable($joinArr['table'][0]) . ' AS ' . $this->quoteTable($joinArr['table'][1]);
-            else
+            } else {
                 $table = $joinArr['table'] instanceof Raw ? (string)$joinArr['table'] : $this->quoteTable($joinArr['table']);
+            }
 
             /** @var JoinBuilder $joinBuilder */
             $joinBuilder = $joinArr['joinBuilder'];
@@ -428,8 +445,9 @@ class Compiler
      */
     private function doInsert(array $querySegments, array $data, string $type): array
     {
-        if (!isset($querySegments['tables']))
+        if (!isset($querySegments['tables'])) {
             throw new Exception('No table given.');
+        }
 
         $table = end($querySegments['tables']);
 
@@ -471,8 +489,9 @@ class Compiler
         ];
 
         if (isset($querySegments['onduplicate'])) {
-            if (count($querySegments['onduplicate']) < 1)
+            if (count($querySegments['onduplicate']) < 1) {
                 throw new Exception('No data given.');
+            }
 
             list($updateStatement, $updateBindings) = $this->getUpdateStatement($querySegments['onduplicate']);
 
@@ -538,10 +557,11 @@ class Compiler
      */
     public function update(array $querySegments, array $data): array
     {
-        if (isset($querySegments['tables']) === false)
+        if (isset($querySegments['tables']) === false) {
             throw new Exception('No table given.');
-        elseif (count($data) < 1)
+        } elseif (count($data) < 1) {
             throw new Exception('No data given.');
+        }
 
         $table = end($querySegments['tables']);
 
@@ -572,8 +592,9 @@ class Compiler
      */
     public function delete(array $querySegments): array
     {
-        if (isset($querySegments['tables']) === false)
+        if (isset($querySegments['tables']) === false) {
             throw new Exception('No table given.');
+        }
 
         $table = end($querySegments['tables']);
 
@@ -595,11 +616,13 @@ class Compiler
      */
     public function addTablePrefix($value)
     {
-        if (is_null($this->tablePrefix))
+        if (is_null($this->tablePrefix)) {
             return $value;
+        }
 
-        if (is_string($value) === false)
+        if (is_string($value) === false) {
             return $value;
+        }
 
         return $this->tablePrefix . $value;
     }

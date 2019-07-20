@@ -8,13 +8,13 @@
 
 namespace Simplex\Middleware;
 
-
 use Simplex\Http\MiddlewareInterface;
 use Simplex\Http\RequestHandlerInterface;
 use Simplex\Renderer\TwigRenderer;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class TwigSessionMiddleware implements MiddlewareInterface
 {
@@ -43,6 +43,7 @@ class TwigSessionMiddleware implements MiddlewareInterface
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
         if ($request->hasSession()) {
+            /** @var Session $session */
             $env = $this->renderer->getEnv();
             $session = $request->getSession();
             $flash = $session->getFlashBag();

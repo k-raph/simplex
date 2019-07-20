@@ -82,7 +82,10 @@ class DispatchMiddleware implements MiddlewareInterface, ContainerAwareInterface
     private function validateResponse($response): Response
     {
         if (!$response instanceof Response) {
-            throw new \LogicException(sprintf('Controller must return a string, an array or a Response object. "%s" given', gettype($response)));
+            throw new \LogicException(sprintf(
+                'Controller must return a string, an array or a Response object. "%s" given',
+                gettype($response)
+            ));
         }
 
         return $response;

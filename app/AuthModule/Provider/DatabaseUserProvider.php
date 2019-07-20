@@ -8,7 +8,6 @@
 
 namespace App\AuthModule\Provider;
 
-
 use App\AuthModule\Entity\User;
 use Simplex\Security\Authentication\Provider\DatabaseUserProvider as BaseUserProvider;
 
@@ -29,5 +28,4 @@ class DatabaseUserProvider extends BaseUserProvider
                 'email' => $user->getEmail()
             ]);
     }
-
 }

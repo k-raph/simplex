@@ -35,5 +35,4 @@ class SessionServiceProvider extends AbstractServiceProvider
         $this->container->add(FlashBagInterface::class, $flashBag);
         $this->container->add(SessionInterface::class, $session);
     }
-
 }

@@ -81,7 +81,6 @@ class Kernel
         } catch (FileLocatorFileNotFoundException $e) {
             throw new \RuntimeException('Config files not found!');
         }
-      
     }
 
     /**
@@ -109,8 +108,9 @@ class Kernel
      */
     public function boot(): void
     {
-        if ($this->booted)
+        if ($this->booted) {
             return;
+        }
 
         $config = $this->container->get(Configuration::class);
         $this->eventManager->dispatch(new KernelBootEvent($config))->getConfiguration();

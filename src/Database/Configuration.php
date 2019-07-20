@@ -44,7 +44,10 @@ class Configuration
         $options = $this->options['connections'][$name ?? $this->options['default']];
         $driver = $this->drivers[$options['type']] ?? null;
         if (!$driver) {
-            throw new \UnexpectedValueException(sprintf('Provided database type is incorrect or is not supported %s', (string)$driver));
+            throw new \UnexpectedValueException(sprintf(
+                'Provided database type is incorrect or is not supported %s',
+                (string)$driver
+            ));
         }
 
         return new $driver($options);

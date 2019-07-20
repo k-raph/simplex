@@ -101,6 +101,4 @@ class User
     {
         $this->posts[] = $post;
     }
-
-
 }

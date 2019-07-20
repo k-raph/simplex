@@ -8,7 +8,6 @@
 
 namespace Simplex\Strategy;
 
-
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\Routing\Middleware\AbstractStrategy;
@@ -39,8 +38,7 @@ class ApiStrategy extends AbstractStrategy
      */
     protected function createResponse($response): ?Response
     {
-        if (
-            is_array($response) ||
+        if (is_array($response) ||
             (is_object($response) && $response instanceof \ArrayAccess)
         ) {
             return new JsonResponse((array)$response);

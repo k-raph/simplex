@@ -120,6 +120,4 @@ class Comment implements IdentifiableInterface
     {
         $this->postId = $postId;
     }
-
-
 }

@@ -8,7 +8,6 @@
 
 namespace Simplex\DataMapper;
 
-
 trait IdentifiableTrait
 {
 

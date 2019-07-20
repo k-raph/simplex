@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Admin\Jobs;
 
-
 use App\JobeetModule\Entity\Affiliate;
 use Nette\Mail\Message;
 use Nette\Mail\SendmailMailer;

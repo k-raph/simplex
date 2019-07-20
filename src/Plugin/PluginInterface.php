@@ -8,7 +8,6 @@
 
 namespace Simplex\Plugin;
 
-
 use Simplex\EventManager\EventManagerInterface;
 
 interface PluginInterface
@@ -28,5 +27,4 @@ interface PluginInterface
      * @return string
      */
     public function getName(): string;
-
 }

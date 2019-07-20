@@ -8,7 +8,6 @@
 
 namespace Simplex\Queue;
 
-
 use Simplex\Queue\Contracts\QueueInterface;
 
 class QueueManager

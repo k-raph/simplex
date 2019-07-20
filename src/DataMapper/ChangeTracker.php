@@ -8,14 +8,13 @@
 
 namespace Simplex\DataMapper;
 
-
 class ChangeTracker
 {
 
     /**
      * @var \ReflectionClass[]
      */
-    static private $reflected = [];
+    private static $reflected = [];
 
     /**
      * Get changes within two objects
@@ -58,5 +57,4 @@ class ChangeTracker
 
         return [];
     }
-
 }

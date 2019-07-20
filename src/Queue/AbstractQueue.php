@@ -8,7 +8,6 @@
 
 namespace Simplex\Queue;
 
-
 use Simplex\Helper\Str;
 use Simplex\Queue\Contracts\JobInterface;
 use Simplex\Queue\Contracts\QueueInterface;
@@ -46,5 +45,4 @@ abstract class AbstractQueue implements QueueInterface
     {
         return Str::random(10);
     }
-
 }

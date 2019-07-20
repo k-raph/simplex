@@ -3,10 +3,10 @@
 namespace Simplex\Tests\Routing;
 
 use PHPUnit\Framework\TestCase;
+use Simplex\Routing\Route;
 use Simplex\Routing\SymfonyRouter;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Simplex\Routing\Route;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class SymfonyRouterTest extends TestCase
@@ -26,7 +26,6 @@ class SymfonyRouterTest extends TestCase
         $this->assertInstanceOf(Route::class, $result);
         $this->assertEquals('controller', $result->getHandler());
         $this->assertEquals([], $result->getParameters());
-        
     }
     
     public function testDispatchWithDynamicParts()

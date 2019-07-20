@@ -8,7 +8,6 @@
 
 namespace Simplex\Module\Command;
 
-
 use Simplex\Module\ModuleInterface;
 use Simplex\Module\ModuleLoader;
 use Symfony\Component\Console\Command\Command;

@@ -8,7 +8,6 @@
 
 namespace Simplex\Queue\Contracts;
 
-
 interface QueueInterface
 {
 

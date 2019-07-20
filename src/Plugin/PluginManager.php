@@ -8,7 +8,6 @@
 
 namespace Simplex\Plugin;
 
-
 use Psr\Container\ContainerInterface;
 use Simplex\EventManager\EventManagerInterface;
 
@@ -43,7 +42,6 @@ class PluginManager
     {
         $this->container = $container;
         $this->eventManager = $container->get(EventManagerInterface::class);
-
     }
 
     /**

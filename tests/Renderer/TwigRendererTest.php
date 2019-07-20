@@ -4,8 +4,8 @@ namespace Simplex\Tests\Renderer;
 
 use PHPUnit\Framework\TestCase;
 use Simplex\Renderer\TwigRenderer;
-use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 class TwigRendererTest extends TestCase
 {
@@ -33,6 +33,5 @@ class TwigRendererTest extends TestCase
         
         $page = $this->renderer->render('@second/index', ['name' => 'Twig']);
         $this->assertEquals('Hello second Twig', $page);
-
     }
 }

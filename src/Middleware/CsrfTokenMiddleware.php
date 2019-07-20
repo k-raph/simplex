@@ -41,8 +41,7 @@ class CsrfTokenMiddleware implements MiddlewareInterface
      */
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
-        if (
-            in_array($request->getMethod(), ['GET', 'HEAD', 'OPTIONS']) ||
+        if (in_array($request->getMethod(), ['GET', 'HEAD', 'OPTIONS']) ||
             $this->isValid($request)
         ) {
             $token = $this->tokenManager->generateToken();

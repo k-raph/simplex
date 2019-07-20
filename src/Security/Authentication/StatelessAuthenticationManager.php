@@ -56,5 +56,4 @@ class StatelessAuthenticationManager
     {
         return $this->user;
     }
-
 }

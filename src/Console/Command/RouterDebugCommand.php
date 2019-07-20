@@ -8,7 +8,6 @@
 
 namespace Simplex\Console\Command;
 
-
 use Simplex\Routing\Route;
 use Simplex\Routing\RouterInterface;
 use Symfony\Component\Console\Command\Command;
@@ -60,5 +59,4 @@ class RouterDebugCommand extends Command
 
         $style->table(['Name', 'Methods', 'Host', 'Path', 'Controller'], $routes);
     }
-
 }

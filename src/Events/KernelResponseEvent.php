@@ -8,7 +8,6 @@
 
 namespace Simplex\Events;
 
-
 use Symfony\Component\HttpFoundation\Response;
 
 class KernelResponseEvent
@@ -31,5 +30,4 @@ class KernelResponseEvent
     {
         return $this->response;
     }
-
 }

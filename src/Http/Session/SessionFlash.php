@@ -4,7 +4,6 @@ namespace Simplex\Http\Session;
 
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
-
 class SessionFlash
 {
 

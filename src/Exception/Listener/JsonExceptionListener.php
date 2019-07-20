@@ -8,7 +8,6 @@
 
 namespace Simplex\Exception\Listener;
 
-
 use Simplex\Database\Exceptions\ResourceNotFoundException;
 use Simplex\Exception\Event\KernelExceptionEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -40,10 +39,11 @@ class JsonExceptionListener
                 ], 404);
                 break;
             case $exception instanceof MethodNotAllowedException:
-                $response = new JsonResponse([
+                $response = new JsonResponse(
+                    [
                     'code' => 405,
                     'message' => $exception->getMessage()
-                ],
+                    ],
                     405,
                     ['Allow' => implode(', ', $exception->getAllowedMethods())]
                 );

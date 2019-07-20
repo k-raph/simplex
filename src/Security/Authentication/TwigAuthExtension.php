@@ -8,7 +8,6 @@
 
 namespace Simplex\Security\Authentication;
 
-
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -39,5 +38,4 @@ class TwigAuthExtension extends AbstractExtension
             new TwigFunction('current_user', [$this->auth, 'getUser'])
         ];
     }
-
 }

@@ -8,7 +8,6 @@
 
 namespace Simplex\Console\Command;
 
-
 use Symfony\Component\Yaml\Command\LintCommand;
 
 class YamlLintCommand extends LintCommand

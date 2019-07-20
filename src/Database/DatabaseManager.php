@@ -8,7 +8,6 @@
 
 namespace Simplex\Database;
 
-
 class DatabaseManager
 {
 
@@ -46,5 +45,4 @@ class DatabaseManager
 
         return $this->dbs[$name];
     }
-
 }

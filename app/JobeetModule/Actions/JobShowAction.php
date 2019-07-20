@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Actions;
 
-
 use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Repository\CategoryRepository;

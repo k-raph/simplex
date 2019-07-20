@@ -84,10 +84,11 @@ class Builder
      */
     public function getQuerySegment($key)
     {
-        if (isset($this->querySegments[$key]))
+        if (isset($this->querySegments[$key])) {
             return $this->querySegments[$key];
-        else
+        } else {
             return null;
+        }
     }
 
     /**
@@ -177,8 +178,9 @@ class Builder
     {
         $sql = '(' . $queryBuilder->getQuery()->getRawSql($this->connection->getDriver()->getPdo()) . ')';
 
-        if ($alias)
+        if ($alias) {
             $sql = $sql . ' AS ' . $alias;
+        }
 
         return $queryBuilder->raw($sql);
     }
@@ -246,7 +248,7 @@ class Builder
      * @param string|null $alias
      * @return Builder
      */
-    public function table(string $table, ?string $alias = null): Builder
+    public function table(string $table, ?string $alias = null): self
     {
         return $this->from($table, $alias);
     }
@@ -254,7 +256,7 @@ class Builder
     /**
      * @return Builder
      */
-    public function removeTables(): Builder
+    public function removeTables(): self
     {
         $this->removeQuerySegment('tables');
 
@@ -265,7 +267,7 @@ class Builder
      * @param string|array $fields
      * @return Builder
      */
-    public function select($fields): Builder
+    public function select($fields): self
     {
         $fields = is_array($fields) ? $fields : func_get_args();
 
@@ -280,7 +282,7 @@ class Builder
      * @param string|null $alias
      * @return Builder
      */
-    public function addSelect($fields, ?string $alias = null): Builder
+    public function addSelect($fields, ?string $alias = null): self
     {
         if (is_string($fields) && $alias) {
             $compiler = $this->compiler;
@@ -297,7 +299,7 @@ class Builder
     /**
      * @return Builder
      */
-    public function removeSelects(): Builder
+    public function removeSelects(): self
     {
         $this->removeQuerySegment('selects');
 
@@ -308,7 +310,7 @@ class Builder
      * @param string|array $fields
      * @return Builder
      */
-    public function selectDistinct($fields): Builder
+    public function selectDistinct($fields): self
     {
         $this->select($fields);
         $this->addQuerySegment('distinct', true);
@@ -319,7 +321,7 @@ class Builder
     /**
      * @return Builder
      */
-    public function removeSelectDistinct(): Builder
+    public function removeSelectDistinct(): self
     {
         $this->removeQuerySegment('distinct');
 
@@ -443,7 +445,7 @@ class Builder
      * @param string $field
      * @return Builder
      */
-    public function groupBy(string $field): Builder
+    public function groupBy(string $field): self
     {
         $this->addQuerySegment('groupBy', $this->addTablePrefix($field));
 
@@ -453,7 +455,7 @@ class Builder
     /**
      * @return Builder
      */
-    public function removeGroupBy(): Builder
+    public function removeGroupBy(): self
     {
         $this->removeQuerySegment('groupBy');
 
@@ -465,10 +467,11 @@ class Builder
      * @param string $defaultDirection
      * @return Builder
      */
-    public function orderBy($fields, $defaultDirection = 'ASC'): Builder
+    public function orderBy($fields, $defaultDirection = 'ASC'): self
     {
-        if (is_array($fields) === false)
+        if (is_array($fields) === false) {
             $fields = [$fields];
+        }
 
         foreach ($fields as $key => $value) {
             $field = $key;
@@ -495,7 +498,7 @@ class Builder
     /**
      * @return Builder
      */
-    public function removeOrderBys(): Builder
+    public function removeOrderBys(): self
     {
         $this->removeQuerySegment('orderBy');
 
@@ -506,7 +509,7 @@ class Builder
      * @param int $limit
      * @return Builder
      */
-    public function limit(int $limit): Builder
+    public function limit(int $limit): self
     {
         $this->querySegments['limit'] = $limit;
 
@@ -516,7 +519,7 @@ class Builder
     /**
      * @return Builder
      */
-    public function removeLimit(): Builder
+    public function removeLimit(): self
     {
         $this->removeQuerySegment('limit');
 
@@ -527,7 +530,7 @@ class Builder
      * @param int $offset
      * @return Builder
      */
-    public function offset(int $offset): Builder
+    public function offset(int $offset): self
     {
         $this->querySegments['offset'] = $offset;
 
@@ -537,7 +540,7 @@ class Builder
     /**
      * @return Builder
      */
-    public function removeOffset(): Builder
+    public function removeOffset(): self
     {
         $this->removeQuerySegment('offset');
 
@@ -551,7 +554,7 @@ class Builder
      * @param string $joiner
      * @return Builder
      */
-    public function having(string $key, string $operator, $value, string $joiner = 'AND'): Builder
+    public function having(string $key, string $operator, $value, string $joiner = 'AND'): self
     {
         $this->querySegments['havings'][] = [
             'key' => $this->addTablePrefix($key),
@@ -566,7 +569,7 @@ class Builder
     /**
      * @return Builder
      */
-    public function removeHavings(): Builder
+    public function removeHavings(): self
     {
         $this->removeQuerySegment('havings');
 
@@ -579,7 +582,7 @@ class Builder
      * @param mixed $value
      * @return Builder
      */
-    public function orHaving(string $key, string $operator, $value): Builder
+    public function orHaving(string $key, string $operator, $value): self
     {
         return $this->having($key, $operator, $value, 'OR');
     }
@@ -662,7 +665,7 @@ class Builder
     /**
      * @return Builder
      */
-    public function removeWheres(): Builder
+    public function removeWheres(): self
     {
         $this->removeQuerySegment('wheres');
 
@@ -677,7 +680,7 @@ class Builder
      * @param string $type
      * @return Builder
      */
-    public function join($table, $key, $value = null, string $operator = '=', string $type = 'inner'): Builder
+    public function join($table, $key, $value = null, string $operator = '=', string $type = 'inner'): self
     {
         if (!$key instanceof \Closure) {
             $key = function (JoinBuilder $joinBuilder) use ($key, $operator, $value) {
@@ -706,7 +709,7 @@ class Builder
      * @param mixed $value
      * @return Builder
      */
-    public function leftJoin($table, $key, $value = null, string $operator = '='): Builder
+    public function leftJoin($table, $key, $value = null, string $operator = '='): self
     {
         return $this->join($table, $key, $operator, $value, 'left');
     }
@@ -718,7 +721,7 @@ class Builder
      * @param mixed $value
      * @return Builder
      */
-    public function rightJoin($table, $key, $value = null, string $operator = '='): Builder
+    public function rightJoin($table, $key, $value = null, string $operator = '='): self
     {
         return $this->join($table, $key, $operator, $value, 'right');
     }
@@ -730,7 +733,7 @@ class Builder
      * @param mixed $value
      * @return Builder
      */
-    public function innerJoin($table, $key, $value = null, string $operator = '='): Builder
+    public function innerJoin($table, $key, $value = null, string $operator = '='): self
     {
         return $this->join($table, $key, $operator, $value, 'inner');
     }
@@ -765,8 +768,9 @@ class Builder
 
             $target = &$value;
 
-            if (is_int($key) === false)
+            if (is_int($key) === false) {
                 $target = &$key;
+            }
 
             if (strpos($target, '.') === false) {
                 if ($target !== '*' && $forceAddToAll) {
@@ -797,13 +801,15 @@ class Builder
      */
     public function addQuerySegment(string $key, $value)
     {
-        if (is_array($value) === false)
+        if (is_array($value) === false) {
             $value = [$value];
+        }
 
-        if (isset($this->querySegments[$key]) === false)
+        if (isset($this->querySegments[$key]) === false) {
             $this->querySegments[$key] = $value;
-        else
+        } else {
             $this->querySegments[$key] = array_merge($this->querySegments[$key], $value);
+        }
     }
 
     /**
@@ -811,7 +817,7 @@ class Builder
      * @param $value
      * @return Builder
      */
-    public function replaceQuerySegment(string $key, $value): Builder
+    public function replaceQuerySegment(string $key, $value): self
     {
         $this->removeQuerySegment($key);
         $this->addQuerySegment($key, $value);
@@ -823,7 +829,7 @@ class Builder
      * @param string $key
      * @return Builder
      */
-    public function removeQuerySegment(string $key): Builder
+    public function removeQuerySegment(string $key): self
     {
         unset($this->querySegments[$key]);
 
@@ -833,7 +839,7 @@ class Builder
     /**
      * @return Builder
      */
-    public function removeQuerySegments(): Builder
+    public function removeQuerySegments(): self
     {
         $table = $this->querySegments['tables'];
         $this->querySegments = [];
@@ -871,15 +877,17 @@ class Builder
         $row = $this->execute('select')
             ->fetch();
 
-        if ($mainSelects)
+        if ($mainSelects) {
             $this->querySegments['selects'] = $mainSelects;
-        else
+        } else {
             unset($this->querySegments['selects']);
+        }
 
-        if (is_array($row))
+        if (is_array($row)) {
             return (int)$row['field'];
-        elseif (is_object($row))
+        } elseif (is_object($row)) {
             return (int)$row->field;
+        }
 
         return 0;
     }
@@ -891,7 +899,7 @@ class Builder
      * @param string $joiner
      * @return Builder
      */
-    protected function handleWhere(string $key, string $operator = null, $value = null, string $joiner = 'AND'): Builder
+    protected function handleWhere(string $key, string $operator = null, $value = null, string $joiner = 'AND'): self
     {
         if ($key && $operator && !$value) {
             $value = $operator;
@@ -914,7 +922,7 @@ class Builder
      * @param string $operator
      * @return Builder
      */
-    protected function handleWhereNull(string $key, string $prefix = '', string $operator = ''): Builder
+    protected function handleWhereNull(string $key, string $prefix = '', string $operator = ''): self
     {
         $key = $this->compiler->quoteColumnName($this->addTablePrefix($key));
 

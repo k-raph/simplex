@@ -3,11 +3,11 @@
 namespace Simplex\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
-use Simplex\Http\Pipeline;
 use Simplex\Http\MiddlewareInterface;
-use Symfony\Component\HttpFoundation\Response;
+use Simplex\Http\Pipeline;
 use Simplex\Http\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PipelineTest extends TestCase
 {
@@ -63,7 +63,7 @@ class PipelineTest extends TestCase
 
     public function testHandle()
     {
-        $this->pipeline    
+        $this->pipeline
             ->pipe($this->decorate(function (Request $request, $handler) {
                 return new Response($request->attributes->get('app'));
             }));
@@ -84,7 +84,7 @@ class PipelineTest extends TestCase
         }));
         
         $this->pipeline->pipe($pipeline);
-        $this->pipeline    
+        $this->pipeline
             ->pipe($this->decorate(function (Request $request, $handler) {
                 $content = sprintf('app: %s , pipeline: %s', $request->attributes->get('app'), $request->attributes->get('pipeline', 'primary'));
                 return new Response($content);

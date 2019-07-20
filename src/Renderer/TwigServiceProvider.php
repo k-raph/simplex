@@ -42,7 +42,8 @@ class TwigServiceProvider extends AbstractServiceProvider
                 }
 
                 return new TwigRenderer($twig, $loader);
-        });
+            }
+        );
 
         $this->container->get(EventManagerInterface::class)
             ->on(HttpExceptionEvent::class, function (HttpExceptionEvent $event) {
@@ -55,5 +56,4 @@ class TwigServiceProvider extends AbstractServiceProvider
                 return $event;
             });
     }
-
 }

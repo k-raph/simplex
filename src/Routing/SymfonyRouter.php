@@ -87,7 +87,8 @@ class SymfonyRouter implements RouterInterface
     {
         return (new UrlGenerator(
             $this->getCollection(),
-            $this->context ?? new RequestContext())
+            $this->context ?? new RequestContext()
+        )
         )->generate($name, $parameters, UrlGenerator::ABSOLUTE_URL);
     }
 
@@ -145,7 +146,12 @@ class SymfonyRouter implements RouterInterface
 
             throw new ResourceNotFoundException($message, 404);
         } catch (MethodNotAllowedException $e) {
-            $message = sprintf('No route found for "%s %s": Method Not Allowed (Allow: %s)', $request->getMethod(), $request->getPathInfo(), implode(', ', $e->getAllowedMethods()));
+            $message = sprintf(
+                'No route found for "%s %s": Method Not Allowed (Allow: %s)',
+                $request->getMethod(),
+                $request->getPathInfo(),
+                implode(', ', $e->getAllowedMethods())
+            );
 
             throw new MethodNotAllowedException($e->getAllowedMethods(), $message);
         }

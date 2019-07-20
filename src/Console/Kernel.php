@@ -77,7 +77,6 @@ class Kernel extends Application
                 $commands = array_merge($commands, $module->getCommands());
                 return $commands;
             }, $commands);
-
         } catch (\Exception $_) {
         }
 

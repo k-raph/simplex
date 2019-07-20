@@ -22,7 +22,8 @@ class SocialNetworkProvider extends AbstractModule
         $renderer->addPath(__DIR__ . '/views', 'social');
 
         $router->import(__DIR__ . '/resources/routes.yml', [
-            'host' => sprintf('%s.%s',
+            'host' => sprintf(
+                '%s.%s',
                 $config->get('social.host', 'social'),
                 $config->get('app_host', 'localhost')
             ),

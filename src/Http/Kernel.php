@@ -8,7 +8,6 @@
 
 namespace Simplex\Http;
 
-
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\EventManager\EventManagerInterface;
@@ -47,7 +46,6 @@ class Kernel
         $this->pipeline = new Pipeline();
         $this->container = $kernel->getContainer();
         $this->container->add(Pipeline::class, $this->pipeline);
-
     }
 
     /**

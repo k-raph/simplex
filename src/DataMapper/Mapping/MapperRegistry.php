@@ -8,7 +8,6 @@
 
 namespace Simplex\DataMapper\Mapping;
 
-
 class MapperRegistry
 {
 

@@ -8,7 +8,6 @@
 
 namespace Simplex\Routing\Middleware;
 
-
 use Simplex\Http\MiddlewareInterface;
 use Symfony\Component\HttpFoundation\Response;
 

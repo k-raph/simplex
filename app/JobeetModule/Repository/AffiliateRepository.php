@@ -8,7 +8,6 @@
 
 namespace App\JobeetModule\Repository;
 
-
 use App\JobeetModule\Mapper\AffiliateMapper;
 use Simplex\DataMapper\QueryBuilder;
 use Simplex\DataMapper\Repository\Repository;

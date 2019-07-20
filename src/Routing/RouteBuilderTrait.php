@@ -11,7 +11,6 @@ trait RouteBuilderTrait
      * @param string $path
      * @param string|callable $controller
      * @param string $name
-     * @return void
      */
     public function get(string $path, $controller, string $name = null)
     {
@@ -24,7 +23,6 @@ trait RouteBuilderTrait
      * @param string $path
      * @param string|callable $controller
      * @param string $name
-     * @return void
      */
     public function post(string $path, $controller, string $name = null)
     {
@@ -37,7 +35,6 @@ trait RouteBuilderTrait
      * @param string $path
      * @param string|callable $controller
      * @param string $name
-     * @return void
      */
     public function put(string $path, $controller, string $name = null)
     {
@@ -50,7 +47,6 @@ trait RouteBuilderTrait
      * @param string $path
      * @param string|callable $controller
      * @param string $name
-     * @return void
      */
     public function delete(string $path, $controller, string $name = null)
     {
@@ -58,5 +54,4 @@ trait RouteBuilderTrait
     }
     
     abstract public function match($methods, $path, $controller, $name = null);
-
 }

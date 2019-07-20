@@ -36,14 +36,6 @@ class Query
     }
 
     /**
-     * @return string|string[]|null
-     */
-    public function __toString()
-    {
-        return $this->getRawSql();
-    }
-
-    /**
      * @param PDO $pdo
      * @return string|string[]|null
      */
@@ -66,19 +58,23 @@ class Query
 
         # build a regular expression for each parameter
         foreach ($params as $key => $value) {
-            if (is_string($key))
+            if (is_string($key)) {
                 $keys[] = '/:' . $key . '/';
-            else
+            } else {
                 $keys[] = '/[?]/';
+            }
 
-            if (is_string($value))
+            if (is_string($value)) {
                 $values[$key] = $pdo->quote($value);
+            }
 
-            if (is_array($value))
+            if (is_array($value)) {
                 $values[$key] = implode(',', $pdo->quote($value));
+            }
 
-            if (is_null($value))
+            if (is_null($value)) {
                 $values[$key] = 'NULL';
+            }
         }
 
         return preg_replace($keys, $values, $query, 1, $count);

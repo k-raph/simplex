@@ -8,7 +8,6 @@
 
 namespace Simplex\Queue\Event;
 
-
 class JobFailedEvent extends AbstractJobEvent
 {
 

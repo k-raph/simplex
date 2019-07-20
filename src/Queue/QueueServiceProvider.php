@@ -8,7 +8,6 @@
 
 namespace Simplex\Queue;
 
-
 use Kached\Kache;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Simplex\Configuration\Configuration;

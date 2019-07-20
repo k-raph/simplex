@@ -60,5 +60,4 @@ class BlogModule extends AbstractModule
     {
         $collection->import(__DIR__ . '/config/routes.yml', ['prefix' => 'blog']);
     }
-
 }

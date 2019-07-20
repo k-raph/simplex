@@ -8,7 +8,6 @@
 
 namespace Simplex\EventManager;
 
-
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 

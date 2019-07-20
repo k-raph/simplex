@@ -8,7 +8,6 @@
 
 namespace App\AuthModule\Entity;
 
-
 use Simplex\Security\Authentication\User\User as BaseUser;
 
 class User extends BaseUser
@@ -34,6 +33,4 @@ class User extends BaseUser
     {
         $this->email = $email;
     }
-
-
 }

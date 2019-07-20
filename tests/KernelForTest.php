@@ -6,7 +6,6 @@ use Simplex\Kernel;
 use Simplex\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-
 class KernelForTest extends Kernel
 {
     public function __construct()
@@ -19,16 +18,16 @@ class KernelForTest extends Kernel
     {
         /** @var RouterInterface */
         $router = $this->container->get(RouterInterface::class);
-        $router->match('GET', '/test', function() {
+        $router->match('GET', '/test', function () {
             return new Response('Hello test as Response');
         });
-        $router->match('GET', '/test-string', function() {
+        $router->match('GET', '/test-string', function () {
             return 'Hello test as string';
         });
-        $router->match('GET', '/test-array', function() {
+        $router->match('GET', '/test-array', function () {
             return ['Hello', 'Test', 'As', 'Array'];
         });
-        $router->match('GET', '/test-object', function() {
+        $router->match('GET', '/test-object', function () {
             return new \stdClass();
         });
     }

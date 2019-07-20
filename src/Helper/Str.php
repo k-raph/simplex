@@ -8,7 +8,6 @@
 
 namespace Simplex\Helper;
 
-
 class Str
 {
 
@@ -16,7 +15,7 @@ class Str
      * @param string $string
      * @return string
      */
-    static public function slugify(string $string): string
+    public static function slugify(string $string): string
     {
         $string = preg_replace('~\W+~', '-', $string);
         $string = trim($string, '-');
@@ -29,7 +28,7 @@ class Str
      * @return string
      * @throws \Exception
      */
-    static public function random(int $length = 20): string
+    public static function random(int $length = 20): string
     {
         $string = '';
 
