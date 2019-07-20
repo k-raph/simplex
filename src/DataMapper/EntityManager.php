@@ -105,7 +105,7 @@ class EntityManager
      */
     public function remove(object $entity)
     {
-        return $this->uow->remove($entity);
+        $this->uow->remove($entity);
     }
 
     /**
@@ -115,7 +115,7 @@ class EntityManager
      */
     public function flush()
     {
-        return $this->uow->commit();
+        $this->uow->commit();
     }
 
     /**

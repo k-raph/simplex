@@ -56,11 +56,12 @@ class Database implements DatabaseInterface
     /**
      * {@inheritdoc}
      */
-    public function execute(string $statement, array $bindings = []): bool
+    public function execute(string $statement, array $bindings = []): PDOStatement
     {
         try {
             $this->statement = $this->pdo->prepare($statement);
-            return $this->statement->execute($bindings);
+            $this->statement->execute($bindings);
+            return $this->statement;
         } catch (PDOException $e) {
             throw $e;
         }

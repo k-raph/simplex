@@ -22,9 +22,9 @@ interface DatabaseInterface
      *
      * @param string $statement
      * @param array $bindings
-     * @return bool
+     * @return PDOStatement
      */
-    public function execute(string $statement, array $bindings = []): bool;
+    public function execute(string $statement, array $bindings = []): PDOStatement;
 
     /**
      * Wraps database operations as a transaction

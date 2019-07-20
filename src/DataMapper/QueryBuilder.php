@@ -75,6 +75,9 @@ class QueryBuilder extends Builder
             ->table($this->mapper->getTable(), $alias);
     }
 
+    /**
+     * @return Builder
+     */
     public function nativeQuery(): Builder
     {
         return new parent($this->connection);

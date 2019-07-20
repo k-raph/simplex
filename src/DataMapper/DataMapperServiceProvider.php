@@ -11,6 +11,7 @@ class DataMapperServiceProvider extends AbstractServiceProvider
      * {@inheritDoc}
      */
     protected $provides = [
+        DataMapper::class,
         EntityManager::class,
         UnitOfWork::class
     ];
