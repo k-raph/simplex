@@ -18,8 +18,6 @@ class AffiliateRepository extends Repository
      */
     public function findAll(): array
     {
-        return $this->query()
-            ->addSelect(['id', 'name', 'email', 'url', 'is_active'])
-            ->get();
+        return $this->mapper->findAll();
     }
 }

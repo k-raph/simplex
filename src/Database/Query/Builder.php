@@ -9,7 +9,6 @@
 namespace Simplex\Database\Query;
 
 use PDO;
-use PDOException;
 use Simplex\Database\DatabaseInterface;
 use Simplex\Database\Query\Exception\QueryExecutionFailException;
 
@@ -166,7 +165,7 @@ class Builder
     {
         $result = $this->compiler->compile($type, $this->querySegments, $parameters);
 
-        return new Query($result['sql'], $result['bindings'], $this->pdo);
+        return new Query($result['sql'], $result['bindings']);
     }
 
     /**
@@ -185,15 +184,29 @@ class Builder
     }
 
     /**
+     * @param string $type
+     * @param array $parameters
+     * @return \PDOStatement
+     */
+    protected function execute(string $type, array $parameters = []): \PDOStatement
+    {
+        $query = $this->getQuery($type, $parameters);
+
+        $result = 'select' === $type
+            ? $this->connection->query($query->getSql(), $query->getBindings())
+            : $this->connection->execute($query->getSql(), $query->getBindings());
+
+        $this->removeQuerySegments();
+        return $result;
+    }
+
+    /**
      * @return array
      * @throws QueryExecutionFailException
      */
     public function get()
     {
-        $query = $this->getQuery('select');
-
-        return $this->connection
-            ->query($query->getSql(), $query->getBindings())
+        return $this->execute('select')
             ->fetchAll();
     }
 
@@ -204,10 +217,7 @@ class Builder
     {
         $this->limit(1);
 
-        $query = $this->getQuery('select');
-
-        return $this->connection
-            ->query($query->getSql(), $query->getBindings())
+        return $this->execute('select')
             ->fetch();
     }
 
@@ -225,8 +235,8 @@ class Builder
         $table = $alias
             ? $this->raw($this->compiler->quoteTableName($table) . ' AS ' . $this->compiler->quoteTableName($alias))
             : $table;
-        $this->removeTables();
-        $this->addQuerySegment('tables', $this->addTablePrefix($table, true));
+
+        $this->replaceQuerySegment('tables', $this->addTablePrefix($table, true));
 
         return $this;
     }
@@ -399,15 +409,12 @@ class Builder
 
     /**
      * @param array $data
-     * @return mixed
+     * @return int
      * @throws QueryExecutionFailException
      */
     public function update($data)
     {
-        $query = $this->getQuery('update', $data);
-
-        return $this->connection
-            ->execute($query->getSql(), $query->getBindings())
+        return $this->execute('update', $data)
             ->rowCount();
     }
 
@@ -428,10 +435,7 @@ class Builder
      */
     public function delete()
     {
-        $query = $this->getQuery('delete');
-
-        return $this->connection
-            ->execute($query->getSql(), $query->getBindings())
+        return $this->execute('delete')
             ->rowCount();
     }
 
@@ -578,6 +582,11 @@ class Builder
     public function orHaving(string $key, string $operator, $value): Builder
     {
         return $this->having($key, $operator, $value, 'OR');
+    }
+
+    public function andWhere($key, $operator = null, $value = null)
+    {
+        return $this->where($key, $operator, $value);
     }
 
     public function where($key, $operator = null, $value = null)
@@ -736,19 +745,6 @@ class Builder
         return $this;
     }
 
-    public function prepareAndExecute($sql, $bindings = [])
-    {
-        $pdoStatement = $this->prepare($sql, $bindings);
-
-        try {
-            $pdoStatement->execute($bindings);
-        } catch (PDOException $e) {
-            throw new QueryExecutionFailException($e->getMessage() . ' during query "' . $sql . '"', $e->getCode(), $e);
-        }
-
-        return $pdoStatement;
-    }
-
     public function addTablePrefix($values, $forceAddToAll = false)
     {
         $wasSingleValue = false;
@@ -835,6 +831,18 @@ class Builder
     }
 
     /**
+     * @return Builder
+     */
+    public function removeQuerySegments(): Builder
+    {
+        $table = $this->querySegments['tables'];
+        $this->querySegments = [];
+        $this->querySegments['tables'] = $table;
+
+        return $this;
+    }
+
+    /**
      * @param array $data
      * @param string $type
      * @return int|null
@@ -842,14 +850,11 @@ class Builder
      */
     protected function doInsert(array $data, string $type)
     {
-        $query = $this->getQuery($type, $data);
-        $sql = $query->getSql();
-        $bindings = $query->getBindings();
+        $result = $this->execute($type, $data);
 
-        $result = $this->prepareAndExecute($sql, $bindings);
-        $return = $result->rowCount() === 1 ? $this->getLastId() : null;
-
-        return $return;
+        return $result->rowCount() === 1
+            ? $this->connection->lastInsertId()
+            : null;
     }
 
     /**
@@ -863,9 +868,7 @@ class Builder
 
         $this->querySegments['selects'] = [$this->raw($type . ' AS field')];
 
-        $query = $this->getQuery('select');
-        $row = $this->connection
-            ->query($query->getSql(), $query->getBindings())
+        $row = $this->execute('select')
             ->fetch();
 
         if ($mainSelects)

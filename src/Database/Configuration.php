@@ -2,9 +2,6 @@
 
 namespace Simplex\Database;
 
-use Finesse\QueryScribe\Grammars\CommonGrammar;
-use Finesse\QueryScribe\Grammars\MySQLGrammar;
-use Finesse\QueryScribe\Grammars\SQLiteGrammar;
 use Simplex\Database\Driver\DriverInterface;
 use Simplex\Database\Driver\SqliteDriver;
 
@@ -50,18 +47,7 @@ class Configuration
             throw new \UnexpectedValueException(sprintf('Provided database type is incorrect or is not supported %s', (string)$driver));
         }
 
-        switch (strtolower($options['type'] ?? '')) {
-            case 'mysql':
-                $grammar = new MySQLGrammar();
-                break;
-            case 'sqlite':
-                $grammar = new SQLiteGrammar();
-                break;
-            default:
-                $grammar = new CommonGrammar();
-        }
-
-        return new $driver($options, $grammar);
+        return new $driver($options);
     }
 
     /**

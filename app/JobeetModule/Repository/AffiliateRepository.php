@@ -21,7 +21,7 @@ class AffiliateRepository extends Repository implements UserProviderInterface
     /**
      * @var AffiliateMapper
      */
-    private $mapper;
+    protected $mapper;
 
     public function __construct(AffiliateMapper $mapper)
     {

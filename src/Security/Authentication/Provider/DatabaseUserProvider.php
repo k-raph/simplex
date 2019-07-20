@@ -109,10 +109,8 @@ class DatabaseUserProvider implements UserProviderInterface
     public function forget(UserInterface $user)
     {
         $this->builder
-            ->where([
-                $this->field => $user->getUsername(),
-                'session_token' => $user->getToken()
-            ])
+            ->where($this->field, $user->getUsername())
+            ->andWhere('session_token', $user->getToken())
             ->update([
                 'session_token' => base64_encode(random_bytes(20))
             ]);

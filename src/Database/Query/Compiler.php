@@ -32,7 +32,7 @@ class Compiler
     public function __construct(DatabaseInterface $connection)
     {
         $this->connection = $connection;
-        $this->tablePrefix = '';//$connection->getParameters()->get('prefix', null);
+        $this->tablePrefix = '';
     }
 
     /**
@@ -73,7 +73,6 @@ class Compiler
 
     /**
      * @param array $querySegments
-     * @param array $data
      * @return array
      */
     public function select(array $querySegments): array
@@ -303,16 +302,16 @@ class Compiler
      */
     public function quoteSingle($value)
     {
-        return is_int($value) ? $value : '`' . $value . '`';//$this->pdo->quote($value);
+        return is_int($value) ? $value : '`' . $value . '`';
     }
 
     /**
      * @param array $data
      * @param string $glue
-     * @param string $quote
+     * @param string|null $quote
      * @return string
      */
-    protected function arrayToString(array $data, string $glue, string $quote = 'value'): string
+    protected function arrayToString(array $data, string $glue, ?string $quote = 'value'): string
     {
         $elements = [];
 
@@ -437,24 +436,38 @@ class Compiler
         $bindings = [];
         $keys = [];
         $values = [];
+        $length = 0;
 
-        foreach ($data as $key => $value) {
-            $keys[] = $key;
-
-            if ($value instanceof Raw) {
-                $values[] = (string)$value;
-            } else {
-                $values[] = ':' . $key;
-                $bindings[':' . $key] = $value;
+        if (isset($data[0])) {
+            // Batch insert
+            $keys = array_keys($data[0]);
+            foreach ($data as $entry) {
+                $length++;
+                $bindings = array_merge($bindings, array_values($entry));
             }
+
+            $values = array_fill(0, count($keys), '?');
+        } else {
+            foreach ($data as $key => $value) {
+                $keys[] = $key;
+
+                if ($value instanceof Raw) {
+                    $values[] = (string)$value;
+                } else {
+                    $values[] = ':' . $key;
+                    $bindings[':' . $key] = $value;
+                }
+            }
+            $length++;
         }
+
 
         $segmentsToBuild = [
             $type . ' INTO',
             $this->quoteTable($table),
             '(' . $this->arrayToString($keys, ', ', 'column') . ')',
             'VALUES',
-            '(' . $this->arrayToString($values, ', ', null) . ')',
+            implode(', ', array_fill(0, $length, '(' . $this->arrayToString($values, ', ', null) . ')')),
         ];
 
         if (isset($querySegments['onduplicate'])) {
@@ -487,7 +500,7 @@ class Compiler
             if ($value instanceof Raw) {
                 $segment .= $this->quoteColumnName($key) . ' = ' . $value . ', ';
             } else {
-                $segment .= $this->quoteColumnName($key) . ' = ' . $key . ' , ';
+                $segment .= $this->quoteColumnName($key) . ' = ? , ';
                 $bindings[] = $value;
             }
         }
@@ -566,7 +579,7 @@ class Compiler
 
         list($wheres, $whereBindings) = $this->buildCriteriaOfType($querySegments, 'wheres', 'WHERE');
 
-        $limit = isset($querySegments['limit']) ? 'LIMIT ' . $querySegments['limit'] : '';
+        //$limit = isset($querySegments['limit']) ? 'LIMIT ' . $querySegments['limit'] : '';
 
         $segmentsToBuild = ['DELETE FROM', $this->quoteTable($table), $wheres];
 

@@ -25,7 +25,7 @@ class AffiliateMapper extends EntityMapper
      * Creates an entity from given input values
      *
      * @param array $input
-     * @return object
+     * @return Affiliate
      */
     public function createEntity(array $input): IdentifiableInterface
     {
@@ -39,12 +39,13 @@ class AffiliateMapper extends EntityMapper
             $affiliate->setToken($input['token']);
         }
 
-        $categories = $this->query()
-            ->nativeQuery()
-            ->table('affiliate_category', 'p')
-            ->where('affiliate_id', $input['id'])
-            ->addSelect('p.category_id')
-            ->get();
+        $categories = $input['categories'] ?? $this->query()
+                ->nativeQuery()
+                ->table('affiliate_category', 'p')
+                ->where('affiliate_id', $input['id'])
+                ->addSelect('p.category_id')
+                ->get();
+
         foreach ($categories as $category) {
             $affiliate->addCategory($category['category_id']);
         }
@@ -55,7 +56,7 @@ class AffiliateMapper extends EntityMapper
     }
 
     /**
-     * @param Affiliate $affiliate
+     * @param IdentifiableInterface|Affiliate $affiliate
      * @return mixed|void
      */
     public function insert(IdentifiableInterface $affiliate)
@@ -63,7 +64,7 @@ class AffiliateMapper extends EntityMapper
         $insert = $this->extract($affiliate);
 
         $this->database->transaction(function () use ($insert, $affiliate) {
-            $id = $this->query()->insertGetId($insert);
+            $id = $this->query()->insert($insert);
             $affiliate->setId($id);
 
             $maps = [];
@@ -86,11 +87,12 @@ class AffiliateMapper extends EntityMapper
     /**
      * Extract an entity to persistable state
      *
-     * @param Affiliate $entity
+     * @param IdentifiableInterface $affiliate
      * @return array
      */
     public function extract(IdentifiableInterface $affiliate): array
     {
+        /** @var $affiliate Affiliate */
         return [
             'name' => $affiliate->getName(),
             'email' => $affiliate->getEmail(),
@@ -118,12 +120,9 @@ class AffiliateMapper extends EntityMapper
         unset($changes['categories']);
 
         if (!empty($changes)) {
-
             $result = $this->query()
                 ->where('id', $id)
                 ->update($changes);
-
-            return $result;
         }
 
         foreach ($categories as $category) {
@@ -144,5 +143,41 @@ class AffiliateMapper extends EntityMapper
                 ->table('affiliate_category')
                 ->insert($maps);
         }
+        return $result;
+    }
+
+    public function findAll(): array
+    {
+        // Get all affiliates
+        $affiliates = $this->query()
+            ->nativeQuery()
+            ->table($this->table)
+            ->addSelect(['id', 'name', 'email', 'url', 'is_active'])
+            ->get();
+
+        // Get ids related to categories to retrieve
+        $ids = array_map(function (array $affiliate) {
+            return $affiliate['id'];
+        }, $affiliates);
+
+        // Get all categories once
+        $categories = $this->query()
+            ->nativeQuery()
+            ->select(['affiliate_id', 'category_id'])
+            ->table('affiliate_category')
+            ->whereIn('affiliate_id', $ids)
+            ->get();
+
+        // Now map every affiliate to its categories
+        $affiliates = array_map(function (array $affiliate) use ($categories) {
+            $id = $affiliate['id'];
+            $affiliate['categories'] = array_filter($categories, function (array $pivot) use ($id) {
+                return $id === $pivot['affiliate_id'];
+            });
+            return $affiliate;
+        }, $affiliates);
+
+        // Return created entities
+        return array_map([$this, 'createEntity'], $affiliates);
     }
 }

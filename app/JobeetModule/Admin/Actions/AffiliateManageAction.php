@@ -136,7 +136,7 @@ class AffiliateManageAction extends AffiliateRegisterAction
     public function delete(int $id, AffiliateMapper $mapper, RouterInterface $router, SessionFlash $flash)
     {
         $success = $mapper->query()
-            ->where(['id' => $id])
+            ->where('id', $id)
             ->delete();
 
         if ($success) {
