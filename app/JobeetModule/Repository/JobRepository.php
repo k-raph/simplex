@@ -11,7 +11,6 @@ namespace App\JobeetModule\Repository;
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Mapper\JobMapper;
 use Simplex\Database\Exceptions\ResourceNotFoundException;
-use Simplex\Database\Query\Builder;
 use Simplex\DataMapper\QueryBuilder;
 use Simplex\DataMapper\Repository\Repository;
 
@@ -54,13 +53,13 @@ class JobRepository extends Repository
     public function getActiveForAffiliate(int $id, array $categories = [], ?int $limit = null): array
     {
         $query = $this->query()->nativeQuery();
+        $c_ids = $query->table('affiliate_category', 'p')
+            ->addSelect('p.category_id')
+            ->where('p.affiliate_id', $id);
+
         $query = $query->newQuery()->table('categories', 'c')
             ->addSelect('c.id')
-            ->whereIn('c.id', function (Builder $query) use ($id) {
-                $query->table('affiliate_category', 'p')
-                    ->addSelect('p.category_id')
-                    ->where('p.affiliate_id', $id);
-            });
+            ->whereIn('c.id', $query->subQuery($c_ids));
 
         if (!empty($categories)) {
             $query = $query->whereIn('c.name', array_map('ucfirst', $categories));

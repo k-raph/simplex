@@ -110,7 +110,7 @@ HTML;
     {
         switch ($type) {
             case 'checkbox':
-                echo $this->checkbox($name, $label, $attributes['switch'] ?? false);
+                echo $this->checkbox($name, $label, $attributes);
                 return;
             case 'textarea':
                 $field = $this->textarea($name, $value, $attributes);
@@ -141,9 +141,10 @@ HTML;
      * @param bool $switch
      * @return string
      */
-    public function checkbox(string $name, string $text, bool $switch = false)
+    public function checkbox(string $name, string $text, bool $switch = true)
     {
         $class = $switch ? 'form-switch' : 'form-checkbox';
+
         return <<<HTML
 <div class="form-group flex-centered">
     <label class="$class">
@@ -215,7 +216,7 @@ HTML;
         switch ($type) {
             case 'checkbox':
                 $class = isset($attributes['switch']) ? 'form-switch' : 'form-checkbox';
-                $checked = isset($attributes['checked']) ? 'checked' : '';
+                $checked = ($attributes['checked'] ?? false) ? 'checked' : '';
                 $label = $attributes['label'] ?? '';
                 $value = $value ? "value=$value" : '';
                 $field = <<<HTML

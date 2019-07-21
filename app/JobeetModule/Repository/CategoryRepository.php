@@ -80,4 +80,17 @@ class CategoryRepository extends Repository
     {
         return $this->mapper->find($id);
     }
+
+    /**
+     * @return array
+     */
+    public function getAllForForm(): array
+    {
+        return $this->query()
+            ->nativeQuery()
+            ->table('categories', 'c')
+            ->addSelect('id', 'slug')
+            ->addSelect('name')
+            ->get();
+    }
 }

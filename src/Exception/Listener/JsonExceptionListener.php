@@ -24,7 +24,9 @@ class JsonExceptionListener
      */
     public function handle(KernelExceptionEvent $event): KernelExceptionEvent
     {
-        if (0 !== strpos($event->getRequest()->headers->get('Content-Type'), 'application/json')) {
+        if (0 !== strpos($event->getRequest()->headers->get('Accept'), 'application/json') ||
+            0 !== strpos($event->getRequest()->headers->get('Accept'), 'application/json')
+        ) {
             return $event;
         }
 
@@ -53,9 +55,11 @@ class JsonExceptionListener
                     'code' => 500,
                     'message' => 'Sorry! An unexpected error where encountered.'
                 ], 500);
+                break;
         }
 
         $event->setResponse($response);
+        $event->stopPropagation();
         return $event;
     }
 }

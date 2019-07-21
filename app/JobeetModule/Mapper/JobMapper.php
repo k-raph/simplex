@@ -8,7 +8,9 @@
 
 namespace App\JobeetModule\Mapper;
 
+use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Entity\Job;
+use Simplex\Database\Exceptions\ResourceNotFoundException;
 use Simplex\DataMapper\IdentifiableInterface;
 use Simplex\DataMapper\Mapping\EntityMapper;
 
@@ -32,14 +34,18 @@ class JobMapper extends EntityMapper
             return $this->uow->getIdentityMap()->get(Job::class, $input['id']);
         }
 
-        $job = new Job($input['company'], $input['position'], $input['location']);
+        $job = new Job($input['company'], $input['position']);
 
         if (isset($input['category_id'])) {
-            $job->setCategory($input['category_id']);
+            /** @var CategoryMapper $mapper */
+            $mapper = $this->uow->getEntityManager()->getMapper(Category::class);
+            $category = $mapper->createEntity(['id' => $input['category_id'], 'name' => $input['category_name']]);
+
+            $job->setCategory($category);
         }
 
         if (isset($input['is_public'])) {
-            $job->setPublic($input['is_public']);
+            $job->setPublic((bool)$input['is_public']);
         }
 
         if (isset($input['type'])) {
@@ -56,7 +62,7 @@ class JobMapper extends EntityMapper
 
         foreach ([
                      'id', 'category', 'logo', 'url', 'application',
-                     'description', 'public', 'token', 'email'] as $field) {
+                     'description', 'public', 'token', 'email', 'location'] as $field) {
             if (isset($input[$field])) {
                 $method = 'set' . ucfirst($field);
                 $job->{$method}($input[$field]);
@@ -69,22 +75,32 @@ class JobMapper extends EntityMapper
 
     /**
      * @param $id
-     * @return IdentifiableInterface
+     * @return IdentifiableInterface|null
      */
-    public function find($id): IdentifiableInterface
+    public function find($id): ?IdentifiableInterface
     {
-        return $this->query('j')
-            ->addSelect(['j.id', 'company', 'location', 'position', 'description', 'application', 'type', 'logo'])
-            ->addSelect('c.name', 'category')
+        $entity = $this->query('j')
+            ->addSelect([
+                'j.id', 'company', 'email', 'location', 'position', 'description',
+                'application', 'type', 'logo', 'expires_at'])
+            ->addSelect('is_public', 'public')
+            ->addSelect('c.name', 'category_name')
+            ->addSelect('c.id', 'category_id')
             ->where('j.id', $id)
             ->innerJoin(['categories', 'c'], 'j.category_id', 'c.id')
             ->first();
+
+        if (null === $entity) {
+            throw new ResourceNotFoundException();
+        }
+
+        return $entity;
     }
 
     /**
      * Extract an entity to persistable state
      *
-     * @param Job $job
+     * @param IdentifiableInterface|Job $job
      * @return array
      */
     public function extract(IdentifiableInterface $job): array
@@ -110,13 +126,25 @@ class JobMapper extends EntityMapper
     /**
      * Performs an entity update
      *
-     * @param object $entity
+     * @param IdentifiableInterface|Job $entity
      * @return mixed
      */
     public function update(IdentifiableInterface $entity)
     {
         $entity->setType(Job::TYPES[$entity->getType()]);
         $changes = $this->uow->getChangeSet($entity);
+
+        // Logic to check if category should be updated
+        if (isset($changes['category']) && is_object($changes['category'])) {
+            $category = $this->uow->getIdentityMap()->getOriginal($entity)->getCategory();
+            $category = $category instanceof Category ? $category->getId() : $category;
+            if ($category === $entity->getCategory()->getId()) {
+                unset($changes['category']);
+            } else {
+                $changes['category'] = $entity->getCategory()->getId();
+            }
+        }
+
         $changes = $this->map($changes);
 
         if (!empty($changes)) {
@@ -157,11 +185,13 @@ class JobMapper extends EntityMapper
     /**
      * Performs an entity deletion
      *
-     * @param object $entity
+     * @param IdentifiableInterface|Job $entity
      * @return mixed
      */
     public function delete(IdentifiableInterface $entity)
     {
-        // TODO: Implement delete() method.
+        return $this->query()
+            ->where(['id' => $entity->getId()])
+            ->delete();
     }
 }

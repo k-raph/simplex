@@ -8,7 +8,7 @@
         {{ form_error('category') }}
         <select class="form-select" name="category" id="category">
             {% for category in categories %}
-                <option value="{{ category.slug }}" {{ job.category is same as(category.slug) ? 'selected' : '' }}>
+                <option value="{{ category.slug }}" {{ job.category.id == category.slug ? 'selected' : '' }}>
                     {{ category.name }}
                 </option>
             {% endfor %}

@@ -330,9 +330,11 @@ class Builder
 
     /**
      * @param string $column
+     * @param bool $execute
      * @return int
+     * @throws QueryExecutionFailException
      */
-    public function count(string $column = '*'): int
+    public function count(string $column = '*')
     {
         $segments = $this->querySegments;
 
@@ -866,7 +868,6 @@ class Builder
     /**
      * @param string $type
      * @return int
-     * @throws QueryExecutionFailException
      */
     protected function aggregate(string $type)
     {
@@ -893,25 +894,37 @@ class Builder
     }
 
     /**
-     * @param string $key
+     * @param string|null $key
      * @param string|null $operator
      * @param string|array $value
      * @param string $joiner
      * @return Builder
      */
-    protected function handleWhere(string $key, string $operator = null, $value = null, string $joiner = 'AND'): self
+    protected function handleWhere($key, string $operator = null, $value = null, string $joiner = 'AND'): self
     {
-        if ($key && $operator && !$value) {
-            $value = $operator;
+        if (is_array($key)) {
             $operator = '=';
-        }
+            foreach ($key as $field => $value) {
+                $this->querySegments['wheres'][] = [
+                    'key' => $this->addTablePrefix($field),
+                    'operator' => $operator,
+                    'value' => $value,
+                    'joiner' => $joiner
+                ];
+            }
+        } else {
+            if ($key && $operator && !$value) {
+                $value = $operator;
+                $operator = '=';
+            }
 
-        $this->querySegments['wheres'][] = [
-            'key' => $this->addTablePrefix($key),
-            'operator' => $operator,
-            'value' => $value,
-            'joiner' => $joiner
-        ];
+            $this->querySegments['wheres'][] = [
+                'key' => $this->addTablePrefix($key),
+                'operator' => $operator,
+                'value' => $value,
+                'joiner' => $joiner
+            ];
+        }
 
         return $this;
     }

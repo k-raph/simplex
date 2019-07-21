@@ -78,6 +78,6 @@ class CategoryMapper extends EntityMapper
      */
     public function delete(IdentifiableInterface $entity)
     {
-        // TODO: Implement delete() method.
+        // TODO
     }
 }

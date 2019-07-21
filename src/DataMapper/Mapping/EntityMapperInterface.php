@@ -34,9 +34,9 @@ interface EntityMapperInterface
      * Gets an entity by its primary key
      *
      * @param $id
-     * @return object
+     * @return IdentifiableInterface|null
      */
-    public function find($id): IdentifiableInterface;
+    public function find($id): ?IdentifiableInterface;
 
     /**
      * Retrieves all data

@@ -105,9 +105,9 @@ class Job implements IdentifiableInterface
     }
 
     /**
-     * @return string
+     * @return string|Category
      */
-    public function getCategory(): string
+    public function getCategory()//: string
     {
         return $this->category;
     }
@@ -187,7 +187,7 @@ class Job implements IdentifiableInterface
     /**
      * @return string
      */
-    public function getLocation(): string
+    public function getLocation(): ?string
     {
         return $this->location;
     }
@@ -203,7 +203,7 @@ class Job implements IdentifiableInterface
     /**
      * @return string
      */
-    public function getPosition(): string
+    public function getPosition(): ?string
     {
         return $this->position;
     }
@@ -219,7 +219,7 @@ class Job implements IdentifiableInterface
     /**
      * @return string
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -237,7 +237,7 @@ class Job implements IdentifiableInterface
      */
     public function isPublic(): bool
     {
-        return $this->public;
+        return (bool)$this->public;
     }
 
     /**
@@ -251,7 +251,7 @@ class Job implements IdentifiableInterface
     /**
      * @return string
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -283,7 +283,7 @@ class Job implements IdentifiableInterface
     /**
      * @return string
      */
-    public function getApplication(): string
+    public function getApplication(): ?string
     {
         return $this->application;
     }
@@ -299,7 +299,7 @@ class Job implements IdentifiableInterface
     /**
      * @return string
      */
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }

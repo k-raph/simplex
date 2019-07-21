@@ -1,0 +1,51 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title %}Jobs list{% endblock %}
+
+{% block content %}
+    <div class="my-2">
+        <h3>Jobs</h3>
+        <hr>
+        <table class="table table-striped table-hover text-center">
+            <thead>
+            <tr>
+                <th>Position</th>
+                <th>Type</th>
+                <th>Public</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for job in jobs %}
+                <tr>
+                    <td>{{ job.position }}</td>
+                    <td>{{ job.type }}</td>
+                    <td>{{ job.public ? 'Yes' : 'No' }}</td>
+                    <td>{{ job.category }}</td>
+                    <td class="columns">
+                        <a class="btn mr-2" href="{{ route('admin_jobeet_job_show', {id: job.id}) }}">
+                            <i class="icon icon-search"></i>
+                        </a>
+                        <a class="btn" href="{{ route('admin_jobeet_job_edit', {id: job.id}) }}">
+                            <i class="icon icon-edit"></i>
+                        </a>
+                        <form class="column" action="{{ route('admin_jobeet_job_delete', {id: job.id}) }}"
+                              method="post">
+                            {{ csrf_field() }}
+                            <input type="hidden" value="DELETE" name="_method">
+                            <button class="btn btn-error" onclick="return confirm('Are you sure ?');">
+                                <i class="icon icon-delete"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        {% include 'pagination.twig' %}
+        <a class="btn" href="{# route('admin_jobeet_job_create') #}">Create an job</a>
+    </div>
+{% endblock %}

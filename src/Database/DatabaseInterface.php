@@ -33,8 +33,10 @@ interface DatabaseInterface
      * @param object|null $bound Optional param to bind to closure
      * @return bool
      */
-    public function transaction(\Closure $transaction, /*?object*/
-                                $bound = null): bool;
+    public function transaction(
+        \Closure $transaction, /*?object*/
+        $bound = null
+    ): bool;
 
     /**
      * Fetch a single entry from a query

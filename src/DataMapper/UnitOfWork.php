@@ -131,7 +131,7 @@ class UnitOfWork
      */
     public function getChangeSet(object $entity): array
     {
-        $this->em->getMapper(\get_class($entity));
+        //$this->em->getMapper(\get_class($entity));
         $original = $this->identityMap->getOriginal($entity) ?? new \stdClass();
 
         return ChangeTracker::getChanges($original, $entity);
@@ -143,5 +143,13 @@ class UnitOfWork
     public function getIdentityMap(): IdentityMap
     {
         return $this->identityMap;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    public function getEntityManager(): EntityManager
+    {
+        return $this->em;
     }
 }

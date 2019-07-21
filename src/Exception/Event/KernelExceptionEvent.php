@@ -8,11 +8,15 @@
 
 namespace Simplex\Exception\Event;
 
+use Psr\EventDispatcher\StoppableEventInterface;
+use Simplex\Events\StoppableEventTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class KernelExceptionEvent
+class KernelExceptionEvent implements StoppableEventInterface
 {
+
+    use StoppableEventTrait;
 
     /**
      * @var \Exception

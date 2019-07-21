@@ -73,6 +73,15 @@ class JobeetServiceProvider extends AbstractModule
     }
 
     /**
+     * @param Configuration $configuration
+     * @return mixed|void
+     */
+    public function configure(Configuration $configuration)
+    {
+        $configuration->load(__DIR__ . '/resources/config.yml', 'jobeet');
+    }
+
+    /**
      * @return array
      */
     public function getMappings(): array

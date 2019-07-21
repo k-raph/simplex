@@ -215,7 +215,7 @@ class JobEditAction
     {
         $repository->getMapper()
             ->query()
-            ->where(['token' => $token])
+            ->where('token', $token)
             ->delete();
 
         $flash->success('Job successfully deleted');
@@ -238,7 +238,6 @@ class JobEditAction
         return [
             'company' => 'required',
             'url' => 'url',
-            //'logo' => 'required|uploaded_file|max:500K|mimes:jpeg,png',
             'position' => 'required',
             'location' => 'required',
             'description' => 'required',

@@ -1,0 +1,28 @@
+{% extends '@admin/layout.twig' %}
+
+{% block content %}
+    <h1>Job {{ job.id }} - {{ job.position }}</h1>
+    <hr>
+    <nav class="navbar bg-gray p-2 m-2" style="height: 2.5rem">
+        <section class="navbar-section">
+            {{ form_open({method: 'POST', action: route('admin_jobeet_job_delete', {id: job.id})}) }}
+            {{ csrf_field() }}
+            <input type="hidden" name="_method" value="DELETE">
+            <button class="btn btn-error" onclick="return confirm('Are you sure?')">
+                Delete
+            </button>
+            {{ form_close() }}
+        </section>
+        <section class="navbar-section">
+            {% if job.hasExpired %}
+                <strong>Expired</strong>
+            {% else %}
+                <div class="nav-item mr-2">
+                    {% set expire = job.expiresAt.diff(date())|date('%a') %}
+                    Expires in <strong>{{ expire }}</strong> day{{ expire > 1 ? 's' : '' }}
+                </div>
+            {% endif %}
+        </section>
+    </nav>
+    {{ block('body', '@jobeet/job/show.twig') }}
+{% endblock %}

@@ -44,16 +44,15 @@ class Paginator
      * @param Builder|array $items
      * @param int $page
      * @param int $perPage
+     * @return Paginator
      * @throws \Throwable
      */
-    public function paginate($items, int $page = 1, int $perPage = 10)
+    public function paginate($items, int $page = 1, int $perPage = 10): Paginator
     {
         $this->current = $page = $page < 1 ? 1 : $page;
 
         if ($items instanceof Builder) {
-            $this->total = $items->newQuery()
-                ->from($items)
-                ->count();
+            $this->total = (clone $items)->count();
 
             $this->last = ceil($this->total / $perPage);
 
@@ -69,6 +68,10 @@ class Paginator
             $page = abs($page - 1) * $perPage;
             $this->items = array_slice($items, $page, $perPage);
         }
+
+        $this->last = $this->last < 1 ? 1 : $this->last;
+
+        return $this;
     }
 
     /**

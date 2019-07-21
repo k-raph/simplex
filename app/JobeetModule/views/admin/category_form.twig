@@ -1,0 +1,13 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+    <h2>{{ category ? 'Update' : 'Create' }} category</h2>
+    {{ form_open({method: 'POST', action: category is defined ? route('admin_jobeet_category_update', {id: category.id}) : route('admin_jobeet_category_create'), class: 'col-6'}) }}
+    {{ csrf_field() }}
+    {{ form_widget('text', 'name', 'Category name : ', category.name) }}
+    {{ form_widget('text', 'slug', 'Category slug : ', category.slug) }}
+    {{ form_submit(category ? 'Update' : 'Create') }}
+    {{ form_close() }}
+{% endblock %}

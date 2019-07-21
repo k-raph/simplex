@@ -69,7 +69,8 @@ class AffiliateManageAction extends AffiliateRegisterAction
         EntityManager $manager,
         EventManagerInterface $events,
         RouterInterface $router,
-        SessionFlash $flash)
+        SessionFlash $flash
+    )
     {
         /** @var Affiliate $affiliate */
         $affiliate = $manager->find(Affiliate::class, $id);

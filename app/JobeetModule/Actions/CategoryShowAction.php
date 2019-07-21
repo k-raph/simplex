@@ -11,6 +11,7 @@ namespace App\JobeetModule\Actions;
 use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Repository\CategoryRepository;
 use App\JobeetModule\Repository\JobRepository;
+use Simplex\Configuration\Configuration;
 use Simplex\Pagination\Paginator;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouterInterface;
@@ -24,16 +25,30 @@ class CategoryShowAction
      */
     private $view;
 
-    public function __construct(TwigRenderer $view)
+    /**
+     * @var int
+     */
+    private $maxPerPage;
+
+    public function __construct(TwigRenderer $view, Configuration $configuration)
     {
         $this->view = $view;
+        $this->maxPerPage = $configuration->get('jobeet.jobs_per_page', 5);
     }
 
+    /**
+     * @param Request $request
+     * @param CategoryRepository $repository
+     * @param JobRepository $jobRepository
+     * @param RouterInterface $router
+     * @return string
+     */
     public function single(
         Request $request,
         CategoryRepository $repository,
         JobRepository $jobRepository,
-        RouterInterface $router)
+        RouterInterface $router
+    )
     {
         $slug = $request->attributes->get('_route_params')['slug'];
         $page = $request->query->get('page', 1);
@@ -45,7 +60,7 @@ class CategoryShowAction
         $paginator = new Paginator();
         $paginator
             ->withUrl($router->generate('category_show', ['slug' => $category->getSlug()]))
-            ->paginate($query, $page, 5);
+            ->paginate($query, $page, $this->maxPerPage);
         $category->setJobs($paginator->getItems());
 
         return $this->view->render('@jobeet/category/show', [

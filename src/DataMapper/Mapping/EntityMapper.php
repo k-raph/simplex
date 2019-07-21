@@ -54,9 +54,9 @@ abstract class EntityMapper implements EntityMapperInterface
 
     /**
      * @param $id
-     * @return IdentifiableInterface
+     * @return IdentifiableInterface|null
      */
-    public function find($id): IdentifiableInterface
+    public function find($id): ?IdentifiableInterface
     {
         return $this->query()
             ->where('id', $id)
