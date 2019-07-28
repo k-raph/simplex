@@ -20,13 +20,17 @@ class DatabaseServiceProvider extends AbstractServiceProvider
      */
     public function register()
     {
-        $options = $this->container
-            ->get(Configuration::class)
-            ->get('database', []);
-        $config = new DatabaseConfiguration($options);
-        $manager = new DatabaseManager($config);
+        $this->container->add(DatabaseManager::class, function () {
+            $options = $this->container
+                ->get(Configuration::class)
+                ->get('database', []);
+            $config = new DatabaseConfiguration($options);
+            return new DatabaseManager($config);
+        });
 
-        $this->container->add(DatabaseManager::class, $manager);
-        $this->container->add(DatabaseInterface::class, $manager->getDatabase('default'));
+        $this->container->add(DatabaseInterface::class, function () {
+            $manager = $this->container->get(DatabaseManager::class);
+            return $manager->getDatabase('default');
+        });
     }
 }

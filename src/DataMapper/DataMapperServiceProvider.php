@@ -12,7 +12,7 @@ class DataMapperServiceProvider extends AbstractServiceProvider
      */
     protected $provides = [
         DataMapper::class,
-        EntityManager::class,
+        //EntityManager::class,
         UnitOfWork::class
     ];
 
@@ -23,11 +23,14 @@ class DataMapperServiceProvider extends AbstractServiceProvider
     {
         $db = $this->container->get(DatabaseManager::class);
 
-        $dataMapper = new DataMapper($db);
-        $em = $dataMapper->getManager();
+        $this->container->add(DataMapper::class, function () use ($db) {
+            return new DataMapper($db);
+        });
 
-        $this->container->add(DataMapper::class, $dataMapper);
-        $this->container->add(EntityManager::class, $em);
-        $this->container->add(UnitOfWork::class, $em->getUnitOfWork());
+        $this->container->add(UnitOfWork::class, function () {
+            return $this->container
+                ->get(EntityManager::class)
+                ->getUnitOfWork();
+        });
     }
 }

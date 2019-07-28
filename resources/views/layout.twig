@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Simplex | {% block title %}{% endblock %}</title>
-    <link href="/css/spectre.min.css" rel="stylesheet">
-    <link href="/css/app.css" rel="stylesheet">
+    <link href="{{ asset('spectre.min.css', 'css') }}" rel="stylesheet">
+    <link href="{{ asset('app.css', 'css') }}" rel="stylesheet">
+    {% block stylesheets %}{% endblock %}
 
 </head>
 <body>
@@ -20,5 +21,7 @@
     {% endif %}
     {% block content %}{% endblock %}
 </div>
+
+{% block javascripts %}{% endblock %}
 </body>
 </html>

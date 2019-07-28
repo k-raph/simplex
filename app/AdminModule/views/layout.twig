@@ -7,8 +7,8 @@
 
     <title>{% block title %}Simplex Admin{% endblock %}</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="/css/spectre.min.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="/css/kadmin.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('spectre.min.css', 'css') }}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('kadmin.css', 'css') }}"/>
     {% block stylesheets %}{% endblock %}
 </head>
 
@@ -38,7 +38,7 @@
 
 {% include '@admin/layout/logout_modal.twig' %}
 
-<script src="/js/kadmin.js"></script>
+<script src="{{ asset('kadmin.js', 'js') }}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

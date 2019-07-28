@@ -110,7 +110,7 @@ HTML;
     {
         switch ($type) {
             case 'checkbox':
-                echo $this->checkbox($name, $label, $attributes);
+                echo $this->checkbox($name, $label, $attributes['switch'] ?? false);
                 return;
             case 'textarea':
                 $field = $this->textarea($name, $value, $attributes);

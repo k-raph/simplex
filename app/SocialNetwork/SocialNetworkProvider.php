@@ -12,24 +12,20 @@ use Simplex\Configuration\Configuration;
 use Simplex\Middleware\AuthenticationMiddleware;
 use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouterInterface;
+use Simplex\Routing\RouteCollection;
 
 class SocialNetworkProvider extends AbstractModule
 {
 
-    public function __construct(TwigRenderer $renderer, RouterInterface $router, Configuration $config)
-    {
-        $renderer->addPath(__DIR__ . '/views', 'social');
+    /**
+     * @var string
+     */
+    private $appHost;
 
-        $router->import(__DIR__ . '/resources/routes.yml', [
-            'host' => sprintf(
-                '%s.%s',
-                $config->get('social.host', 'social'),
-                $config->get('app_host', 'localhost')
-            ),
-            '_middlewares' => [AuthenticationMiddleware::class]
-        ]);
-    }
+    /**
+     * @var string
+     */
+    private $host;
 
     /**
      * @param Configuration $configuration
@@ -38,6 +34,30 @@ class SocialNetworkProvider extends AbstractModule
     public function configure(Configuration $configuration)
     {
         $configuration->set('social.host', 'social');
+
+        $this->host = $configuration->get('social.host', 'social');
+        $this->appHost = $configuration->get('app_host', 'localhost');
+    }
+
+    /**
+     * @param RouteCollection $collection
+     * @throws \Symfony\Component\Config\Exception\FileLoaderLoadException
+     */
+    public function getSiteRoutes(RouteCollection $collection): void
+    {
+        $collection->import(__DIR__ . '/resources/routes.yml', [
+            'host' => sprintf('%s.%s', $this->host, $this->appHost),
+            '_middlewares' => [AuthenticationMiddleware::class]
+        ]);
+    }
+
+    /**
+     * @param TwigRenderer $renderer
+     * @throws \Twig_Error_Loader
+     */
+    public function registerTemplates(TwigRenderer $renderer)
+    {
+        $renderer->addPath(__DIR__ . '/views', 'social');
     }
 
     /**

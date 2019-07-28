@@ -46,9 +46,6 @@ class JobeetServiceProvider extends AbstractModule
         $container->add(StatelessAuthenticationManager::class)
             ->addArgument(AffiliateRepository::class);
 
-        $this->host = $container->get(Configuration::class)
-            ->get('app_host', 'localhost');
-
         $container->get(EventManagerInterface::class)
             ->on(
                 AffiliateActivationEvent::class,
@@ -79,6 +76,7 @@ class JobeetServiceProvider extends AbstractModule
     public function configure(Configuration $configuration)
     {
         $configuration->load(__DIR__ . '/resources/config.yml', 'jobeet');
+        $this->host = $configuration->get('app_host', 'localhost');
     }
 
     /**
