@@ -1,3 +1,0 @@
-fb_home:
-  path: /
-  controller: App\SocialNetwork\Actions\HomeAction:index

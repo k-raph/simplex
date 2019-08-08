@@ -5,7 +5,7 @@ modules:
   - App\AuthModule\AuthModuleProvider
   - App\Blog\BlogModule
   - App\JobeetModule\JobeetServiceProvider
-  - App\SocialNetwork\SocialNetworkProvider
+  - App\BankuModule\BankuModuleProvider
   - App\AdminModule\AdminModuleProvider
 
 providers:

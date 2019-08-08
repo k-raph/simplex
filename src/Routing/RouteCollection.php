@@ -41,6 +41,15 @@ class RouteCollection
     }
 
     /**
+     * @param string|null $host
+     * @return RouteCollection
+     */
+    public function createCollection(?string $host = null): RouteCollection
+    {
+        return new self($this->router, $host);
+    }
+
+    /**
      * @param string $from
      * @param array $options
      * @throws \Symfony\Component\Config\Exception\FileLoaderLoadException

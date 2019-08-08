@@ -65,4 +65,11 @@ interface ModuleInterface
      * @return array
      */
     public function getCommands(): array;
+
+    /**
+     * Gets migrations config file to use
+     *
+     * @return null|string
+     */
+    public function getMigrationsConfig(): ?string;
 }

@@ -1,6 +1,6 @@
 paths:
-  migrations: '%%PHINX_CONFIG_DIR%%/resources/db/social/migrations'
-  seeds: '%%PHINX_CONFIG_DIR%%/resources/db/social/seeds'
+  migrations: '%%PHINX_CONFIG_DIR%%/migrations'
+  seeds: '%%PHINX_CONFIG_DIR%%/seeds'
 
 environments:
   default_migration_table: phinxlog
@@ -17,7 +17,7 @@ environments:
   development:
     adapter: sqlite
     host: localhost
-    name: ./resources/db/social/database.db
+    name: './resources/db/banku/database.db'
     user: root
     pass: ''
     port: 3306

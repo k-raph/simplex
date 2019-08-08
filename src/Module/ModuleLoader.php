@@ -126,4 +126,9 @@ class ModuleLoader
     {
         return $this->modules;
     }
+
+    public function get(string $name): ?ModuleInterface
+    {
+        return $this->modules[$name] ?? null;
+    }
 }

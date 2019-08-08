@@ -63,4 +63,12 @@ abstract class AbstractModule implements ModuleInterface
     {
         return [];
     }
+
+    /**
+     * @return string|null
+     */
+    public function getMigrationsConfig(): ?string
+    {
+        return null;
+    }
 }

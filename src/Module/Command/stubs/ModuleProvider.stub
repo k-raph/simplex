@@ -1,0 +1,10 @@
+<?php
+
+namespace App\{namespace};
+
+use Simplex\Module\AbstractModule;
+
+class {module} extends AbstractModule
+{
+
+}

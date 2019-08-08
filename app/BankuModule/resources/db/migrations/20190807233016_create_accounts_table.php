@@ -3,7 +3,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreatePublicationsTable extends AbstractMigration
+class CreateAccountsTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -28,16 +28,16 @@ class CreatePublicationsTable extends AbstractMigration
      */
     public function change()
     {
-        if ($this->hasTable('publications')) $this->dropTable('publications');
-
-        $this->table('publications')
-            ->addColumn('content', 'text')
-            ->addColumn('author_id', 'integer')
-            ->addColumn('created_at', 'datetime')
-            ->addForeignKey('author_id', 'users', 'id', [
-                'update' => 'CASCADE',
-                'delete' => 'CASCADE'
-            ])
+        $this->table('accounts')
+            ->addColumn('number', 'string')
+            ->addColumn('type', 'string')
+            ->addColumn('balance', 'integer')
+            ->addColumn('interest_rate', 'integer')
+            ->addColumn('status', 'string')
+            ->addColumn('branch_id', 'integer')
+            ->addColumn('customer_id', 'integer')
+            ->addForeignKey('branch_id', 'branches', 'id')
+            ->addForeignKey('customer_id', 'customers', 'id')
             ->create();
     }
 }
