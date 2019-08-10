@@ -40,7 +40,7 @@ class EntityManager
     {
         $this->connection = $connection;
         $this->uow = new UnitOfWork($this);
-        $this->mapperRegistry = new MapperRegistry();
+        $this->mapperRegistry = new MapperRegistry($connection, $this->uow);
     }
 
     /**

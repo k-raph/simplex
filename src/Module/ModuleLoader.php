@@ -12,7 +12,7 @@ use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\DataMapper\DataMapperServiceProvider;
 use Simplex\DataMapper\EntityManager;
-use Simplex\DataMapper\Mapping\EntityMapperInterface;
+use Simplex\DataMapper\Mapping\MappingRegistry;
 use Simplex\Middleware\AuthenticationMiddleware;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Renderer\TwigServiceProvider;
@@ -90,7 +90,7 @@ class ModuleLoader
             }
 
             // Register mappings
-            $mappings = array_merge($mappings, $module->getMappings());
+            array_push($mappings, $module->getMappings());
         }
         $router->mount('/admin', $admin);
 
@@ -106,16 +106,15 @@ class ModuleLoader
     public function loadMappings(bool $registered, array $mappings)
     {
         if ($registered) {
-            /** @var EntityManager $manager */
-            $manager = $this->container->get(EntityManager::class);
-            $registry = $manager->getMapperRegistry();
-            $registry->setResolver([$this->container, 'get']);
+            $registry = new MappingRegistry();
 
-            foreach ($mappings as $class => $mapper) {
-                if (is_subclass_of($mapper, EntityMapperInterface::class)) {
-                    $registry->register($class, $mapper);
+            foreach ($mappings as $mapping) {
+                if (isset($mapping['mappings'])) {
+                    $registry->register($mapping['mappings'], $mapping['connection'] ?? null);
                 }
             }
+
+            $this->container->add(MappingRegistry::class, $registry);
         }
     }
 

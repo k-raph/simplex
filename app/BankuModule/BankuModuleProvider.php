@@ -2,27 +2,33 @@
 
 namespace App\BankuModule;
 
-use Simplex\Database\DatabaseManager;
+use Simplex\Configuration\Configuration;
 use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;
 use Simplex\Routing\RouteCollection;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BankuModuleProvider extends AbstractModule
 {
+
+    /**
+     * @var string
+     */
+    private $host;
+
+    public function configure(Configuration $configuration)
+    {
+        //$configuration->load(__DIR__ . '/resources/config.yml', 'jobeet');
+        $this->host = $configuration->get('app_host', 'localhost');
+    }
 
     /**
      * @param RouteCollection $collection
      */
     public function getSiteRoutes(RouteCollection $collection): void
     {
-        $collection->get('/banku', function (DatabaseManager $manager) {
-            $accounts = $manager->getDatabase('banku')
-                ->query('SELECT * FROM accounts')
-                ->fetchAll();
-
-            return new JsonResponse($accounts);
-        });
+        $collection->import(__DIR__ . '/resources/routes.yml', [
+            'host' => 'banku.' . $this->host
+        ]);
     }
 
     /**

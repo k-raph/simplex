@@ -85,9 +85,11 @@ class JobeetServiceProvider extends AbstractModule
     public function getMappings(): array
     {
         return [
-            Job::class => JobMapper::class,
-            Category::class => CategoryMapper::class,
-            Affiliate::class => AffiliateMapper::class
+            'mappings' => [
+                Job::class => JobMapper::class,
+                Category::class => CategoryMapper::class,
+                Affiliate::class => AffiliateMapper::class
+            ]
         ];
     }
 

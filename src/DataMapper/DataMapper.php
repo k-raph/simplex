@@ -9,6 +9,8 @@
 namespace Simplex\DataMapper;
 
 use Simplex\Database\DatabaseManager;
+use Simplex\DataMapper\Mapping\EntityMapperInterface;
+use Simplex\DataMapper\Mapping\MappingRegistry;
 
 class DataMapper
 {
@@ -24,12 +26,19 @@ class DataMapper
     private $managers = [];
 
     /**
+     * @var MappingRegistry
+     */
+    private $mappings;
+
+    /**
      * DataMapper constructor.
      * @param DatabaseManager $manager
+     * @param MappingRegistry $mappings
      */
-    public function __construct(DatabaseManager $manager)
+    public function __construct(DatabaseManager $manager, MappingRegistry $mappings)
     {
         $this->manager = $manager;
+        $this->mappings = $mappings;
     }
 
     /**
@@ -42,6 +51,12 @@ class DataMapper
     {
         if (!in_array($name, $this->managers)) {
             $manager = new EntityManager($this->manager->getDatabase($name));
+            $registry = $manager->getMapperRegistry();
+            foreach ($this->mappings->getMappings($name) as $class => $mapper) {
+                if (is_subclass_of($mapper, EntityMapperInterface::class)) {
+                    $registry->register($class, $mapper);
+                }
+            }
             $this->managers[$name] = $manager;
         }
 

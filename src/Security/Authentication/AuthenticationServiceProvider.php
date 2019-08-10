@@ -49,12 +49,11 @@ class AuthenticationServiceProvider extends AbstractServiceProvider
                 ->addArgument($field);
         }
 
-        /** @var UserProviderInterface $provider */
-        $provider = $this->container->get($params['class']);
-
         $loginPath = $config->get('app_host', 'localhost') . $config->get('auth.login_path', '/login');
 
-        $this->container->add(UserProviderInterface::class, $provider);
+        $this->container->add(UserProviderInterface::class, function () use ($params) {
+            return $this->container->get($params['class']);
+        });
         $this->container->add(AuthenticationManager::class)
             ->addArgument(UserProviderInterface::class)
             ->addArgument(SessionInterface::class)

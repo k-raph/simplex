@@ -29,8 +29,10 @@ class BlogModule extends AbstractModule
     public function getMappings(): array
     {
         return [
-            Post::class => PostMapper::class,
-            Comment::class => CommentMapper::class
+            'mappings' => [
+                Post::class => PostMapper::class,
+                Comment::class => CommentMapper::class
+            ]
         ];
     }
 

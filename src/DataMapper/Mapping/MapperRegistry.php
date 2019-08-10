@@ -8,6 +8,9 @@
 
 namespace Simplex\DataMapper\Mapping;
 
+use Simplex\Database\DatabaseInterface;
+use Simplex\DataMapper\UnitOfWork;
+
 class MapperRegistry
 {
 
@@ -20,11 +23,13 @@ class MapperRegistry
 
     /**
      * MapperRegistry constructor.
+     * @param DatabaseInterface $connection
+     * @param UnitOfWork $uow
      */
-    public function __construct()
+    public function __construct(DatabaseInterface $connection, UnitOfWork $uow)
     {
-        $this->resolver = function (string $mapper) {
-            return new $mapper();
+        $this->resolver = function (string $mapper) use ($connection, $uow) {
+            return new $mapper($connection, $uow);
         };
     }
 
