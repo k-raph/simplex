@@ -85,6 +85,7 @@ class JobeetServiceProvider extends AbstractModule
     public function getMappings(): array
     {
         return [
+            'connection' => 'simplex',
             'mappings' => [
                 Job::class => JobMapper::class,
                 Category::class => CategoryMapper::class,

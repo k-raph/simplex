@@ -29,6 +29,7 @@ class BlogModule extends AbstractModule
     public function getMappings(): array
     {
         return [
+            'connection' => 'simplex',
             'mappings' => [
                 Post::class => PostMapper::class,
                 Comment::class => CommentMapper::class

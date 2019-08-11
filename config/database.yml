@@ -3,6 +3,3 @@ connections:
   simplex:
     type: sqlite
     database: '%resources%/db/simplex/database.db'
-  banku:
-    type: sqlite
-    database: '%resources%/db/banku/database.db'

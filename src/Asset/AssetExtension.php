@@ -35,7 +35,8 @@ class AssetExtension extends AbstractExtension
     {
         return [
             new TwigFunction('asset', function (string $asset, string $type = null) {
-                return $this->manager->getUrl($asset, $type);
+                $url = $this->manager->getUrl($asset, $type);
+                return $url;
             })
         ];
     }

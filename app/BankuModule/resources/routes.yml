@@ -1,4 +1,0 @@
-banku_home:
-  path: /
-  controller: App\BankuModule\Controller\HomeController:index
-  methods: [GET]

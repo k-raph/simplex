@@ -96,21 +96,22 @@ class ModuleLoader
 
         $map = class_exists(EntityManager::class) &&
             in_array(DataMapperServiceProvider::class, $config->get('providers', []));
-        $this->loadMappings($map, $mappings);
+        $this->loadMappings($map, $mappings, $config->get('database.default', null));
     }
 
     /**
      * @param bool $registered
      * @param array $mappings
+     * @param string|null $defaultConnection
      */
-    public function loadMappings(bool $registered, array $mappings)
+    public function loadMappings(bool $registered, array $mappings, ?string $defaultConnection)
     {
         if ($registered) {
             $registry = new MappingRegistry();
 
             foreach ($mappings as $mapping) {
                 if (isset($mapping['mappings'])) {
-                    $registry->register($mapping['mappings'], $mapping['connection'] ?? null);
+                    $registry->register($mapping['mappings'], $mapping['connection'] ?? $defaultConnection);
                 }
             }
 

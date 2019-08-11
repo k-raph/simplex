@@ -80,7 +80,7 @@ class QueryBuilder extends Builder
      */
     public function nativeQuery(): Builder
     {
-        return new parent($this->connection);
+        return (new parent($this->connection))->table($this->mapper->getTable());
     }
 
     /**

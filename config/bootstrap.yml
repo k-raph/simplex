@@ -1,11 +1,10 @@
 env: debug
-app_host: simplex.io
+#app_host: //Enter your server host name
 
 modules:
   - App\AuthModule\AuthModuleProvider
   - App\Blog\BlogModule
   - App\JobeetModule\JobeetServiceProvider
-  - App\BankuModule\BankuModuleProvider
   - App\AdminModule\AdminModuleProvider
 
 providers:
@@ -21,4 +20,4 @@ providers:
   - Simplex\DataMapper\DataMapperServiceProvider
   - Simplex\Security\Authentication\AuthenticationServiceProvider
   - Simplex\Module\ModuleServiceProvider
-  #- Simplex\Plugin\PluginServiceProvider
+  - Simplex\Plugin\PluginServiceProvider
