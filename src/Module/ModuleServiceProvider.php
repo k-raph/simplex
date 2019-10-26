@@ -9,10 +9,18 @@
 namespace Simplex\Module;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
-use League\Container\ServiceProvider\BootableServiceProviderInterface;
+use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
+use Simplex\EventManager\EventManagerInterface;
+use Simplex\Events\KernelBootEvent;
+use Simplex\Module\Command\CreateModuleCommand;
+use Simplex\Module\Command\CreateModuleMigrationCommand;
+use Simplex\Module\Command\CreateModuleSeedCommand;
+use Simplex\Module\Command\MigrateModuleCommand;
+use Simplex\Module\Command\ModuleListCommand;
+use Simplex\Module\Command\RunModuleSeedCommand;
 
-class ModuleServiceProvider extends AbstractServiceProvider implements BootableServiceProviderInterface
+class ModuleServiceProvider extends AbstractServiceProvider
 {
 
     protected $provides = [
@@ -25,6 +33,39 @@ class ModuleServiceProvider extends AbstractServiceProvider implements BootableS
     private $loader;
 
     /**
+     * ModuleServiceProvider constructor.
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->setContainer($container);
+
+        /** @var Configuration $config */
+        $config = $this->container->get(Configuration::class);
+
+        // Load modules
+        $modules = $config->get('modules', []);
+        $loader = new ModuleLoader($this->container);
+        $loader->load($modules);
+        $this->loader = $loader;
+
+        // Load commands on bootstrap
+        $this->container
+            ->get(EventManagerInterface::class)
+            ->on(KernelBootEvent::class, function (KernelBootEvent $event) {
+                $event->getConfiguration()->add('console.commands', [
+                    ModuleListCommand::class,
+                    CreateModuleCommand::class,
+                    MigrateModuleCommand::class,
+                    CreateModuleMigrationCommand::class,
+                    CreateModuleSeedCommand::class,
+                    RunModuleSeedCommand::class
+                ]);
+                return $event;
+            });
+    }
+
+    /**
      * Use the register method to register items with the container via the
      * protected $this->container property or the `getContainer` method
      * from the ContainerAwareTrait.
@@ -34,23 +75,5 @@ class ModuleServiceProvider extends AbstractServiceProvider implements BootableS
     public function register()
     {
         $this->container->add(ModuleLoader::class, $this->loader);
-    }
-
-    /**
-     * Method will be invoked on registration of a service provider implementing
-     * this interface. Provides ability for eager loading of Service Providers.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        /** @var Configuration $config */
-        $config = $this->container->get(Configuration::class);
-
-        // Load modules
-        $modules = $config->get('modules', []);
-        $loader = new ModuleLoader($this->container);
-        $loader->load($modules);
-        $this->loader = $loader;
     }
 }

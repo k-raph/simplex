@@ -64,14 +64,15 @@ class Kernel extends Application
 
         /** @var Configuration $configuration */
         $configuration = $container->get(Configuration::class);
-        $configuration->set('providers', $configuration->get('console.providers', []), true);
+        $configuration->set('providers', $configuration->get('console.providers', []));
+
+        $this->kernel->boot();
 
         // Get base commands
         $commands = $configuration->get('console.commands', []);
 
         // Try to add commands provided by registered modules
         try {
-            $this->kernel->boot();
             /** @var ModuleLoader $loader */
             $loader = $container->get(ModuleLoader::class);
             $commands = array_reduce($loader->getModules(), function (array $commands, ModuleInterface $module) {

@@ -110,9 +110,9 @@ class Kernel
             return;
         }
 
+        $this->bootstrap();
         $config = $this->container->get(Configuration::class);
         $this->eventManager->dispatch(new KernelBootEvent($config))->getConfiguration();
-        $this->bootstrap();
 
         $this->booted = true;
     }

@@ -2,14 +2,6 @@ commands:
   - Simplex\Console\Command\YamlLintCommand
   - Simplex\Console\Command\RouterDebugCommand
   - Simplex\Console\Command\WorkerRunCommand
-  - Simplex\Module\Command\ModuleListCommand
-  - Simplex\Module\Command\CreateModuleCommand
-  - Simplex\Module\Command\MigrateModuleCommand
-  - Simplex\Module\Command\CreateModuleMigrationCommand
-  - Simplex\Module\Command\CreateModuleSeedCommand
-  - Simplex\Module\Command\RunModuleSeedCommand
-  #- Simplex\Plugin\Command\PluginListCommand
-  #- Simplex\Plugin\Command\PluginLoadedListCommand
 
 providers:
   - Simplex\Exception\ExceptionHandlerProvider

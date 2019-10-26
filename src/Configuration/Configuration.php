@@ -52,21 +52,48 @@ class Configuration
     }
 
     /**
+     * Add values to a preregistered key
+     *
+     * @param string $key
+     * @param $value
+     */
+    public function add(string $key, $value)
+    {
+        $old = $this->get($key);
+        if ($old && is_array($old)) {
+            $value = array_merge($old, is_array($value) ? $value : [$value]);
+            $this->_set($key, $value, false);
+        }
+    }
+
+    /**
+     * Override a predefined value
+     *
+     * @param string $key
+     * @param $value
+     */
+    public function set(string $key, $value)
+    {
+        $this->_set($key, $value, true);
+    }
+
+    /**
      * @param string $key
      * @param $value
      * @param bool $replace
      */
-    public function set(string $key, $value, bool $replace = true)
+    private function _set(string $key, $value, bool $replace = false)
     {
         $parts = explode('.', $key);
         $root = array_shift($parts);
 
-        $temp = [];
         if (empty($parts)) {
             $temp = $value;
         } else {
-            foreach ($parts as $part) {
-                $temp[$part] = $value;
+            $temp = $value;
+            while (count($parts) > 0) {
+                $part = array_pop($parts);
+                $temp = [$part => $temp];
             }
         }
 
