@@ -29,7 +29,8 @@ class CreateCustomersTable extends AbstractMigration
     public function change()
     {
         $this->table('customers')
-            ->addColumn('name', 'string')
+            ->addColumn('first_name', 'string')
+            ->addColumn('last_name', 'string')
             ->addColumn('address', 'string')
             ->addColumn('email', 'string')
             ->addColumn('phone', 'string')

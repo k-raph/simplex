@@ -19,7 +19,8 @@ class EmployeesSeeder extends AbstractSeed
         $faker = \Faker\Factory::create();
         for ($i = 0; $i < 15; $i++) {
             $employees[] = [
-                'name' => $faker->name,
+                'first_name' => $faker->firstName,
+                'last_name' => $faker->lastName,
                 'address' => $faker->address,
                 'email' => $faker->email,
                 'phone' => $faker->phoneNumber,

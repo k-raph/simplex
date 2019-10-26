@@ -29,7 +29,8 @@ class CreateEmployeesTable extends AbstractMigration
     public function change()
     {
         $this->table('employees')
-            ->addColumn('name', 'string')
+            ->addColumn('first_name', 'string')
+            ->addColumn('last_name', 'string')
             ->addColumn('address', 'string')
             ->addColumn('email', 'string')
             ->addColumn('phone', 'string')

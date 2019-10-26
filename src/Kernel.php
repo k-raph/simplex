@@ -46,7 +46,7 @@ class Kernel
         $container->add(EventManagerInterface::class, $this->eventManager);
 
         $this->container = $container;
-        $this->bootstrap();
+        $this->configure();
     }
 
     /**
@@ -90,8 +90,6 @@ class Kernel
      */
     private function bootstrap(): void
     {
-        $this->configure();
-
         $providers = $this->container
             ->get(Configuration::class)
             ->get('providers', []);
@@ -114,6 +112,7 @@ class Kernel
 
         $config = $this->container->get(Configuration::class);
         $this->eventManager->dispatch(new KernelBootEvent($config))->getConfiguration();
+        $this->bootstrap();
 
         $this->booted = true;
     }

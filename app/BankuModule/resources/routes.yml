@@ -2,3 +2,13 @@ banku_home:
   path: /
   controller: App\BankuModule\Controller\HomeController:index
   methods: [GET]
+
+accounts:
+  resource: routes/accounts.yml
+  name_prefix: account_
+  prefix: /accounts
+
+transactions:
+  resource: routes/transactions.yml
+  name_prefix: transaction_
+  prefix: /transactions

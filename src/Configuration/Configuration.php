@@ -54,18 +54,25 @@ class Configuration
     /**
      * @param string $key
      * @param $value
+     * @param bool $replace
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value, bool $replace = true)
     {
         $parts = explode('.', $key);
         $root = array_shift($parts);
 
         $temp = [];
-        foreach ($parts as $part) {
-            $temp[$part] = $value;
+        if (empty($parts)) {
+            $temp = $value;
+        } else {
+            foreach ($parts as $part) {
+                $temp[$part] = $value;
+            }
         }
 
-        $this->values[$root] = (array_merge($this->values[$root] ?? [], $temp));
+        $this->values[$root] = $replace
+            ? $temp
+            : (array_merge($this->values[$root] ?? [], $temp));
     }
 
     /**

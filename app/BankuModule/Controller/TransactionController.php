@@ -2,15 +2,15 @@
 /**
  * Created by PhpStorm.
  * User: User
- * Date: 08/08/2019
- * Time: 02:01
+ * Date: 10/08/2019
+ * Time: 13:44
  */
 
 namespace App\BankuModule\Controller;
 
 use Simplex\Renderer\TwigRenderer;
 
-class HomeController
+class TransactionController
 {
 
     /**
@@ -20,13 +20,15 @@ class HomeController
 
     public function __construct(TwigRenderer $renderer)
     {
-
         $this->view = $renderer;
     }
 
-    public function index()
+    public function new()
     {
-        $data = ['branches' => 5, 'accounts' => 30, 'transactions' => 1125];
-        return $this->view->render('@banku/dashboard', $data);
+        return $this->view->render('@banku/transaction/new');
+    }
+
+    public function execute()
+    {
     }
 }

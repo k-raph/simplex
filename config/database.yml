@@ -1,4 +1,4 @@
-default: simplex
+default: banku
 connections:
   simplex:
     type: sqlite

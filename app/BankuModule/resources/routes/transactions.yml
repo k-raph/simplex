@@ -1,0 +1,9 @@
+new:
+  path: /new
+  controller: App\BankuModule\Controller\TransactionController:new
+  methods: [GET]
+
+execute:
+  path: /new
+  controller: App\BankuModule\Controller\TransactionController:execute
+  methods: [POST]

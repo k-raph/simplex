@@ -8,26 +8,31 @@
 
 namespace App\AdminModule;
 
-use Simplex\Middleware\AuthenticationMiddleware;
 use Simplex\Module\AbstractModule;
 use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouterInterface;
+use Simplex\Routing\RouteCollection;
 
 class AdminModuleProvider extends AbstractModule
 {
 
     /**
-     * AdminModuleProvider constructor.
-     * @param RouterInterface $router
-     * @param TwigRenderer $renderer
+     * @param RouteCollection $collection
+     * @throws \Symfony\Component\Config\Exception\FileLoaderLoadException
      */
-    public function __construct(RouterInterface $router, TwigRenderer $renderer)
+    public function getAdminRoutes(RouteCollection $collection): void
+    {
+        $collection->import(__DIR__ . '/resources/routes.yml', [
+            'prefix' => 'admin',
+        ]);
+    }
+
+    /**
+     * @param TwigRenderer $renderer
+     * @throws \Twig_Error_Loader
+     */
+    public function registerTemplates(TwigRenderer $renderer)
     {
         $renderer->addPath(__DIR__ . '/views', 'admin');
-        $router->import(__DIR__ . '/resources/routes.yml', [
-            'prefix' => 'admin',
-            '_middlewares' => [AuthenticationMiddleware::class]
-        ]);
     }
 
     /**

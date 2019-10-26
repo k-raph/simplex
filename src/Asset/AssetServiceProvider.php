@@ -30,6 +30,7 @@ class AssetServiceProvider extends AbstractServiceProvider
             $manager = new AssetManager('/');
 
             $manager->register('/css', 'css');
+            $manager->register('/img', 'img');
             $manager->register('/js', 'js');
 
             return $manager;

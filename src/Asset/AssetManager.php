@@ -48,6 +48,8 @@ class AssetManager
             throw new \Exception(sprintf('Package %s has not been registered', $type));
         }
 
-        return sprintf('/%s/%s', ltrim($this->paths[$type], '/'), ltrim($asset, '/'));
+        return $type
+            ? sprintf('/%s/%s', ltrim($this->paths[$type], '/'), ltrim($asset, '/'))
+            : sprintf('/%s', ltrim($asset, '/'));
     }
 }
