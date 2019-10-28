@@ -1,8 +1,0 @@
-{% extends '@jobeet/layout.twig' %}
-
-{% block title %}New Job{% endblock %}
-
-{% block body %}
-    <h2>{{ job is defined ? 'Edit' : 'Post' }} a job</h2>
-    {% include '@jobeet/job/form.twig' with {route: job is defined ? route('job_update', {'token': job.token}) : route('job_create')} %}
-{% endblock %}

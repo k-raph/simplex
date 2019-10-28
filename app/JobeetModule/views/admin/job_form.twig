@@ -1,8 +1,0 @@
-{% extends '@admin/layout.twig' %}
-
-{% block title %}Edit Job{% endblock %}
-
-{% block content %}
-    <h2>Edit job {{ job.id }}</h2>
-    {% include '@jobeet/job/form.twig' with {route: route('admin_jobeet_job_update', {'id': job.id})} %}
-{% endblock %}

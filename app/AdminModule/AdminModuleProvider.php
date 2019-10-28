@@ -22,7 +22,7 @@ class AdminModuleProvider extends AbstractModule
     public function getAdminRoutes(RouteCollection $collection): void
     {
         $collection->import(__DIR__ . '/resources/routes.yml', [
-            'prefix' => 'admin',
+            //'prefix' => 'admin',
         ]);
     }
 

@@ -3,6 +3,6 @@ connections:
   simplex:
     type: sqlite
     database: '%resources%/db/simplex/database.db'
-  banku:
+  askeet:
     type: sqlite
-    database: '%resources%/db/banku/database.db'
+    database: '%resources%/db/askeet/database.db'

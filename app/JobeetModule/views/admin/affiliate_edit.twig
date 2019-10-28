@@ -1,8 +1,0 @@
-{% extends '@admin/layout.twig' %}
-
-{% block title %}Edit Affiliate{% endblock %}
-
-{% block content %}
-    <h3>Edit an affiliate</h3>
-    {% include '@jobeet/affiliate/form.twig' with {affiliate: affiliate, action: route('admin_jobeet_affiliate_edit', {id: affiliate.id})} %}
-{% endblock %}

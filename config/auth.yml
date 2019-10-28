@@ -4,8 +4,8 @@ users:
 providers:
   database:
     table: users
-    class: App\AuthModule\Provider\DatabaseUserProvider
-    #class: Simplex\Security\Authentication\Provider\DatabaseUserProvider
+    #class: App\AuthModule\Provider\DatabaseUserProvider
+    class: Simplex\Security\Authentication\Provider\DatabaseUserProvider
 
 login_field: email
 login_path: '/login'
