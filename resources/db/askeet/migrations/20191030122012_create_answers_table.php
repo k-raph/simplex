@@ -3,7 +3,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateAffiliateTable extends AbstractMigration
+class CreateAnswersTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -28,13 +28,24 @@ class CreateAffiliateTable extends AbstractMigration
      */
     public function change()
     {
-        $this->table('affiliates')
-            ->addColumn('name', 'string')
-            ->addColumn('email', 'string')
-            ->addColumn('url', 'string')
-            ->addColumn('token', 'string')
-            ->addColumn('is_active', 'boolean')
-            ->addIndex('token', ['unique' => true])
+        $table = 'answers';
+        if ($this->hasTable($table)) $this->dropTable($table);
+
+        $this->table($table)
+            ->addColumn('content', 'text')
+            ->addColumn('votes', 'integer')
+            ->addColumn('is_best', 'boolean')
+            ->addColumn('parent_id', 'integer')
+            ->addColumn('author_id', 'integer')
+            ->addForeignKey('parent_id', 'questions', 'id', [
+                'update' => 'CASCADE',
+                'delete' => 'CASCADE'
+            ])
+            ->addForeignKey('author_id', 'users', 'id', [
+                'update' => 'CASCADE',
+                'delete' => 'CASCADE'
+            ])
+            ->addTimestamps()
             ->create();
     }
 }

@@ -3,7 +3,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateJobTable extends AbstractMigration
+class CreateQuestionTagsTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -28,22 +28,18 @@ class CreateJobTable extends AbstractMigration
      */
     public function change()
     {
-        $this->table('jobs')
-            ->addColumn('company', 'string')
-            ->addColumn('type', 'string')
-            ->addColumn('url', 'string')
-            ->addColumn('position', 'string')
-            ->addColumn('location', 'string')
-            ->addColumn('email', 'string')
-            ->addColumn('category_id', 'integer')
-            ->addColumn('description', 'text')
-            ->addColumn('application', 'text')
-            ->addColumn('is_public', 'boolean')
-            ->addColumn('logo', 'string')
-            ->addColumn('token', 'string')
-            ->addColumn('created_at', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
-            ->addColumn('expires_at', 'datetime')
-            ->addForeignKey('category_id', 'categories', 'id', [
+
+        $table = 'question_tag';
+        if ($this->hasTable($table)) $this->dropTable($table);
+
+        $this->table($table)
+            ->addColumn('question_id', 'integer')
+            ->addColumn('tag_id', 'integer')
+            ->addForeignKey('question_id', 'questions', 'id', [
+                'update' => 'CASCADE',
+                'delete' => 'CASCADE'
+            ])
+            ->addForeignKey('tag_id', 'tags', 'id', [
                 'update' => 'CASCADE',
                 'delete' => 'CASCADE'
             ])

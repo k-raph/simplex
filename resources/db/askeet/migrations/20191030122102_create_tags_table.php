@@ -3,7 +3,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateUsersTable extends AbstractMigration
+class CreateTagsTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -28,12 +28,14 @@ class CreateUsersTable extends AbstractMigration
      */
     public function change()
     {
-        if ($this->hasTable('users')) $this->dropTable('users');
+        $table = 'tags';
+        if ($this->hasTable($table)) $this->dropTable($table);
 
-        $this->table('users')
-            ->addColumn('username', 'string')
-            ->addColumn('email', 'string')
-            ->addColumn('password', 'string')
+        $this->table($table)
+            ->addColumn('name', 'string')
+            ->addColumn('slug', 'string')
+            ->addColumn('created_at', 'datetime')
+            ->addIndex('slug', ['unique' => true])
             ->create();
     }
 }

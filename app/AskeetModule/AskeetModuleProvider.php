@@ -16,4 +16,12 @@ class AskeetModuleProvider extends AbstractModule
     {
         return 'askeet';
     }
+
+    /**
+     * @return string|null
+     */
+    public function getMigrationsConfig(): ?string
+    {
+        return __DIR__ . '/resources/migrations.yml';
+    }
 }

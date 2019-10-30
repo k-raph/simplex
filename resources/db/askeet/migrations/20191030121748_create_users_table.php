@@ -3,7 +3,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreatePostTable extends AbstractMigration
+class CreateUsersTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -28,18 +28,16 @@ class CreatePostTable extends AbstractMigration
      */
     public function change()
     {
-        if ($this->hasTable('posts')) $this->dropTable('posts');
+        $table = 'users';
+        if ($this->hasTable($table)) $this->dropTable($table);
 
-        $this->table('posts')
-            ->addColumn('title', 'string')
-            ->addColumn('slug', 'string')
-            ->addColumn('content', 'string')
-            ->addColumn('author_id', 'integer')
-            ->addIndex('slug', ["unique" => true])
-            ->addForeignKey('author_id', 'users', 'id', [
-                'update' => 'CASCADE',
-                'delete' => 'CASCADE'
-            ])
+        $this->table($table)
+            ->addColumn('username', 'string')
+            ->addColumn('email', 'string')
+            ->addColumn('password', 'string')
+            ->addColumn('session_token', 'string')
+            ->addColumn('role', 'string')
+            ->addIndex('username', ['unique' => true])
             ->create();
     }
 }

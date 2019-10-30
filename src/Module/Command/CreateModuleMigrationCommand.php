@@ -69,7 +69,7 @@ class CreateModuleMigrationCommand extends Command
                 ->run($input, $output);
         }
 
-        $output->writeln(sprintf("Module '%s' doesn't exist or doesn't have valid migration config", $module));
+        $output->writeln(sprintf("Module '%s' doesn't exist or doesn't have valid migration config", $name));
         return 0;
     }
 }

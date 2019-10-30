@@ -3,7 +3,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateCommentsTable extends AbstractMigration
+class CreateQuestionsTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -28,20 +28,22 @@ class CreateCommentsTable extends AbstractMigration
      */
     public function change()
     {
-        if ($this->hasTable('comments')) $this->dropTable('comments');
+        $table = 'questions';
+        if ($this->hasTable($table)) $this->dropTable($table);
 
-        $this->table('comments')
-            ->addColumn('content', 'string')
+        $this->table($table)
+            ->addColumn('title', 'string')
+            ->addColumn('content', 'text')
+            ->addColumn('slug', 'string')
+            ->addColumn('votes', 'integer')
+            ->addColumn('best_answer', 'integer', ['null' => true])
             ->addColumn('author_id', 'integer')
-            ->addColumn('post_id', 'integer')
+            ->addIndex('slug', ['unique' => true])
             ->addForeignKey('author_id', 'users', 'id', [
                 'update' => 'CASCADE',
                 'delete' => 'CASCADE'
             ])
-            ->addForeignKey('post_id', 'posts', 'id', [
-                'update' => 'CASCADE',
-                'delete' => 'CASCADE'
-            ])
+            ->addTimestamps()
             ->create();
     }
 }
