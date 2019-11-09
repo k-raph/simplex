@@ -1,0 +1,9 @@
+home:
+    path: /
+    controller: App\AskeetModule\Controller\HomeController:index
+    methods: [GET]
+
+question_show:
+    path: /questions/{slug}
+    controller: App\AskeetModule\Controller\QuestionController:single
+    methods: [GET]

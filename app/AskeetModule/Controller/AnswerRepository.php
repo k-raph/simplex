@@ -9,7 +9,26 @@
 namespace App\AskeetModule\Controller;
 
 
-class AnswerRepository
+use App\AskeetModule\Repository\AbstractRepository;
+
+class AnswerRepository extends AbstractRepository
 {
 
+    protected $table = 'answers';
+
+    /**
+     * @param array $question
+     * @return array
+     * @throws \Simplex\Database\Query\Exception\QueryExecutionFailException
+     */
+    public function findForQuestion(array $question)
+    {
+        return $this->builder
+            ->table($this->table, 'a')
+            ->where('parent_id', '=', $question['id'])
+            ->select('a.id', 'content', 'votes', 'is_best', 'updated_at')
+            ->addSelect('u.username', 'author')
+            ->leftJoin(['users', 'u'], 'u.id', 'a.author_id')
+            ->get();
+    }
 }

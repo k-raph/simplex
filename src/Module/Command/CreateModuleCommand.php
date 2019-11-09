@@ -53,7 +53,7 @@ class CreateModuleCommand extends Command
         $name = sprintf('%sModule', $input->getArgument('name'));
         $base = $this->configuration->get('root');
 
-        $paths = ['', 'views', 'Actions', 'resources'];
+        $paths = ['', 'views', 'Controller', 'resources'];
         $base = sprintf('%s/app/%s', $base, $name);
         foreach ($paths as $path) {
             mkdir(sprintf('%s/%s', $base, $path));

@@ -131,7 +131,7 @@ class Builder
     }
 
     /**
-     * @param DatabaseInterface|null $connection
+     * @param string|null $alias
      * @return Builder
      */
     public function newQuery(?string $alias = null)

@@ -36,7 +36,7 @@ class RoutingServiceProvider extends AbstractServiceProvider
         }
         $router->setStrategy('web');
 
-        $router->get('/', 'Simplex\Routing\RoutingServiceProvider:default', 'simplex_home');
+        $router->get('/', 'Simplex\Routing\RoutingServiceProvider:default', 'home');
 
         $this->container->add(RouterInterface::class, $router);
     }

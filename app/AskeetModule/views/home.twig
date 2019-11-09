@@ -1,0 +1,22 @@
+{% extends 'layout.twig' %}
+
+{% block title %}Askeet | Home{% endblock %}
+
+{% block content %}
+    {% for question in questions %}
+        <div class="tile p-2">
+            <div class="tile-icon"><i class="icon icon-3x icon-emoji bg-secondary"></i></div>
+            <div class="tile-content">
+                <p class="tile-title h5 text-bold text-center">
+                    <a href="{{ route('question_show', {slug: question.slug}) }}">{{ question.title }}</a>
+                </p>
+                <div class="tile-subtitle columns">
+                    <span class="column text-center"><strong>Votes:</strong> {{ question.votes }}</span>
+                    <span class="column text-center"><strong>By:</strong> {{ question.author }}</span>
+                    <span class="column text-center">{{ question.created_at|ago }}</span>
+                </div>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}

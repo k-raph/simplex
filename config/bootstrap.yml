@@ -16,7 +16,7 @@ providers:
   - Simplex\Asset\AssetServiceProvider
   - Simplex\Renderer\TwigServiceProvider
   - Simplex\Validation\ValidationServiceProvider
-  - Simplex\DataMapper\DataMapperServiceProvider
+  #- Simplex\DataMapper\DataMapperServiceProvider
   - Simplex\Security\Authentication\AuthenticationServiceProvider
   - Simplex\Module\ModuleServiceProvider
   #- Simplex\Plugin\PluginServiceProvider

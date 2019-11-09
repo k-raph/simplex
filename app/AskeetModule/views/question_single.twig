@@ -1,0 +1,45 @@
+{% extends 'layout.twig' %}
+
+{% block title %}Askeet | {{ question.title }}{% endblock %}
+
+{% block content %}
+    <div class="panel">
+        <div class="panel-header">
+            <h5 class="text-bold">{{ question.title }}</h5>
+            <div class="columns">
+                <span class="column text-center"><strong>Votes:</strong> {{ question.votes }}</span>
+                <span class="column text-center"><strong>By:</strong> {{ question.author }}</span>
+                <span class="column text-center">{{ question.created_at|ago }}</span>
+            </div>
+            <hr>
+            <p>{{ question.content|nl2br }}</p>
+        </div>
+        <div class="panel-body bg-gray">
+            {% for answer in question.answers %}
+                <div class="tile columns py-1">
+                    <div class="tile-icon column col-2 col-md-12">
+                        <div class="columns">
+                            <span class="flex-centered column"><i
+                                        class="icon icon-3x icon-emoji bg-secondary"></i></span>
+                            <div class="btn-group col-12 btn-group-block column my-2">
+                                <button class="btn btn-sm btn-primary" id="vote-up-{{ answer.id }}"
+                                        data-id="{{ answer.id }}"><i class="icon icon-arrow-up"></i></button>
+                                <button class="btn btn-sm">{{ answer.votes }}</button>
+                                <button class="btn btn-sm btn-primary" id="vote-down-{{ answer.id }}"
+                                        data-id="{{ answer.id }}"><i class="icon icon-arrow-down"></i></button>
+                            </div>
+                            <span class="column text-center">By {{ answer.author }}</span>
+                        </div>
+                    </div>
+
+                    <div class="tile-content column col-9 col-sm-12">
+                        <div class="column">
+                            <p>{{ answer.content }}</p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
