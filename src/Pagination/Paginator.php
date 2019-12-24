@@ -8,7 +8,7 @@
 
 namespace Simplex\Pagination;
 
-use Simplex\Database\Query\Builder;
+use Keiryo\Database\Query\Builder;
 
 class Paginator
 {

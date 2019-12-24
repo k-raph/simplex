@@ -11,8 +11,8 @@ namespace App\JobeetModule\Repository;
 use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Mapper\CategoryMapper;
-use Simplex\DataMapper\QueryBuilder;
-use Simplex\DataMapper\Repository\Repository;
+use Keiryo\DataMapper\QueryBuilder;
+use Keiryo\DataMapper\Repository\Repository;
 
 class CategoryRepository extends Repository
 {

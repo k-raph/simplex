@@ -15,7 +15,7 @@ class CategoryRepository extends BaseRepository
 
     /**
      * @return array
-     * @throws \Simplex\Database\Query\Exception\QueryExecutionFailException
+     * @throws \Keiryo\Database\Query\Exception\QueryExecutionFailException
      */
     public function findAll(): array
     {

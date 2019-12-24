@@ -8,27 +8,27 @@
 
 namespace App\AdminModule;
 
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouteCollection;
 use Simplex\Module\AbstractModule;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouteCollection;
+use Symfony\Component\Config\Exception\FileLoaderLoadException;
 
 class AdminModuleProvider extends AbstractModule
 {
 
     /**
      * @param RouteCollection $collection
-     * @throws \Symfony\Component\Config\Exception\FileLoaderLoadException
+     * @throws FileLoaderLoadException
      */
     public function getAdminRoutes(RouteCollection $collection): void
     {
-        $collection->import(__DIR__ . '/resources/routes.yml', [
-            'prefix' => 'admin',
-        ]);
+        $collection->import(__DIR__ . '/resources/routes.yml');//, [
+        /*    'prefix' => 'admin',
+        ]);*/
     }
 
     /**
      * @param TwigRenderer $renderer
-     * @throws \Twig_Error_Loader
      */
     public function registerTemplates(TwigRenderer $renderer)
     {

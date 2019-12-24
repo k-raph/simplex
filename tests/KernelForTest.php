@@ -2,8 +2,8 @@
 
 namespace Simplex\Tests;
 
+use Keiryo\Routing\RouterInterface;
 use Simplex\Kernel;
-use Simplex\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class KernelForTest extends Kernel

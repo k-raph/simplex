@@ -1,4 +1,0 @@
-list:
-  path: /
-  controller: App\BankuModule\Controller\AccountController:all
-  methods: [GET]

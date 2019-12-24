@@ -8,7 +8,7 @@
 
 namespace App\AuthModule\Entity;
 
-use Simplex\Security\Authentication\User\User as BaseUser;
+use Keiryo\Security\Authentication\User\User as BaseUser;
 
 class User extends BaseUser
 {

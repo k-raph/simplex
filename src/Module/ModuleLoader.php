@@ -8,16 +8,16 @@
 
 namespace Simplex\Module;
 
+use Keiryo\DataMapper\EntityManager;
+use Keiryo\DataMapper\Mapping\MappingRegistry;
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouterInterface;
+use Keiryo\Routing\SymfonyRouter;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\DataMapper\DataMapperServiceProvider;
-use Simplex\DataMapper\EntityManager;
-use Simplex\DataMapper\Mapping\MappingRegistry;
 use Simplex\Middleware\AuthenticationMiddleware;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Renderer\TwigServiceProvider;
-use Simplex\Routing\RouterInterface;
-use Simplex\Routing\SymfonyRouter;
+use Simplex\Provider\DataMapperServiceProvider;
+use Simplex\Provider\RendererServiceProvider;
 
 class ModuleLoader
 {
@@ -64,7 +64,7 @@ class ModuleLoader
         $config = $this->container->get(Configuration::class);
 
         /** @var TwigRenderer $twig */
-        $twig = in_array(TwigServiceProvider::class, $config->get('providers', []))
+        $twig = in_array(RendererServiceProvider::class, $config->get('providers', []))
             ? $this->container->get(TwigRenderer::class)
             : null;
 

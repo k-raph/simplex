@@ -10,8 +10,8 @@ namespace App\JobeetModule\Actions\Api;
 
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Repository\JobRepository;
-use Simplex\Routing\RouterInterface;
-use Simplex\Security\Authentication\StatelessAuthenticationManager as AuthManager;
+use Keiryo\Routing\RouterInterface;
+use Keiryo\Security\Authentication\StatelessAuthenticationManager as AuthManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class JobListAction

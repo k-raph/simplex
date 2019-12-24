@@ -8,10 +8,11 @@
 
 namespace Simplex\Middleware;
 
-use Simplex\EventManager\EventManagerInterface;
+use Exception;
+use Keiryo\EventManager\EventManagerInterface;
+use Keiryo\Http\MiddlewareInterface;
+use Keiryo\Http\RequestHandlerInterface;
 use Simplex\Exception\Event\KernelExceptionEvent;
-use Simplex\Http\MiddlewareInterface;
-use Simplex\Http\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,7 +44,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     {
         try {
             return $handler->handle($request);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $event = $this->eventManager->dispatch(new KernelExceptionEvent($exception, $request));
 
             if (!$event->hasResponse()) {

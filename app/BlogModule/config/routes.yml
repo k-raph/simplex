@@ -1,0 +1,37 @@
+blog_index:
+  path: /
+  controller: App\BlogModule\Action\PostShowAction:all
+
+post_show:
+  path: /{id}
+  controller: App\BlogModule\Action\PostShowAction:single
+  defaults:
+    _middlewares: []
+  requirements:
+    id: '\d+'
+
+comment_add:
+  path: /{post_id}/comments/new
+  controller: App\BlogModule\Action\CommentAddAction
+  methods: [POST]
+  requirements:
+    post_id: '\d+'
+
+post_new:
+  path: /new
+  controller: App\BlogModule\Action\PostEditAction:add
+  methods: [GET, POST]
+
+post_edit:
+  path: /{id}/edit
+  controller: App\BlogModule\Action\PostEditAction:update
+  methods: [GET, POST]
+  requirements:
+    id: '\d+'
+
+post_delete:
+  path: /{id}/delete
+  controller: App\BlogModule\Action\PostEditAction:delete
+  methods: [DELETE]
+  requirements:
+    id: '\d+'

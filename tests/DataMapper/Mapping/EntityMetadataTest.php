@@ -2,17 +2,17 @@
 
 namespace Simplex\Tests\DataMapper\Mapping;
 
+use Keiryo\DataMapper\Mapping\EntityMetadata;
+use Keiryo\DataMapper\Relations\OneToMany;
+use Keiryo\DataMapper\Repository\Repository;
 use PHPUnit\Framework\TestCase;
-use Simplex\DataMapper\Mapping\EntityMetadata;
-use Simplex\DataMapper\Relations\OneToMany;
-use Simplex\DataMapper\Repository\Repository;
 use Simplex\Tests\DataMapper\Fixtures\Entity\User;
 
 class EntityMetadataTest extends TestCase
 {
     public function testCorrectMetadataInfos()
     {
-        $path = require(dirname(__DIR__).'/Fixtures/Mapping/UserMap.php');
+        $path = require(dirname(__DIR__) . '/Fixtures/Mapping/UserMap.php');
         $metadata = new EntityMetadata(User::class, $path[User::class]);
 
         $this->assertEquals(User::class, $metadata->getEntityClass());
@@ -25,7 +25,7 @@ class EntityMetadataTest extends TestCase
         $this->assertEquals('int', $metadata->getColumnType('id'));
         $this->assertEquals('string', $metadata->getColumnType('name'));
         $this->assertEquals('id', $metadata->getIdentifier());
-        
+
         $this->assertEquals('username', $metadata->getSQLName('name'));
         $this->assertEquals('email', $metadata->getSQLName('email'));
     }

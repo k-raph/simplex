@@ -29,7 +29,7 @@ class JobRepository extends BaseJobRepository
     /**
      * @param int $id
      * @return int
-     * @throws \Simplex\Database\Query\Exception\QueryExecutionFailException
+     * @throws \Keiryo\Database\Query\Exception\QueryExecutionFailException
      */
     public function delete(int $id)
     {

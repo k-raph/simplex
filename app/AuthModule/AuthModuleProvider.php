@@ -10,13 +10,13 @@ namespace App\AuthModule;
 
 use App\AuthModule\Command\CreateUserCommand;
 use App\AuthModule\Provider\DatabaseUserProvider;
+use Keiryo\Database\DatabaseInterface;
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouteCollection;
 use League\Container\Container;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\Database\DatabaseInterface;
 use Simplex\Module\AbstractModule;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouteCollection;
 
 class AuthModuleProvider extends AbstractModule
 {
@@ -50,7 +50,6 @@ class AuthModuleProvider extends AbstractModule
 
     /**
      * @param TwigRenderer $renderer
-     * @throws \Twig_Error_Loader
      */
     public function registerTemplates(TwigRenderer $renderer)
     {

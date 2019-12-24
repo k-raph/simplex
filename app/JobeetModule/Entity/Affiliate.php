@@ -8,9 +8,9 @@
 
 namespace App\JobeetModule\Entity;
 
-use Simplex\DataMapper\IdentifiableInterface;
-use Simplex\DataMapper\IdentifiableTrait;
-use Simplex\Security\Authentication\User\UserInterface;
+use Keiryo\DataMapper\IdentifiableInterface;
+use Keiryo\DataMapper\IdentifiableTrait;
+use Keiryo\Security\Authentication\User\UserInterface;
 
 class Affiliate implements IdentifiableInterface, UserInterface
 {

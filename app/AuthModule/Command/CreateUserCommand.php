@@ -10,8 +10,8 @@ namespace App\AuthModule\Command;
 
 use App\AuthModule\Entity\User;
 use App\AuthModule\Provider\DatabaseUserProvider;
-use Simplex\Helper\Str;
-use Simplex\Validation\Validator;
+use Keiryo\Helper\Str;
+use Keiryo\Validation\Validator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\SymfonyQuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;

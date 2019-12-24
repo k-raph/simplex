@@ -8,8 +8,9 @@
 
 namespace App\JobeetModule\Entity;
 
-use Simplex\DataMapper\IdentifiableInterface;
-use Simplex\DataMapper\IdentifiableTrait;
+use DateTime;
+use Keiryo\DataMapper\IdentifiableInterface;
+use Keiryo\DataMapper\IdentifiableTrait;
 
 class Job implements IdentifiableInterface
 {
@@ -88,12 +89,12 @@ class Job implements IdentifiableInterface
     private $token;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $createdAt;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $expiresAt;
 
@@ -265,17 +266,17 @@ class Job implements IdentifiableInterface
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      */
-    public function setCreatedAt(\DateTime $createdAt): void
+    public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -313,17 +314,17 @@ class Job implements IdentifiableInterface
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getExpiresAt(): ?\DateTime
+    public function getExpiresAt(): ?DateTime
     {
         return $this->expiresAt;
     }
 
     /**
-     * @param \DateTime $expiresAt
+     * @param DateTime $expiresAt
      */
-    public function setExpiresAt(?\DateTime $expiresAt): void
+    public function setExpiresAt(?DateTime $expiresAt): void
     {
         $this->expiresAt = $expiresAt;
     }
@@ -334,6 +335,6 @@ class Job implements IdentifiableInterface
      */
     public function hasExpired(): bool
     {
-        return $this->expiresAt < (new \DateTime());
+        return $this->expiresAt < (new DateTime());
     }
 }

@@ -8,7 +8,7 @@
 
 namespace App\JobeetModule\Actions;
 
-use Simplex\DataMapper\EntityManager;
+use Keiryo\DataMapper\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class SearchAction

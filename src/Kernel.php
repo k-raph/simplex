@@ -2,12 +2,13 @@
 
 namespace Simplex;
 
+use Keiryo\EventManager\EventManager;
+use Keiryo\EventManager\EventManagerInterface;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Psr\Container\ContainerInterface;
+use RuntimeException;
 use Simplex\Configuration\Configuration;
-use Simplex\EventManager\EventManager;
-use Simplex\EventManager\EventManagerInterface;
 use Simplex\Events\KernelBootEvent;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
@@ -79,7 +80,7 @@ class Kernel
             }
             $this->container->add(Configuration::class, $config);
         } catch (FileLocatorFileNotFoundException $e) {
-            throw new \RuntimeException('Config files not found!');
+            throw new RuntimeException('Config files not found!');
         }
     }
 
@@ -98,7 +99,7 @@ class Kernel
             $this->container->addServiceProvider($provider);
         }
     }
-    
+
     /**
      * Boot the kernel
      *

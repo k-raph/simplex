@@ -10,9 +10,10 @@ namespace App\JobeetModule\Mapper;
 
 use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Entity\Job;
-use Simplex\Database\Exceptions\ResourceNotFoundException;
-use Simplex\DataMapper\IdentifiableInterface;
-use Simplex\DataMapper\Mapping\EntityMapper;
+use DateTime;
+use Keiryo\Database\Exceptions\ResourceNotFoundException;
+use Keiryo\DataMapper\IdentifiableInterface;
+use Keiryo\DataMapper\Mapping\EntityMapper;
 
 class JobMapper extends EntityMapper
 {
@@ -53,11 +54,11 @@ class JobMapper extends EntityMapper
         }
 
         if (isset($input['created_at'])) {
-            $job->setCreatedAt(\DateTime::createFromFormat('Y-m-d H:i:s', $input['created_at']));
+            $job->setCreatedAt(DateTime::createFromFormat('Y-m-d H:i:s', $input['created_at']));
         }
 
         if (isset($input['expires_at'])) {
-            $job->setExpiresAt(\DateTime::createFromFormat('Y-m-d H:i:s', $input['expires_at']));
+            $job->setExpiresAt(DateTime::createFromFormat('Y-m-d H:i:s', $input['expires_at']));
         }
 
         foreach ([
@@ -152,6 +153,7 @@ class JobMapper extends EntityMapper
                 ->where('id', $entity->getId())
                 ->update($changes);
         }
+        return 0;
     }
 
     /**

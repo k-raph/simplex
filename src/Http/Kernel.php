@@ -8,9 +8,10 @@
 
 namespace Simplex\Http;
 
+use Keiryo\EventManager\EventManagerInterface;
+use Keiryo\Http\Pipeline;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\EventManager\EventManagerInterface;
 use Simplex\Events\KernelRequestEvent;
 use Simplex\Events\KernelResponseEvent;
 use Simplex\Kernel as Simplex;
@@ -27,7 +28,7 @@ class Kernel
     protected $pipeline;
 
     /**
-     * @var \Simplex\Kernel
+     * @var Simplex
      */
     private $kernel;
 
@@ -54,7 +55,6 @@ class Kernel
      */
     public function handle(Request $request): Response
     {
-        $this->kernel->boot();
         $this->bootstrap();
 
         $request->enableHttpMethodParameterOverride();
@@ -82,6 +82,8 @@ class Kernel
         if ('debug' === $config->get('env')) {
             Debugger::enable();
         }
+
+        $this->kernel->boot();
 
         // Register middlewares
         $pipes = $config->get('routing.middlewares.global', []);

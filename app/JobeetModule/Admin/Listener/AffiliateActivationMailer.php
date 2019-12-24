@@ -10,7 +10,7 @@ namespace App\JobeetModule\Admin\Listener;
 
 use App\JobeetModule\Admin\Events\AffiliateActivationEvent;
 use App\JobeetModule\Admin\Jobs\ProcessSendEmail;
-use Simplex\Queue\Contracts\QueueInterface;
+use Keiryo\Queue\Contracts\QueueInterface;
 
 class AffiliateActivationMailer
 {

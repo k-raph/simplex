@@ -2,14 +2,14 @@
 
 namespace Simplex\Middleware;
 
+use Keiryo\Http\MiddlewareInterface;
+use Keiryo\Http\RequestHandlerInterface;
+use Keiryo\Routing\Middleware\DispatchMiddleware;
+use Keiryo\Routing\RouterInterface;
+use Keiryo\Routing\Strategy\StrategyInterface;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Psr\Container\ContainerInterface;
-use Simplex\Http\MiddlewareInterface;
-use Simplex\Http\RequestHandlerInterface;
-use Simplex\Routing\Middleware\DispatchMiddleware;
-use Simplex\Routing\Middleware\StrategyInterface;
-use Simplex\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

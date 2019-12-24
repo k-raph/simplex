@@ -13,13 +13,13 @@ use App\JobeetModule\Admin\Events\AffiliateActivationEvent;
 use App\JobeetModule\Admin\Repository\AffiliateRepository;
 use App\JobeetModule\Entity\Affiliate;
 use App\JobeetModule\Mapper\AffiliateMapper;
-use Simplex\Database\Query\Builder;
-use Simplex\DataMapper\EntityManager;
-use Simplex\EventManager\EventManagerInterface;
-use Simplex\Helper\Str;
+use Keiryo\Database\Query\Builder;
+use Keiryo\DataMapper\EntityManager;
+use Keiryo\EventManager\EventManagerInterface;
+use Keiryo\Helper\Str;
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouterInterface;
 use Simplex\Http\Session\SessionFlash;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -42,9 +42,6 @@ class AffiliateManageAction extends AffiliateRegisterAction
      *
      * @param AffiliateRepository $repository
      * @return string
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
      */
     public function list(AffiliateRepository $repository)
     {
@@ -101,9 +98,6 @@ class AffiliateManageAction extends AffiliateRegisterAction
      * @param RouterInterface $router
      * @param SessionFlash $flash
      * @return string
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
      */
     public function edit(Request $request, EntityManager $manager, RouterInterface $router, SessionFlash $flash)
     {

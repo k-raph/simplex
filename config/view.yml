@@ -1,10 +1,12 @@
+type: twig
+
 twig:
   path: '%resources%/views'
   #cache: '%resources%/cache/views'
   file_ext: twig
   extensions:
-    - Simplex\Asset\AssetExtension
-    - Simplex\Routing\Extensions\TwigRouterExtension
-    - Simplex\Security\Csrf\TwigCsrfExtension
-    - Simplex\Renderer\TwigFormExtension
-    - Simplex\Security\Authentication\TwigAuthExtension
+    - Keiryo\Asset\AssetExtension
+    - Keiryo\Routing\Extensions\TwigRouterExtension
+    - Keiryo\Security\Csrf\TwigCsrfExtension
+    - Keiryo\Renderer\Twig\TwigFormExtension
+    - Keiryo\Security\Authentication\TwigAuthExtension

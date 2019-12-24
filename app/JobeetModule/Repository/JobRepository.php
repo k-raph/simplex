@@ -10,9 +10,10 @@ namespace App\JobeetModule\Repository;
 
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Mapper\JobMapper;
-use Simplex\Database\Exceptions\ResourceNotFoundException;
-use Simplex\DataMapper\QueryBuilder;
-use Simplex\DataMapper\Repository\Repository;
+use DateTime;
+use Keiryo\Database\Exceptions\ResourceNotFoundException;
+use Keiryo\DataMapper\QueryBuilder;
+use Keiryo\DataMapper\Repository\Repository;
 
 class JobRepository extends Repository
 {
@@ -82,7 +83,7 @@ class JobRepository extends Repository
         }
 
         return $query
-            ->where('j.expires_at', '>', (new \DateTime())->format('Y-m-d H:i:s'))
+            ->where('j.expires_at', '>', (new DateTime())->format('Y-m-d H:i:s'))
             ->where('is_public', true)
             ->orderBy('j.id')
             ->get();
@@ -110,7 +111,7 @@ class JobRepository extends Repository
     {
         $query = $this->query('j')
             ->addSelect(['j.id', 'company', 'location', 'position'])
-            ->where('j.expires_at', '>', (new \DateTime())->format('Y-m-d H:i:s'))
+            ->where('j.expires_at', '>', (new DateTime())->format('Y-m-d H:i:s'))
             ->orderBy('created_at', 'DESC');
 
         if ($id) {
@@ -135,7 +136,7 @@ class JobRepository extends Repository
             ->addSelect(['j.id', 'company', 'location', 'position', 'description', 'application', 'type'])
             ->addSelect('c.name', 'category_id')
             ->where('j.id', $id)
-            ->where('j.expires_at', '>', (new \DateTime())->format('Y-m-d H:i:s'))
+            ->where('j.expires_at', '>', (new DateTime())->format('Y-m-d H:i:s'))
             ->innerJoin(['categories', 'c'], 'j.category_id', 'c.id')
             ->first();
 

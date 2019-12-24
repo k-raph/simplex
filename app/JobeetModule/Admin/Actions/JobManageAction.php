@@ -13,13 +13,13 @@ use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Mapper\JobMapper;
 use App\JobeetModule\Repository\CategoryRepository;
+use Keiryo\DataMapper\EntityManager;
+use Keiryo\Helper\ValidatorTrait;
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouterInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\DataMapper\EntityManager;
-use Simplex\Helper\ValidatorTrait;
 use Simplex\Http\Session\SessionFlash;
 use Simplex\Pagination\Paginator;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 

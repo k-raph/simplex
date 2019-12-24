@@ -8,10 +8,11 @@
 
 namespace Simplex\Console\Command;
 
-use Simplex\Queue\Event\JobFailedEvent;
-use Simplex\Queue\Event\JobStartingEvent;
-use Simplex\Queue\Event\JobSuccessEvent;
-use Simplex\Queue\Worker;
+use DateTime;
+use Keiryo\Queue\Event\JobFailedEvent;
+use Keiryo\Queue\Event\JobStartingEvent;
+use Keiryo\Queue\Event\JobSuccessEvent;
+use Keiryo\Queue\Worker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -59,19 +60,19 @@ class WorkerRunCommand extends Command
         $eventManager->on(JobStartingEvent::class, function (JobStartingEvent $event) use ($output) {
             $job = get_class($event->getJob());
             $id = $event->getJob()->getId();
-            $now = (new \DateTime())->format('m-d-Y H:i:s');
+            $now = (new DateTime())->format('m-d-Y H:i:s');
             $output->writeln("$now : Job $job '$id' started");
         });
         $eventManager->on(JobSuccessEvent::class, function (JobSuccessEvent $event) use ($output) {
             $job = get_class($event->getJob());
             $id = $event->getJob()->getId();
-            $now = (new \DateTime())->format('m-d-Y H:i:s');
+            $now = (new DateTime())->format('m-d-Y H:i:s');
             $output->writeln("$now : Job $job '$id' processed");
         });
         $eventManager->on(JobFailedEvent::class, function (JobFailedEvent $event) use ($output) {
             $job = get_class($event->getJob());
             $id = $event->getJob()->getId();
-            $now = (new \DateTime())->format('m-d-Y H:i:s');
+            $now = (new DateTime())->format('m-d-Y H:i:s');
             $output->writeln("$now : Job $job '$id' failed");
         });
     }

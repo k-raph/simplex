@@ -8,9 +8,9 @@
 
 namespace Simplex\Middleware;
 
-use Simplex\Http\MiddlewareInterface;
-use Simplex\Http\RequestHandlerInterface;
-use Simplex\Renderer\TwigRenderer;
+use Keiryo\Http\MiddlewareInterface;
+use Keiryo\Http\RequestHandlerInterface;
+use Keiryo\Renderer\Twig\TwigRenderer;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

@@ -8,13 +8,14 @@
 
 namespace Simplex\Exception\Listener;
 
-use Simplex\Database\Exceptions\ResourceNotFoundException as DatabaseResourceNotFoundException;
-use Simplex\EventManager\EventManagerInterface;
+use Exception;
+use Keiryo\Database\Exceptions\ResourceNotFoundException as DatabaseResourceNotFoundException;
+use Keiryo\EventManager\EventManagerInterface;
+use Keiryo\Security\Authentication\Authorization\AuthorizationException;
+use Keiryo\Security\Authentication\Authorization\AuthorizationManager;
+use Keiryo\Security\Csrf\TokenMismatchException;
 use Simplex\Exception\Event\HttpExceptionEvent;
 use Simplex\Exception\Event\KernelExceptionEvent;
-use Simplex\Security\Authentication\Authorization\AuthorizationException;
-use Simplex\Security\Authentication\Authorization\AuthorizationManager;
-use Simplex\Security\Csrf\TokenMismatchException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -39,7 +40,7 @@ class WebExceptionListener
     /**
      * @param KernelExceptionEvent $event
      * @return KernelExceptionEvent
-     * @throws \Exception
+     * @throws Exception
      */
     public function handle(KernelExceptionEvent $event): KernelExceptionEvent
     {
@@ -68,10 +69,10 @@ class WebExceptionListener
     }
 
     /**
-     * @param \Exception $exception
+     * @param Exception $exception
      * @return Response
      */
-    private function handleNotFoundException(\Exception $exception): Response
+    private function handleNotFoundException(Exception $exception): Response
     {
         $httpEvent = $this->eventManager->dispatch(new HttpExceptionEvent($exception, 404, [
             'title' => 'Page Not Found',

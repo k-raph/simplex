@@ -8,9 +8,9 @@
 
 namespace Simplex\Exception;
 
+use Keiryo\EventManager\EventManagerInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
-use Simplex\EventManager\EventManagerInterface;
 use Simplex\Exception\Event\KernelExceptionEvent;
 use Simplex\Exception\Listener\JsonExceptionListener;
 use Simplex\Exception\Listener\WebExceptionListener;

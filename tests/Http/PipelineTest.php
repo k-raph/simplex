@@ -2,10 +2,10 @@
 
 namespace Simplex\Tests\Http;
 
+use Keiryo\Http\MiddlewareInterface;
+use Keiryo\Http\Pipeline;
+use Keiryo\Http\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
-use Simplex\Http\MiddlewareInterface;
-use Simplex\Http\Pipeline;
-use Simplex\Http\RequestHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,7 +38,7 @@ class PipelineTest extends TestCase
     private function decorate(\Closure $callback): MiddlewareInterface
     {
         return new class($callback) implements MiddlewareInterface {
-            
+
             /**
              * Decorated callback
              *
@@ -82,17 +82,17 @@ class PipelineTest extends TestCase
             $request->attributes->set('pipeline', 'sub-pipe');
             return $handler->handle($request);
         }));
-        
+
         $this->pipeline->pipe($pipeline);
         $this->pipeline
             ->pipe($this->decorate(function (Request $request, $handler) {
                 $content = sprintf('app: %s , pipeline: %s', $request->attributes->get('app'), $request->attributes->get('pipeline', 'primary'));
                 return new Response($content);
             }));
-        
+
         $request = Request::create('/test');
         $response = $this->pipeline->handle($request);
-    
+
         $this->assertInstanceOf(Response::class, $response);
         $this->assertContains('app: simplex , pipeline: sub-pipe', $response->getContent());
     }

@@ -8,9 +8,9 @@
 
 namespace Simplex\Strategy;
 
+use Keiryo\Routing\Strategy\AbstractStrategy;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\Routing\Middleware\AbstractStrategy;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebStrategy extends AbstractStrategy

@@ -9,10 +9,10 @@
 namespace App\JobeetModule\Repository;
 
 use App\JobeetModule\Mapper\AffiliateMapper;
-use Simplex\DataMapper\QueryBuilder;
-use Simplex\DataMapper\Repository\Repository;
-use Simplex\Security\Authentication\Provider\UserProviderInterface;
-use Simplex\Security\Authentication\User\UserInterface;
+use Keiryo\DataMapper\QueryBuilder;
+use Keiryo\DataMapper\Repository\Repository;
+use Keiryo\Security\Authentication\Provider\UserProviderInterface;
+use Keiryo\Security\Authentication\User\UserInterface;
 
 class AffiliateRepository extends Repository implements UserProviderInterface
 {

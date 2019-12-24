@@ -2,12 +2,12 @@
 
 namespace Simplex\Tests\DataMapper;
 
+use Keiryo\DataMapper\EntityManager;
+use Keiryo\DataMapper\Mapping\EntityMetadata;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Simplex\Database\DatabaseInterface;
 use Simplex\Database\Query\Builder;
-use Simplex\DataMapper\EntityManager;
-use Simplex\DataMapper\Mapping\EntityMetadata;
 use Simplex\Tests\DataMapper\Fixtures\Entity\User;
 
 class EntityManagerTest extends TestCase
@@ -48,14 +48,14 @@ class EntityManagerTest extends TestCase
          */
         $user = $this->em->find(User::class, 2);
         $this->assertNull($user);
-        
+
         $this->em->flush();
-        
+
         $user = $this->em->find(User::class, 2);
         $this->assertEquals('object', gettype($user));
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals(2, $user->getId());
-        
+
         $this->assertNull($this->em->find(User::class, 3));
     }
 
@@ -76,7 +76,7 @@ class EntityManagerTest extends TestCase
         $user = $this->em->find(User::class, 1);
         $this->em->remove($user);
         $this->em->flush();
-        
+
         $this->assertNull($this->em->find(User::class, 1));
     }
 }

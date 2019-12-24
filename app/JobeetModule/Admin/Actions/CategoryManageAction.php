@@ -10,12 +10,12 @@ namespace App\JobeetModule\Admin\Actions;
 
 use App\JobeetModule\Admin\Repository\CategoryRepository;
 use App\JobeetModule\Entity\Category;
-use Simplex\DataMapper\EntityManager;
-use Simplex\Helper\Str;
-use Simplex\Helper\ValidatorTrait;
+use Keiryo\DataMapper\EntityManager;
+use Keiryo\Helper\Str;
+use Keiryo\Helper\ValidatorTrait;
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouterInterface;
 use Simplex\Http\Session\SessionFlash;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 

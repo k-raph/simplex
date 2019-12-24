@@ -2,8 +2,8 @@
 
 namespace Simplex\Tests\Renderer;
 
+use Keiryo\Renderer\Twig\TwigRenderer;
 use PHPUnit\Framework\TestCase;
-use Simplex\Renderer\TwigRenderer;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -22,7 +22,7 @@ class TwigRendererTest extends TestCase
         $page = $this->renderer->render('index', ['name' => 'Twig']);
         $this->assertEquals('Hello Twig', $page);
     }
-    
+
     public function testRenderNamespaced()
     {
         $this->renderer->addPath(__DIR__.'/first', "first");
@@ -30,7 +30,7 @@ class TwigRendererTest extends TestCase
 
         $page = $this->renderer->render('@first/index', ['name' => 'Twig']);
         $this->assertEquals('Hello first Twig', $page);
-        
+
         $page = $this->renderer->render('@second/index', ['name' => 'Twig']);
         $this->assertEquals('Hello second Twig', $page);
     }

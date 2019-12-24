@@ -8,11 +8,11 @@
 
 namespace App\AuthModule\Actions;
 
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouterInterface;
+use Keiryo\Security\Authentication\AuthenticationManager;
+use Keiryo\Validation\Validator;
 use Simplex\Http\Session\SessionFlash;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouterInterface;
-use Simplex\Security\Authentication\AuthenticationManager;
-use Simplex\Validation\Validator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 

@@ -8,8 +8,9 @@
 
 namespace Simplex\Console\Command;
 
-use Simplex\Routing\Route;
-use Simplex\Routing\RouterInterface;
+use Closure;
+use Keiryo\Routing\Route;
+use Keiryo\Routing\RouterInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,7 +49,7 @@ class RouterDebugCommand extends Command
                 'methods' => $route->getMethod(),
                 'host' => $route->getHost(),
                 'path' => $route->getPath(),
-                'controller' => is_string($handler) ? $handler : \Closure::class
+                'controller' => is_string($handler) ? $handler : Closure::class
                 //'middlewares' => join('|', $route->getMiddlewares())
             ];
         }, $routes);

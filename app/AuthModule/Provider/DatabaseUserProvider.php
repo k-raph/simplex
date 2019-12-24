@@ -9,7 +9,7 @@
 namespace App\AuthModule\Provider;
 
 use App\AuthModule\Entity\User;
-use Simplex\Security\Authentication\Provider\DatabaseUserProvider as BaseUserProvider;
+use Keiryo\Security\Authentication\Provider\DatabaseUserProvider as BaseUserProvider;
 
 class DatabaseUserProvider extends BaseUserProvider
 {

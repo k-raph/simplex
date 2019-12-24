@@ -9,9 +9,9 @@
 namespace App\JobeetModule\Admin\Jobs;
 
 use App\JobeetModule\Entity\Affiliate;
+use Keiryo\Queue\AbstractJob;
 use Nette\Mail\Message;
 use Nette\Mail\SendmailMailer;
-use Simplex\Queue\AbstractJob;
 
 class ProcessSendEmail extends AbstractJob
 {

@@ -11,10 +11,10 @@ namespace App\JobeetModule\Actions;
 use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Repository\CategoryRepository;
 use App\JobeetModule\Repository\JobRepository;
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouterInterface;
 use Simplex\Configuration\Configuration;
 use Simplex\Pagination\Paginator;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class CategoryShowAction

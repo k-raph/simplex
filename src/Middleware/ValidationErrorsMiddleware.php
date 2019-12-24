@@ -8,9 +8,9 @@
 
 namespace Simplex\Middleware;
 
-use Simplex\Http\MiddlewareInterface;
-use Simplex\Http\RequestHandlerInterface;
-use Simplex\Validation\ValidationException;
+use Keiryo\Http\MiddlewareInterface;
+use Keiryo\Http\RequestHandlerInterface;
+use Keiryo\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

@@ -2,9 +2,9 @@
 
 namespace Simplex\Tests\Routing;
 
+use Keiryo\Routing\Route;
+use Keiryo\Routing\SymfonyRouter;
 use PHPUnit\Framework\TestCase;
-use Simplex\Routing\Route;
-use Simplex\Routing\SymfonyRouter;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -27,7 +27,7 @@ class SymfonyRouterTest extends TestCase
         $this->assertEquals('controller', $result->getHandler());
         $this->assertEquals([], $result->getParameters());
     }
-    
+
     public function testDispatchWithDynamicParts()
     {
         $request = Request::create('/hello/world');

@@ -9,8 +9,8 @@
 namespace App\JobeetModule\Mapper;
 
 use App\JobeetModule\Entity\Affiliate;
-use Simplex\DataMapper\IdentifiableInterface;
-use Simplex\DataMapper\Mapping\EntityMapper;
+use Keiryo\DataMapper\IdentifiableInterface;
+use Keiryo\DataMapper\Mapping\EntityMapper;
 
 class AffiliateMapper extends EntityMapper
 {

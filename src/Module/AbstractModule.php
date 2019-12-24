@@ -8,12 +8,18 @@
 
 namespace Simplex\Module;
 
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouteCollection;
+use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouteCollection;
 
 abstract class AbstractModule implements ModuleInterface
 {
+
+    public function register(ContainerInterface $container)
+    {
+        // TODO: Implement register() method.
+    }
 
     /**
      * @param Configuration $configuration

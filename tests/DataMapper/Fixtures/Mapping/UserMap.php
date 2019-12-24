@@ -2,7 +2,7 @@
 
 namespace Simplex\Tests\DataMapper\Fixtures\Mapping;
 
-use Simplex\DataMapper\Persistence\ArrayPersister;
+use Keiryo\DataMapper\Persistence\ArrayPersister;
 use Simplex\Tests\DataMapper\Fixtures\Entity\User;
 
 return [

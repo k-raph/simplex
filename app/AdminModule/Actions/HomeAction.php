@@ -8,7 +8,7 @@
 
 namespace App\AdminModule\Actions;
 
-use Simplex\Renderer\TwigRenderer;
+use Keiryo\Renderer\Twig\TwigRenderer;
 
 class HomeAction
 {

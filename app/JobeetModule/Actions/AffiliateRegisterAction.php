@@ -9,11 +9,11 @@
 namespace App\JobeetModule\Actions;
 
 use App\JobeetModule\Entity\Affiliate;
-use Simplex\Database\Query\Builder;
-use Simplex\DataMapper\EntityManager;
-use Simplex\Helper\ValidatorTrait;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouterInterface;
+use Keiryo\Database\Query\Builder;
+use Keiryo\DataMapper\EntityManager;
+use Keiryo\Helper\ValidatorTrait;
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 

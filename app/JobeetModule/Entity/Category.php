@@ -8,8 +8,8 @@
 
 namespace App\JobeetModule\Entity;
 
-use Simplex\DataMapper\IdentifiableInterface;
-use Simplex\DataMapper\IdentifiableTrait;
+use Keiryo\DataMapper\IdentifiableInterface;
+use Keiryo\DataMapper\IdentifiableTrait;
 
 class Category implements IdentifiableInterface
 {

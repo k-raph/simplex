@@ -11,9 +11,9 @@ namespace App\JobeetModule\Actions;
 use App\JobeetModule\Entity\Category;
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Repository\CategoryRepository;
-use Simplex\Database\Exceptions\ResourceNotFoundException;
-use Simplex\DataMapper\EntityManager;
-use Simplex\Renderer\TwigRenderer;
+use Keiryo\Database\Exceptions\ResourceNotFoundException;
+use Keiryo\DataMapper\EntityManager;
+use Keiryo\Renderer\Twig\TwigRenderer;
 
 class JobShowAction
 {

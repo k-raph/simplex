@@ -8,9 +8,10 @@
 
 namespace Simplex\Strategy;
 
+use ArrayAccess;
+use Keiryo\Routing\Strategy\AbstractStrategy;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\Routing\Middleware\AbstractStrategy;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,7 +40,7 @@ class ApiStrategy extends AbstractStrategy
     protected function createResponse($response): ?Response
     {
         if (is_array($response) ||
-            (is_object($response) && $response instanceof \ArrayAccess)
+            (is_object($response) && $response instanceof ArrayAccess)
         ) {
             return new JsonResponse((array)$response);
         }

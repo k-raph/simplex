@@ -8,9 +8,9 @@
 
 namespace Simplex\Module;
 
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouteCollection;
 use Simplex\Configuration\Configuration;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouteCollection;
 
 interface ModuleInterface
 {

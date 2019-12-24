@@ -2,14 +2,14 @@
 
 namespace Simplex\Tests\DataMapper;
 
+use Keiryo\DataMapper\Configuration;
+use Keiryo\DataMapper\EntityManager;
+use Keiryo\DataMapper\Mapping\EntityMetadata;
+use Keiryo\DataMapper\Mapping\MetadataFactory;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Simplex\Database\DatabaseInterface;
 use Simplex\Database\Query\Builder;
-use Simplex\DataMapper\Configuration;
-use Simplex\DataMapper\EntityManager;
-use Simplex\DataMapper\Mapping\EntityMetadata;
-use Simplex\DataMapper\Mapping\MetadataFactory;
 use Simplex\Tests\DataMapper\Fixtures\Entity\User;
 
 class ConfigurationTest extends TestCase
@@ -23,7 +23,7 @@ class ConfigurationTest extends TestCase
     public function setUp()
     {
         $this->config = new Configuration(__DIR__.'/Fixtures/Mapping');
-        
+
         $db = $this->prophesize(DatabaseInterface::class);
         $qb = $this->prophesize(Builder::class);
         $qb->table(Argument::any())->willReturn($qb);

@@ -9,8 +9,8 @@
 namespace App\JobeetModule\Admin\Command;
 
 use App\JobeetModule\Entity\Category;
-use Simplex\DataMapper\EntityManager;
-use Simplex\Helper\Str;
+use Keiryo\DataMapper\EntityManager;
+use Keiryo\Helper\Str;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;

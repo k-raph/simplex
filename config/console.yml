@@ -4,12 +4,11 @@ commands:
   - Simplex\Console\Command\WorkerRunCommand
 
 providers:
-  - Simplex\Exception\ExceptionHandlerProvider
-  - Simplex\Routing\RoutingServiceProvider
-  - Simplex\Database\DatabaseServiceProvider
+  - Simplex\Provider\RoutingServiceProvider
+  - Simplex\Provider\DatabaseServiceProvider
   - App\Providers\KacheServiceProvider
-  - Simplex\Queue\QueueServiceProvider
-  - Simplex\Validation\ValidationServiceProvider
-  - Simplex\DataMapper\DataMapperServiceProvider
-  - Simplex\Security\Authentication\AuthenticationServiceProvider
-  - Simplex\Module\ModuleServiceProvider
+  - Simplex\Provider\QueueServiceProvider
+  - Simplex\Provider\ValidationServiceProvider
+  - Simplex\Provider\DataMapperServiceProvider
+  - Simplex\Provider\AuthenticationServiceProvider
+  - Simplex\Provider\ModuleServiceProvider

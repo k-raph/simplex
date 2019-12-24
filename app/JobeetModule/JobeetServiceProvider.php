@@ -19,15 +19,15 @@ use App\JobeetModule\Mapper\AffiliateMapper;
 use App\JobeetModule\Mapper\CategoryMapper;
 use App\JobeetModule\Mapper\JobMapper;
 use App\JobeetModule\Repository\AffiliateRepository;
+use Keiryo\EventManager\EventManagerInterface;
+use Keiryo\Helper\Str;
+use Keiryo\Queue\Contracts\QueueInterface;
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouteCollection;
+use Keiryo\Security\Authentication\StatelessAuthenticationManager;
 use Psr\Container\ContainerInterface;
 use Simplex\Configuration\Configuration;
-use Simplex\EventManager\EventManagerInterface;
-use Simplex\Helper\Str;
 use Simplex\Module\AbstractModule;
-use Simplex\Queue\Contracts\QueueInterface;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouteCollection;
-use Simplex\Security\Authentication\StatelessAuthenticationManager;
 use Twig\TwigFilter;
 
 class JobeetServiceProvider extends AbstractModule

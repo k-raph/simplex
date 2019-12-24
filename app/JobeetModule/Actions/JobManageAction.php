@@ -10,9 +10,10 @@ namespace App\JobeetModule\Actions;
 
 use App\JobeetModule\Entity\Job;
 use App\JobeetModule\Repository\JobRepository;
+use DateInterval;
+use Keiryo\Renderer\Twig\TwigRenderer;
+use Keiryo\Routing\RouterInterface;
 use Simplex\Http\Session\SessionFlash;
-use Simplex\Renderer\TwigRenderer;
-use Simplex\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class JobManageAction
@@ -67,7 +68,7 @@ class JobManageAction
      * @param RouterInterface $router
      * @param SessionFlash $flash
      * @return RedirectResponse
-     * @throws \Simplex\Database\Exceptions\ResourceNotFoundException
+     * @throws \Keiryo\Database\Exceptions\ResourceNotFoundException
      */
     public function extend(string $token, JobRepository $repository, RouterInterface $router, SessionFlash $flash)
     {
@@ -82,14 +83,14 @@ class JobManageAction
      * @param string $token
      * @param JobRepository $repository
      * @return Job
-     * @throws \Simplex\Database\Exceptions\ResourceNotFoundException
+     * @throws \Keiryo\Database\Exceptions\ResourceNotFoundException
      */
     protected function update(string $token, JobRepository $repository): Job
     {
         /** @var Job $job */
         $job = $repository->findByToken($token);
 
-        $job->setExpiresAt((new \DateTime())->add(new \DateInterval('P30D')));
+        $job->setExpiresAt((new \DateTime())->add(new DateInterval('P30D')));
         $job->setType(array_search($job->getType(), Job::TYPES));
         $repository->getMapper()->update($job);
 
